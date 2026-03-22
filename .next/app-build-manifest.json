@@ -1,9 +1,14 @@
 {
   "pages": {
-    "/admin/console/page": [
+    "/management/distributions/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/admin/console/page.js"
+      "static/chunks/app/management/distributions/page.js"
+    ],
+    "/management/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/management/layout.js"
     ],
     "/layout": [
       "static/chunks/webpack.js",
@@ -41,25 +46,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/management/dashboard/page.js"
     ],
-    "/management/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/management/layout.js"
-    ],
-    "/management/audit-log/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/management/audit-log/page.js"
-    ],
-    "/management/distributions/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/management/distributions/page.js"
-    ],
     "/management/beneficiaries/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/management/beneficiaries/page.js"
+    ],
+    "/admin/console/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/console/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",

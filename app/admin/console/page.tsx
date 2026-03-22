@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { LogOut, UserPlus, QrCode, List, ArrowLeft } from "lucide-react"
 import { TabBar } from "@/components/TabBar"
@@ -13,22 +13,30 @@ export default function FieldConsole() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("register")
   const [showLogout, setShowLogout] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
-  // Read officer name from session
-  const getOfficer = () => {
-    if (typeof window === "undefined") return { name: "Officer", initials: "OF" }
+  const [officer, setOfficer] = useState({ name: "Officer", initials: "OF" })
+
+  useEffect(() => {
+    setIsMounted(true)
     try {
       const stored = sessionStorage.getItem("verifund_user")
       if (stored) {
         const u = JSON.parse(stored)
         const initials = u.name.split(" ").map((n: string) => n[0]).join("").toUpperCase().slice(0, 2)
-        return { name: u.name, initials }
+        setOfficer({ name: u.name, initials })
+      } else {
+        setOfficer({ name: "Josefa Reyes", initials: "JR" })
       }
-    } catch {}
-    return { name: "Josefa Reyes", initials: "JR" }
-  }
+    } catch {
+      setOfficer({ name: "Josefa Reyes", initials: "JR" })
+    }
+    // DO NOT set activeTab here — it should only change when user taps a tab
+  }, [])
 
-  const officer = getOfficer()
+  if (!isMounted) {
+    return null // Prevent entire tree from hydration mismatching
+  }
 
   return (
     <div className="min-h-screen bg-[var(--surface-page)] flex flex-col">

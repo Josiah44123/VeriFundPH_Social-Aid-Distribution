@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { CheckCircle2, XCircle } from "lucide-react"
+import { useState, useRef, useCallback } from "react"
+import { CheckCircle2, XCircle, Upload as UploadIcon } from "lucide-react"
 import { QRScanner } from "@/components/QRScanner"
 import { useVeriFundStore } from "@/lib/store"
 import type { Claim, AuditEntry, FraudFlag } from "@/lib/store"
@@ -15,75 +15,102 @@ const ACTIVE_DISTRIBUTION = {
   title: "SAP 2025 — Una",
   amount: 1500,
   date: "Marso 15, 2025",
-}
+} as any
 
 export function VerifyTab() {
-  const { beneficiaries, claims, addClaim, addAuditEntry, addFraudFlag } = useVeriFundStore()
+  const store = useVeriFundStore()
+  
+  const [scanResult, setScanResult] = useState<{
+    type: 'VERIFIED' | 'REJECTED';
+    beneficiary?: any;
+    reason?: string;
+    distribution?: any;
+  } | null>(null);
+
+  const [showResultSheet, setShowResultSheet] = useState(false);
   const [manualCode, setManualCode] = useState("")
-  const [result, setResult] = useState<any>(null)
   const [showManualEntry, setShowManualEntry] = useState(false)
+  
+  // Bug 2: QR Upload State
+  const [isProcessing, setIsProcessing] = useState(false)
+  const qrImageInputRef = useRef<HTMLInputElement>(null);
 
-  const handleVerify = (code: string) => {
-    const trimmed = code.trim()
-    const beneficiary = beneficiaries.find(b => b.qrData === trimmed || b.id === trimmed)
-    
-    if (!beneficiary) {
-      setResult({ type: "REJECTED", reason: "Hindi nahanap sa listahan ng mga benepisyaryo." })
-      return
-    }
-
-    if (beneficiary.status === "FLAGGED") {
-      setResult({ type: "REJECTED", reason: "Naka-flag ang beneficiary na ito. Hindi puwedeng mag-claim.", beneficiary })
-      return
-    }
-
-    // Check for duplicate claim in this distribution
-    const existingClaim = claims.find(
-      c => c.beneficiaryId === beneficiary.id && c.distributionId === ACTIVE_DISTRIBUTION.id
-    )
-
-    if (existingClaim) {
-      setResult({ type: "REJECTED", reason: "Nakakuha na sa distribution na ito.", beneficiary })
-      // Add fraud flag for velocity anomaly
-      const flag: FraudFlag = {
-        id: `FRD-${Date.now()}`,
-        type: "VELOCITY_ANOMALY",
-        beneficiaryId: beneficiary.id,
-        details: `Sinubukang mag-claim nang dalawang beses para sa ${ACTIVE_DISTRIBUTION.title}`,
-        flaggedAt: new Date().toISOString(),
-        resolved: false,
-      }
-      addFraudFlag(flag)
-      const auditEntry: AuditEntry = {
-        id: `AUD-${Date.now()}`,
-        timestamp: new Date().toISOString(),
-        action: "FLAGGED",
-        actorName: "SYSTEM",
-        actorRole: "SYSTEM",
-        targetId: beneficiary.id,
-        targetName: `${beneficiary.firstName} ${beneficiary.lastName}`,
-        barangay: BARANGAY,
-        details: `Velocity anomaly — duplicate claim attempt blocked for ${ACTIVE_DISTRIBUTION.title}`,
-      }
-      addAuditEntry(auditEntry)
-      return
-    }
-
-    setResult({ type: "VERIFIED", beneficiary })
+  const showToast = (msg: string, type?: string) => {
+    alert(msg)
   }
 
+  const handleVerify = useCallback((vfId: string) => {
+    const id = vfId.trim();
+    if (!id) return;
+
+    setIsProcessing(false);
+
+    const beneficiary = store.beneficiaries.find(
+      b => b.id === id || b.qrData === id
+    );
+
+    const activeDistribution = store.distributions?.find((d: any) => d.status === 'ACTIVE') || ACTIVE_DISTRIBUTION;
+
+    const alreadyClaimed = activeDistribution
+      ? store.claims.some(
+          c => c.beneficiaryId === id && c.distributionId === activeDistribution.id
+        )
+      : false;
+
+    if (!beneficiary) {
+      setScanResult({ type: 'REJECTED', reason: 'Hindi nahanap sa listahan.' });
+    } else if (alreadyClaimed) {
+      setScanResult({ type: 'REJECTED', reason: 'Nakakuha na sa distribution na ito.' });
+    } else {
+      setScanResult({ type: 'VERIFIED', beneficiary, distribution: activeDistribution });
+    }
+
+    setShowManualEntry(false);
+    setShowResultSheet(true);
+  }, [store]);
+
+  const handleManualVerify = () => {
+    handleVerify(manualCode);
+    setManualCode('');
+  };
+
+  const handleQRImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsProcessing(true); // show loading state
+
+    try {
+      // Use html5-qrcode to decode from file
+      const { Html5Qrcode } = await import('html5-qrcode');
+      const html5QrCode = new Html5Qrcode('qr-reader-hidden');
+      const result = await html5QrCode.scanFile(file, true);
+      await html5QrCode.clear();
+      handleVerify(result); // same handler as camera scan
+    } catch (err) {
+      // If library fails, show manual entry as fallback
+      setIsProcessing(false);
+      setShowManualEntry(true);
+      showToast('Hindi ma-read ang QR. I-type na lang ang VF ID.', 'warning');
+    }
+
+    // Reset input so same file can be re-uploaded
+    e.target.value = '';
+  };
+
   const handleConfirm = () => {
-    if (!result?.beneficiary) return
-    const { beneficiary } = result
-    const method = "Cash" // Simplified per the new button requirement "KUMPIRMAHIN" instead of 3 buttons
+    if (!scanResult?.beneficiary) return
+    const { beneficiary, distribution } = scanResult
+    const method = "Cash" 
+    const activeDist = distribution || ACTIVE_DISTRIBUTION;
 
     const claim: Claim = {
       id: `CLM-${Date.now()}`,
       beneficiaryId: beneficiary.id,
       beneficiaryName: `${beneficiary.firstName} ${beneficiary.lastName}`,
-      distributionId: ACTIVE_DISTRIBUTION.id,
-      distributionTitle: ACTIVE_DISTRIBUTION.title,
-      amount: ACTIVE_DISTRIBUTION.amount,
+      distributionId: activeDist.id,
+      distributionTitle: activeDist.title,
+      amount: activeDist.amount,
       method,
       status: "NAKUHA",
       verifiedBy: OFFICER_NAME,
@@ -100,17 +127,15 @@ export function VerifyTab() {
       targetId: beneficiary.id,
       targetName: claim.beneficiaryName,
       barangay: BARANGAY,
-      details: `Claim confirmed — ${ACTIVE_DISTRIBUTION.title} — ₱${ACTIVE_DISTRIBUTION.amount.toLocaleString()} ${method}`,
+      details: `Claim confirmed — ${activeDist.title} — ₱${activeDist.amount.toLocaleString()} ${method}`,
     }
 
-    addClaim(claim)
-    addAuditEntry(auditEntry)
-    setResult(null)
+    store.addClaim(claim)
+    store.addAuditEntry(auditEntry)
+    setShowResultSheet(false)
+    setScanResult(null)
     setManualCode("")
     setShowManualEntry(false)
-    
-    // Toast notification would go here in a full app, using a global toast system
-    // but the store update will automatically update Listahan.
   }
 
   const initials = (b: any) => `${b.firstName[0]}${b.lastName[0]}`
@@ -131,53 +156,166 @@ export function VerifyTab() {
 
         {/* Scanner */}
         <QRScanner 
-          isScanning={!result}
+          isScanning={!showResultSheet}
           onScanSuccess={(code) => handleVerify(code)}
         />
 
-        {/* Manual Entry Toggle */}
-        <div className="text-center mt-[24px]">
-          <button 
-            onClick={() => setShowManualEntry(true)}
-            className="text-[13px] font-bold text-[var(--text-muted)] border-b border-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors pb-1"
+        {/* Hidden div required by html5-qrcode for file scanning */}
+        <div id="qr-reader-hidden" style={{ display: 'none' }} />
+
+        {/* Hidden file input */}
+        <input
+          ref={qrImageInputRef}
+          type="file"
+          accept="image/*"
+          style={{ display: 'none' }}
+          onChange={handleQRImageUpload}
+        />
+
+        {/* Bug 2 Upload UI below scanner */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: 8,
+          marginTop: 16,
+        }}>
+          {/* Primary upload option */}
+          <button
+            onClick={() => qrImageInputRef.current?.click()}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '10px 20px',
+              background: 'rgba(255,255,255,0.1)',
+              border: '1.5px solid rgba(255,255,255,0.25)',
+              borderRadius: 12,
+              color: 'var(--text-primary)',
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
           >
-            Hindi gumagana ang camera?
+            <UploadIcon size={16} />
+            I-upload ang QR Code Image
+          </button>
+
+          {/* Manual text entry link */}
+          <button
+            onClick={() => setShowManualEntry(true)}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-muted)',
+              fontSize: 12,
+              textDecoration: 'underline',
+              cursor: 'pointer',
+              padding: '4px 8px',
+            }}
+          >
+            I-type ang VeriFund ID nang mano-mano
           </button>
         </div>
       </div>
 
+      {isProcessing && (
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'rgba(0,0,0,0.6)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: 20,
+          zIndex: 10,
+        }}>
+          <div style={{
+            width: 40, height: 40,
+            border: '3px solid rgba(255,255,255,0.2)',
+            borderTop: '3px solid #FF0048',
+            borderRadius: '50%',
+            animation: 'spin 0.8s linear infinite',
+          }} />
+          <p style={{ color: 'white', fontSize: 13, marginTop: 12 }}>
+            Binabasa ang QR code...
+          </p>
+        </div>
+      )}
+
       {/* Manual Entry Bottom Sheet */}
       <AnimatePresence>
-        {showManualEntry && !result && (
+        {showManualEntry && !showResultSheet && (
           <>
             <motion.div 
+              key="manual-backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowManualEntry(false)}
-              className="fixed inset-0 bg-black/40 z-40"
+              className="fixed inset-0 bg-black/40 z-[55]"
             />
             <motion.div 
+              key="manual-sheet"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-white z-50 rounded-t-[24px] shadow-[var(--shadow-lg)] pb-[calc(24px+env(safe-area-inset-bottom))] px-[24px] pt-[12px]"
+              style={{
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: 'white',
+                borderRadius: '24px 24px 0 0',
+                padding: '16px 20px',
+                paddingBottom: 'calc(16px + env(safe-area-inset-bottom) + 64px)',
+                zIndex: 60,
+                boxShadow: '0 -8px 32px rgba(0,0,0,0.12)',
+              }}
             >
-              <div className="flex justify-center mb-[24px]">
-                <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full" />
-              </div>
-              <h3 className="text-[18px] font-bold text-[var(--text-primary)] mb-[16px] text-center">I-type ang VeriFund ID</h3>
-              <input 
+              {/* Drag handle */}
+              <div style={{ width: 32, height: 4, background: '#E0E0E0', borderRadius: 9999, margin: '0 auto 16px' }} />
+
+              <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>
+                I-type ang VeriFund ID
+              </p>
+
+              <input
                 value={manualCode}
-                onChange={(e: any) => setManualCode(e.target.value)}
+                onChange={e => setManualCode(e.target.value)}
                 placeholder="VF-2025-0001-STC"
-                className="w-full h-[52px] rounded-[14px] px-[16px] bg-[var(--surface-input)] text-[15px] border-[1.5px] border-transparent outline-none transition-colors focus:border-[var(--blue)] font-mono text-center tracking-wide mb-[16px]"
+                style={{
+                  width: '100%',
+                  height: 52,
+                  background: '#F2F2F7',
+                  border: '1.5px solid transparent',
+                  borderRadius: 14,
+                  padding: '0 16px',
+                  fontSize: 15,
+                  fontFamily: 'monospace',
+                  marginBottom: 12,
+                  display: 'block',
+                }}
+                onKeyDown={e => e.key === 'Enter' && handleManualVerify()}
               />
-              <button 
-                onClick={() => handleVerify(manualCode)}
-                disabled={!manualCode}
-                className="w-full h-[52px] bg-[var(--navy)] text-white font-bold rounded-[14px] text-[15px] tracking-[-0.2px] disabled:bg-[#E8ECF7] disabled:text-[#A0ABC0] transition-colors shadow-[var(--shadow-sm)]"
+
+              <button
+                onClick={handleManualVerify}
+                disabled={!manualCode.trim()}
+                style={{
+                  width: '100%',
+                  height: 52,
+                  background: !manualCode.trim() ? '#E8ECF7' : '#FF0048',
+                  color: !manualCode.trim() ? '#A0ABC0' : 'white',
+                  border: 'none',
+                  borderRadius: 14,
+                  fontSize: 15,
+                  fontWeight: 700,
+                  cursor: !manualCode.trim() ? 'not-allowed' : 'pointer',
+                  display: 'block',
+                }}
               >
                 I-Verify
               </button>
@@ -188,29 +326,29 @@ export function VerifyTab() {
 
       {/* VERIFIED Result Bottom Sheet */}
       <AnimatePresence>
-        {result?.type === "VERIFIED" && result.beneficiary && (
+        {showResultSheet && scanResult?.type === "VERIFIED" && scanResult.beneficiary && (
           <>
             <motion.div 
+              key="verified-backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setResult(null)}
-              className="fixed inset-0 bg-[#1C1C1E]/60 z-40"
+              onClick={() => setShowResultSheet(false)}
+              className="fixed inset-0 bg-[#1C1C1E]/60 z-[55]"
             />
             <motion.div 
+              key="verified-sheet"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] z-50 overflow-hidden"
+              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
             >
-              {/* Top Accent Bar */}
               <div className="h-[4px] w-full bg-[var(--red)] absolute top-0 left-0" />
               
               <div className="pt-[16px] px-[24px] flex flex-col items-center relative">
                 <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full mb-[24px]" />
                 
-                {/* Spring Checkmark */}
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
@@ -223,19 +361,18 @@ export function VerifyTab() {
                 <h2 className="text-[22px] font-bold text-[var(--text-primary)] text-center mb-[4px] leading-tight">Verified!</h2>
                 <p className="text-[14px] text-[var(--text-muted)] font-medium text-center mb-[24px]">Pwedeng kumuha ng ayuda</p>
 
-                {/* Recipient Row */}
                 <div className="flex items-center gap-[16px] mb-[24px] w-full">
                   <div className="w-[52px] h-[52px] bg-[var(--navy)] text-white font-bold text-[18px] rounded-full flex items-center justify-center shrink-0">
-                    {initials(result.beneficiary)}
+                    {initials(scanResult.beneficiary)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-[16px] text-[var(--text-primary)] truncate leading-tight mb-[2px]">{result.beneficiary.firstName} {result.beneficiary.lastName}</p>
-                    <p className="text-[13px] text-[var(--text-muted)] truncate">{result.beneficiary.barangay}</p>
+                    <p className="font-bold text-[16px] text-[var(--text-primary)] truncate leading-tight mb-[2px]">{scanResult.beneficiary.firstName} {scanResult.beneficiary.lastName}</p>
+                    <p className="text-[13px] text-[var(--text-muted)] truncate">{scanResult.beneficiary.barangay}</p>
                   </div>
                 </div>
                 
                 <div className="text-center mb-[32px] w-full">
-                  <span className="text-[24px] font-extrabold text-[var(--red)] leading-none block tracking-tight">₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</span>
+                  <span className="text-[24px] font-extrabold text-[var(--red)] leading-none block tracking-tight">₱{(scanResult.distribution?.amount || ACTIVE_DISTRIBUTION.amount).toLocaleString()}</span>
                 </div>
 
                 <button
@@ -245,7 +382,7 @@ export function VerifyTab() {
                   KUMPIRMAHIN
                 </button>
                 <button 
-                  onClick={() => setResult(null)}
+                  onClick={() => setShowResultSheet(false)}
                   className="text-[13px] font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
                 >
                   I-cancel
@@ -258,23 +395,24 @@ export function VerifyTab() {
 
       {/* REJECTED Result Bottom Sheet */}
       <AnimatePresence>
-        {result?.type === "REJECTED" && (
+        {showResultSheet && scanResult?.type === "REJECTED" && (
           <>
             <motion.div 
+              key="rejected-backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setResult(null)}
-              className="fixed inset-0 bg-[#1C1C1E]/60 z-40"
+              onClick={() => setShowResultSheet(false)}
+              className="fixed inset-0 bg-[#1C1C1E]/60 z-[55]"
             />
             <motion.div 
+              key="rejected-sheet"
               initial={{ y: "100%" }}
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] z-50 overflow-hidden"
+              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
             >
-              {/* Top Accent Bar */}
               <div className="h-[4px] w-full bg-[var(--danger)] absolute top-0 left-0" />
               
               <div className="pt-[16px] px-[24px] flex flex-col items-center relative">
@@ -291,11 +429,11 @@ export function VerifyTab() {
 
                 <h2 className="text-[22px] font-bold text-[var(--danger)] text-center mb-[8px] leading-tight">Hindi Puwede</h2>
                 <div className="w-full bg-[var(--danger-light)] p-[16px] rounded-[16px] mb-[32px]">
-                  <p className="text-[14px] text-[var(--danger)] text-center font-bold tracking-tight leading-[1.4]">{result.reason}</p>
+                  <p className="text-[14px] text-[var(--danger)] text-center font-bold tracking-tight leading-[1.4]">{scanResult.reason}</p>
                 </div>
 
                 <button 
-                  onClick={() => setResult(null)}
+                  onClick={() => setShowResultSheet(false)}
                   className="w-full h-[52px] bg-white border-[1.5px] border-[var(--red)] text-[var(--red)] font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98] shadow-[var(--shadow-sm)]"
                 >
                   Scan Ulit
@@ -309,3 +447,4 @@ export function VerifyTab() {
     </div>
   )
 }
+
