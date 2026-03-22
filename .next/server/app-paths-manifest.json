@@ -1,0 +1,10 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/console/page": "app/admin/console/page.js",
+  "/admin/portal-selector/page": "app/admin/portal-selector/page.js",
+  "/page": "app/page.js",
+  "/management/audit-log/page": "app/management/audit-log/page.js",
+  "/management/beneficiaries/page": "app/management/beneficiaries/page.js",
+  "/management/dashboard/page": "app/management/dashboard/page.js",
+  "/management/distributions/page": "app/management/distributions/page.js"
+}
