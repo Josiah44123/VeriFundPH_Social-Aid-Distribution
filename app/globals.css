@@ -56,6 +56,23 @@
     --text-on-dark: #FFFFFF;
     --text-on-gold: #0D1B3E;
 
+    /* Navy Deep */
+    --navy-deep: #001A5E;
+
+    /* Admin Portal Tokens — aligned to Philippine color system */
+    --admin-layer-bg: #001A5E;       /* = --ph-blue-deeper */
+    --admin-accent-primary: #001A5E;
+    --admin-accent-secondary: #FCD116; /* = --ph-gold */
+    --admin-success: #1A8C4E;          /* = --success */
+    --admin-pending: #B45309;          /* = --warning-amber */
+    --admin-danger: #CE1126;           /* = --ph-red */
+    --admin-bg: #F0F3FA;               /* = --surface-page */
+    --admin-card: #FFFFFF;
+    --admin-text-primary: #0D1B3E;     /* = --text-primary */
+    --admin-text-secondary: #4A5568;   /* = --text-secondary */
+    --admin-border: #E2E8F0;
+    --admin-textMuted: #8896B3;        /* = --text-muted */
+
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
     --transition-slide: 300ms cubic-bezier(0.4, 0, 0.2, 1);

@@ -1,7 +1,11 @@
 {
   "/page": "app/page.js",
-  "/citizen/login/page": "app/citizen/login/page.js",
-  "/citizen/dashboard/page": "app/citizen/dashboard/page.js",
   "/admin/login/page": "app/admin/login/page.js",
-  "/admin/console/page": "app/admin/console/page.js"
+  "/admin/selection/page": "app/admin/selection/page.js",
+  "/admin/console/page": "app/admin/console/page.js",
+  "/management/login/page": "app/management/login/page.js",
+  "/management/beneficiaries/page": "app/management/beneficiaries/page.js",
+  "/management/dashboard/page": "app/management/dashboard/page.js",
+  "/management/audit-log/page": "app/management/audit-log/page.js",
+  "/management/distributions/page": "app/management/distributions/page.js"
 }

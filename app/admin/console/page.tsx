@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { LogOut, UserPlus, QrCode, List } from "lucide-react"
-import { OFFICER, INITIAL_LISTAHAN } from "@/lib/data"
+import { OFFICER } from "@/lib/data"
 import { TabBar } from "@/components/TabBar"
 import { RegisterTab } from "@/components/admin/RegisterTab"
 import { VerifyTab } from "@/components/admin/VerifyTab"
@@ -14,23 +14,6 @@ export default function FieldConsole() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("verify")
   const [showLogout, setShowLogout] = useState(false)
-  const [listahan, setListahan] = useState(INITIAL_LISTAHAN)
-
-  const handleTabChange = (id: string) => {
-    setActiveTab(id)
-  }
-
-  const handleConfirmClaim = (resultData: any) => {
-    const newItem = {
-      name: resultData.name,
-      initials: resultData.initials,
-      time: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
-      method: "Cash on site",
-      status: "NAKUHA",
-      verifundId: "VF-2025-XXXX-STC" // Mocked generated ID for now
-    }
-    setListahan([newItem, ...listahan])
-  }
 
   return (
     <div className="min-h-screen bg-[var(--surface-page)] flex flex-col">
@@ -39,8 +22,8 @@ export default function FieldConsole() {
         <div className="flex items-center gap-[12px]">
           <div className="flex flex-col gap-[2px]">
             <div className="w-[8px] h-[8px] rounded-full bg-[var(--danger-light)]" />
-            <div className="w-[8px] h-[8px] rounded-full bg-[var(--warning)]" />
-            <div className="w-[8px] h-[8px] rounded-full bg-[var(--success)]" />
+            <div className="w-[8px] h-[8px] rounded-full bg-[var(--ph-gold)]" />
+            <div className="w-[8px] h-[8px] rounded-full bg-[var(--success-light)]" />
           </div>
           <div className="flex flex-col">
             <span className="text-white font-bold text-[18px] leading-[1]">VeriFund</span>
@@ -86,8 +69,8 @@ export default function FieldConsole() {
               className="h-full"
             >
               {activeTab === "register" && <RegisterTab />}
-              {activeTab === "verify" && <VerifyTab onConfirmClaim={handleConfirmClaim} />}
-              {activeTab === "listahan" && <ListahanTab listahan={listahan} />}
+              {activeTab === "verify" && <VerifyTab />}
+              {activeTab === "listahan" && <ListahanTab />}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -96,7 +79,7 @@ export default function FieldConsole() {
       <TabBar 
         colorScheme="red"
         activeTab={activeTab}
-        onTabChange={handleTabChange}
+        onTabChange={setActiveTab}
         tabs={[
           { id: "register", label: "I-Register", icon: UserPlus },
           { id: "verify", label: "I-Verify", icon: QrCode },

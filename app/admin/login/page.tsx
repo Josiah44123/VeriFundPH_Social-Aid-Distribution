@@ -21,7 +21,7 @@ export default function AdminLogin() {
     setTimeout(() => {
       setLoading(false)
       if (email === OFFICER.email && password === OFFICER.password) {
-        router.push("/admin/console")
+        router.push("/admin/selection")
       } else {
         setError(true)
         setTimeout(() => setError(false), 2000)

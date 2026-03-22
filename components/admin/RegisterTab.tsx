@@ -5,11 +5,19 @@ import { Camera, CheckCircle2, UserPlus } from "lucide-react"
 import { QRCode } from "@/components/QRCode"
 import { cn } from "@/lib/utils"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
+import { useVeriFundStore } from "@/lib/store"
+import type { Beneficiary, AuditEntry } from "@/lib/store"
+
+const OFFICER_NAME = "Josefa Reyes"
+const BARANGAY = "Sta. Cruz, Quezon City"
+const DISTRIBUTION_ID = "SAP-2025-Q1"
 
 export function RegisterTab() {
+  const { beneficiaries, addBeneficiary, addAuditEntry } = useVeriFundStore()
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [generatedId, setGeneratedId] = useState("")
   
   const [formData, setFormData] = useState({
     lastName: "",
@@ -35,6 +43,13 @@ export function RegisterTab() {
       setTimeout(() => setError(""), 2000)
       return
     }
+    // Check for duplicate phone
+    const dup = beneficiaries.find(b => b.phone === formData.phone)
+    if (dup) {
+      setError("Duplicate — may existing na account ang numerong ito.")
+      setTimeout(() => setError(""), 3000)
+      return
+    }
     setStep(2)
   }
 
@@ -42,12 +57,43 @@ export function RegisterTab() {
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
-      if (formData.phone === "09171234567") {
-        setError("Duplicate — may existing na account ang numerong ito.")
-        setTimeout(() => setError(""), 3000)
-      } else {
-        setStep(3)
+      // Generate VF ID
+      const year = new Date().getFullYear()
+      const idx = String(beneficiaries.length + 1).padStart(4, "0")
+      const barangayCode = "STC"
+      const vfId = `VF-${year}-${idx}-${barangayCode}`
+      setGeneratedId(vfId)
+
+      const newBeneficiary: Beneficiary = {
+        id: vfId,
+        lastName: formData.lastName,
+        firstName: formData.firstName,
+        middleName: formData.middleName || undefined,
+        phone: formData.phone,
+        idType: formData.idType,
+        idNumber: formData.idNumber,
+        barangay: BARANGAY,
+        status: "ACTIVE",
+        enrolledAt: new Date().toISOString(),
+        enrolledBy: OFFICER_NAME,
+        qrData: vfId,
       }
+
+      const auditEntry: AuditEntry = {
+        id: `AUD-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        action: "ENROLLED",
+        actorName: OFFICER_NAME,
+        actorRole: "OFFICER",
+        targetId: vfId,
+        targetName: `${formData.firstName} ${formData.lastName}`,
+        barangay: BARANGAY,
+        details: `Bagong benepisyaryo na-register — ${formData.idType}`,
+      }
+
+      addBeneficiary(newBeneficiary)
+      addAuditEntry(auditEntry)
+      setStep(3)
     }, 1500)
   }
 
@@ -57,12 +103,19 @@ export function RegisterTab() {
       setLoading(false)
       setFormData(prev => ({ ...prev, idNumber: "1234-5678-9012-3456" }))
       setIdScanned(true)
-      alert("Na-read ang ID! I-check ang mga detalye.") // Using browser alert for toast
     }, 1500)
   }
 
   const handleSelfieScan = () => {
     setSelfieScanned(true)
+  }
+
+  const resetForm = () => {
+    setFormData({ lastName: "", firstName: "", middleName: "", phone: "", idType: "", idNumber: "" })
+    setIdScanned(false)
+    setSelfieScanned(false)
+    setGeneratedId("")
+    setStep(1)
   }
 
   if (step === 3) {
@@ -74,11 +127,11 @@ export function RegisterTab() {
         <h1 className="text-[28px] font-bold text-[var(--text-primary)] mb-[8px] text-center leading-tight">Registered ka na!</h1>
         <p className="text-[16px] text-[var(--text-secondary)] mb-[8px] uppercase font-bold tracking-wide">{formData.firstName} {formData.lastName}</p>
         <div className="font-mono text-[16px] font-bold text-[var(--ph-gold)] mb-[32px] bg-[var(--info-light)] px-[16px] py-[6px] rounded-[10px]">
-          VF-2025-0156-STC
+          {generatedId}
         </div>
         
         <div className="mb-[32px] p-[20px] bg-white rounded-[24px] shadow-sm border border-[#E8ECF7]">
-          <QRCode value="VF-2025-0156-STC" id="qr-code" size={160} />
+          <QRCode value={generatedId} id="qr-code" size={160} />
         </div>
 
         <div className="w-full flex justify-center gap-[12px] flex-col max-w-sm">
@@ -89,12 +142,7 @@ export function RegisterTab() {
             I-print ang QR Card
           </button>
           <button 
-            onClick={() => {
-              setFormData({ lastName: "", firstName: "", middleName: "", phone: "", idType: "", idNumber: "" })
-              setIdScanned(false)
-              setSelfieScanned(false)
-              setStep(1)
-            }}
+            onClick={resetForm}
             className="w-full h-[52px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-95 shadow-sm hover:opacity-90"
           >
             Mag-register ng Bago
@@ -130,7 +178,7 @@ export function RegisterTab() {
       </div>
 
       {error && (
-        <div className="bg-[var(--danger-light)] border border-red-200 text-[var(--danger)] text-[13px] font-bold p-[12px] rounded-[12px] mb-[16px] text-center animate-in mb-4 slide-in-from-top-2">
+        <div className="bg-[var(--danger-light)] border border-red-200 text-[var(--danger)] text-[13px] font-bold p-[12px] rounded-[12px] mb-[16px] text-center animate-in slide-in-from-top-2">
           {error}
         </div>
       )}
@@ -180,13 +228,13 @@ export function RegisterTab() {
               style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center', backgroundSize: '20px' }}
             >
               <option value="" disabled>Pumili ng ID</option>
-              <option value="philsys">PhilSys</option>
-              <option value="driver">Driver's License</option>
-              <option value="voter">Voter's ID</option>
-              <option value="postal">Postal ID</option>
-              <option value="sss">SSS ID</option>
-              <option value="gsis">GSIS ID</option>
-              <option value="passport">Passport</option>
+              <option value="PhilSys">PhilSys</option>
+              <option value="Driver's License">Driver's License</option>
+              <option value="Voter's ID">Voter's ID</option>
+              <option value="Postal ID">Postal ID</option>
+              <option value="SSS ID">SSS ID</option>
+              <option value="GSIS ID">GSIS ID</option>
+              <option value="Passport">Passport</option>
             </select>
           </div>
           <div>
@@ -200,7 +248,7 @@ export function RegisterTab() {
           <div>
             <label className="section-label mb-[6px] block">Barangay</label>
             <input 
-              value="Sta. Cruz, Quezon City"
+              value={BARANGAY}
               readOnly
               className="w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] border-transparent bg-[#E8ECF7] text-[var(--text-muted)] font-bold outline-none cursor-not-allowed"
             />

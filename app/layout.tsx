@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Plus_Jakarta_Sans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
+import { VeriFundProvider } from "@/lib/store"
 
 const jakarta = Plus_Jakarta_Sans({ 
   subsets: ["latin"],
@@ -11,7 +12,7 @@ const jakarta = Plus_Jakarta_Sans({
 })
 
 export const metadata: Metadata = {
-  title: "VeriFund",
+  title: "VeriFund PH",
   description: "Official Government Platform for Social Aid Distribution",
 }
 
@@ -25,12 +26,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={cn(jakarta.variable, "font-sans")} suppressHydrationWarning>
       <body className="font-sans antialiased text-[color:var(--text-primary)] bg-[color:var(--surface-page)] selection:bg-[color:var(--ph-gold)] selection:text-[color:var(--text-on-gold)]">
-        <main className="min-h-screen pb-[env(safe-area-inset-bottom)]">
-          <Suspense fallback={null}>
-            {children}
-          </Suspense>
-        </main>
-        <Toaster />
+        <VeriFundProvider>
+          <main className="min-h-screen pb-[env(safe-area-inset-bottom)]">
+            <Suspense fallback={null}>
+              {children}
+            </Suspense>
+          </main>
+          <Toaster />
+        </VeriFundProvider>
       </body>
     </html>
   )
