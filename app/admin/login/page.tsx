@@ -107,6 +107,19 @@ export default function AdminLogin() {
           >
             Mag-login
           </button>
+
+          <div className="mt-4 flex items-center gap-2">
+            <div className="h-px flex-1 bg-gray-200"></div>
+            <span className="text-xs text-gray-400 uppercase font-semibold tracking-wider">or portal access</span>
+            <div className="h-px flex-1 bg-gray-200"></div>
+          </div>
+          
+          <button 
+            onClick={() => router.push("/admin/portal")}
+            className="mt-4 primary-btn w-full bg-[#1A2B5F] text-white hover:bg-opacity-90 transition-all flex items-center justify-center gap-2"
+          >
+            Dashboard
+          </button>
         </div>
       </div>
     </div>
