@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VeriFund PH - Landing Page</title>
+    <title>VeriFund PH - Admin Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -80,11 +80,12 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .vinta-gradient { background: linear-gradient(135deg, #002576 0%, #0038a8 100%); }
+        input:focus { outline: none; }
     </style>
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
 
-    <!-- Header -->
+    <!-- Header matching Landing Page -->
     <header class="w-full bg-surface-container-lowest sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -97,76 +98,75 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <main class="flex-grow flex flex-col items-center justify-center px-4 py-12 sm:py-20">
-        <div class="text-center max-w-3xl mb-12">
-            <h1 class="font-headline font-bold text-[32px] sm:text-[40px] text-on-surface leading-tight mb-4 tracking-tight">
-                Ang Ayuda, Para sa Tamang Tao.
-            </h1>
-            <p class="text-[16px] sm:text-[18px] text-on-surface-variant max-w-xl mx-auto">
-                Ang ligtas, mabilis, at transparent na paraan ng pamamahagi ng social aid.
-            </p>
-        </div>
-
-        <!-- Choice Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+    <main class="flex-grow flex items-center justify-center px-4 py-8 relative w-full">
+        <!-- Login Card -->
+        <div class="bg-surface-container-lowest w-full max-w-[440px] rounded-[1.25rem] p-8 shadow-[0_8px_32px_rgba(0,56,168,0.06)] flex flex-col items-center">
             
-            <!-- Citizen Portal Card -->
-            <div class="bg-surface-container-lowest rounded-[1.25rem] p-8 flex flex-col items-center text-center w-full transition-transform hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,56,168,0.06)]"
-                 style="box-shadow: 0 4px 16px rgba(0,56,168,0.04)">
-                <div class="h-16 w-16 bg-primary-fixed rounded-full flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-primary text-[48px]">person</span>
+            <div class="mb-8 text-center w-full">
+                <div class="inline-flex items-center justify-center w-12 h-12 vinta-gradient rounded-xl shadow-[0_4px_16px_rgba(0,56,168,0.12)] mb-4">
+                    <span class="material-symbols-outlined text-white text-2xl">account_balance</span>
                 </div>
-                <h2 class="font-headline font-bold text-[18px] text-on-surface mb-3">
-                    Para sa Benepisyaryo
-                </h2>
-                <p class="text-[14px] text-on-surface-variant mb-8 flex-grow">
-                    I-check ang inyong status at matanggap ang notipikasyon tungkol sa distribution.
-                </p>
-                <a href="citizen-login.html" class="w-full">
-                    <button class="vinta-gradient w-full h-[52px] rounded-xl text-white font-label font-bold text-[15px] flex items-center justify-center transition-opacity hover:opacity-90 active:opacity-100">
-                        Pumasok bilang Benepisyaryo
-                    </button>
-                </a>
+                <h1 class="text-[28px] font-headline font-bold text-on-surface tracking-tight leading-tight mb-2">Admin Login</h1>
+                <p class="text-[14px] text-on-surface-variant">Ipasok ang kredensyal para sa ligtas na pag-access.</p>
             </div>
 
-            <!-- Admin Portal Card -->
-            <div class="bg-surface-container-lowest rounded-[1.25rem] p-8 flex flex-col items-center text-center w-full transition-transform hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,56,168,0.06)]"
-                 style="box-shadow: 0 4px 16px rgba(0,56,168,0.04)">
-                <div class="h-16 w-16 bg-secondary-fixed rounded-full flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-secondary-container text-[48px]">admin_panel_settings</span>
+            <!-- Form -->
+            <form onsubmit="event.preventDefault(); window.location.href='admin-workspace.html';" class="w-full space-y-6">
+                <!-- Username Field -->
+                <div class="space-y-1 w-full">
+                    <label class="block text-[12px] font-bold text-primary uppercase tracking-wide" for="username">Pangalan ng User</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+                            <span class="material-symbols-outlined text-[20px]">person</span>
+                        </div>
+                        <input class="w-full h-[52px] pl-12 pr-4 bg-surface-container-low border-b-2 border-surface-dim text-on-surface text-[15px] font-medium rounded-t-lg focus:border-primary transition-colors placeholder:text-outline-variant" id="username" placeholder="Hal. juan_delacruz" type="text" required />
+                    </div>
                 </div>
-                <h2 class="font-headline font-bold text-[18px] text-on-surface mb-3">
-                    Para sa mga Opisyal
-                </h2>
-                <p class="text-[14px] text-on-surface-variant mb-8 flex-grow">
-                    Field Console at Management System para sa mga barangay officer at LGU admin.
-                </p>
-                <a href="admin-login.html" class="w-full">
-                    <button class="bg-secondary-container w-full h-[52px] rounded-xl text-white font-label font-bold text-[15px] flex items-center justify-center transition-opacity hover:opacity-90 active:opacity-100">
-                        Pumasok bilang Opisyal
-                    </button>
-                </a>
-            </div>
 
+                <!-- Password Field -->
+                <div class="space-y-1 w-full">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-[12px] font-bold text-primary uppercase tracking-wide" for="password">Password</label>
+                        <a href="#" class="text-[12px] font-bold text-primary hover:underline">Nakalimutan?</a>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+                            <span class="material-symbols-outlined text-[20px]">lock</span>
+                        </div>
+                        <input class="w-full h-[52px] pl-12 pr-12 bg-surface-container-low border-b-2 border-surface-dim text-on-surface text-[15px] font-medium rounded-t-lg focus:border-primary transition-colors placeholder:text-outline-variant" id="password" placeholder="••••••••" type="password" required />
+                        <button type="button" class="absolute inset-y-0 right-4 flex items-center text-outline hover:text-primary transition-colors" onclick="togglePassword()">
+                            <span class="material-symbols-outlined text-[20px]" id="visibility-icon">visibility</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- CTA Button -->
+                <div class="pt-2">
+                    <button class="w-full h-[52px] vinta-gradient text-white rounded-xl font-bold text-[15px] flex items-center justify-center gap-2 transition-opacity hover:opacity-90 active:opacity-100 shadow-[0_4px_16px_rgba(0,56,168,0.12)]" type="submit">
+                        Mag-login sa System
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                    </button>
+                </div>
+            </form>
+
+            <a href="index.html" class="mt-8 text-[13px] text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1 font-medium">
+                &larr; Bumalik sa Pangunahing Pahina
+            </a>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="w-full bg-surface-container relative pb-4 pt-6">
-        <!-- Philippine flag colors border -->
-        <div class="absolute top-0 left-0 w-full h-[3px] flex">
-            <div class="h-full w-1/3 bg-primary"></div>
-            <div class="h-full w-1/3 bg-surface-container-lowest"></div>
-            <div class="h-full w-1/3 bg-secondary-container"></div>
-        </div>
-        
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-[12px] text-on-surface-variant font-medium">
-                VeriFund PH — Opisyal na sistema ng pamamahagi ng ayuda
-            </p>
-        </div>
-    </footer>
-
+    <script>
+        function togglePassword() {
+            const pwd = document.getElementById("password");
+            const icon = document.getElementById("visibility-icon");
+            if (pwd.type === "password") {
+                pwd.type = "text";
+                icon.innerText = "visibility_off";
+            } else {
+                pwd.type = "password";
+                icon.innerText = "visibility";
+            }
+        }
+    </script>
 </body>
 </html>

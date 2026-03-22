@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VeriFund PH - Landing Page</title>
+    <title>VeriFund PH - Admin Workspace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
@@ -84,7 +84,7 @@
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col">
 
-    <!-- Header -->
+    <!-- Header matching Landing Page but with Logout -->
     <header class="w-full bg-surface-container-lowest sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -93,58 +93,62 @@
                     <span class="text-primary">Veri</span><span class="text-secondary-container">Fund</span>
                 </div>
             </div>
-            <div></div> <!-- Right side: keep it clean -->
+            <div class="flex items-center gap-3">
+                <p class="text-[13px] font-bold text-on-surface hidden sm:block">Admin: Juan Dela Cruz</p>
+                <a href="admin-login.html" class="flex items-center justify-center h-10 w-10 bg-surface-container-low rounded-full text-on-surface-variant hover:bg-surface-container transition-colors">
+                    <span class="material-symbols-outlined text-[20px]">logout</span>
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <main class="flex-grow flex flex-col items-center justify-center px-4 py-12 sm:py-20">
-        <div class="text-center max-w-3xl mb-12">
-            <h1 class="font-headline font-bold text-[32px] sm:text-[40px] text-on-surface leading-tight mb-4 tracking-tight">
-                Ang Ayuda, Para sa Tamang Tao.
+    <main class="flex-grow flex flex-col items-center justify-center px-4 py-12 sm:py-20 max-w-7xl mx-auto w-full">
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="font-headline text-[32px] sm:text-[40px] font-bold tracking-tight text-on-surface mb-3">
+                Admin Workspace
             </h1>
-            <p class="text-[16px] sm:text-[18px] text-on-surface-variant max-w-xl mx-auto">
-                Ang ligtas, mabilis, at transparent na paraan ng pamamahagi ng social aid.
+            <p class="text-[16px] text-on-surface-variant max-w-2xl mx-auto">
+                Pumili ng workspace na gagamitin para sa operasyon at pag-manage ng pondo.
             </p>
         </div>
 
         <!-- Choice Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
             
-            <!-- Citizen Portal Card -->
-            <div class="bg-surface-container-lowest rounded-[1.25rem] p-8 flex flex-col items-center text-center w-full transition-transform hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,56,168,0.06)]"
-                 style="box-shadow: 0 4px 16px rgba(0,56,168,0.04)">
+            <!-- Field Console Card -->
+            <div class="bg-surface-container-lowest rounded-[1.25rem] p-8 flex flex-col items-center text-center w-full shadow-[0_8px_32px_rgba(0,56,168,0.06)] transition-transform hover:-translate-y-1">
                 <div class="h-16 w-16 bg-primary-fixed rounded-full flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-primary text-[48px]">person</span>
+                    <span class="material-symbols-outlined text-primary text-[40px]">qr_code_scanner</span>
                 </div>
                 <h2 class="font-headline font-bold text-[18px] text-on-surface mb-3">
-                    Para sa Benepisyaryo
+                    Field Console
                 </h2>
                 <p class="text-[14px] text-on-surface-variant mb-8 flex-grow">
-                    I-check ang inyong status at matanggap ang notipikasyon tungkol sa distribution.
+                    Para sa pag-enroll ng benepisyaryo at pag-verify ng claims sa distribution day.
                 </p>
-                <a href="citizen-login.html" class="w-full">
+                <a href="field-console.html" class="w-full">
                     <button class="vinta-gradient w-full h-[52px] rounded-xl text-white font-label font-bold text-[15px] flex items-center justify-center transition-opacity hover:opacity-90 active:opacity-100">
-                        Pumasok bilang Benepisyaryo
+                        Buksan ang Field Console
                     </button>
                 </a>
             </div>
 
-            <!-- Admin Portal Card -->
-            <div class="bg-surface-container-lowest rounded-[1.25rem] p-8 flex flex-col items-center text-center w-full transition-transform hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,56,168,0.06)]"
-                 style="box-shadow: 0 4px 16px rgba(0,56,168,0.04)">
+            <!-- Management System Card -->
+            <div class="bg-surface-container-lowest rounded-[1.25rem] p-8 flex flex-col items-center text-center w-full shadow-[0_8px_32px_rgba(0,56,168,0.06)] transition-transform hover:-translate-y-1">
                 <div class="h-16 w-16 bg-secondary-fixed rounded-full flex items-center justify-center mb-6">
-                    <span class="material-symbols-outlined text-secondary-container text-[48px]">admin_panel_settings</span>
+                    <span class="material-symbols-outlined text-secondary-container text-[40px]">dashboard</span>
                 </div>
+                <!-- Title is muted visually relative to the Field console visually via color -->
                 <h2 class="font-headline font-bold text-[18px] text-on-surface mb-3">
-                    Para sa mga Opisyal
+                    Management System
                 </h2>
                 <p class="text-[14px] text-on-surface-variant mb-8 flex-grow">
-                    Field Console at Management System para sa mga barangay officer at LGU admin.
+                    Para sa pamamahala ng distributions, recipients, at audit logs.
                 </p>
-                <a href="admin-login.html" class="w-full">
-                    <button class="bg-secondary-container w-full h-[52px] rounded-xl text-white font-label font-bold text-[15px] flex items-center justify-center transition-opacity hover:opacity-90 active:opacity-100">
-                        Pumasok bilang Opisyal
+                <a href="management.html" class="w-full">
+                    <button class="w-full h-[52px] rounded-xl text-primary border-2 border-primary font-label font-bold text-[15px] flex items-center justify-center transition-colors hover:bg-primary-fixed active:bg-primary-fixed-dim">
+                        Buksan ang Management System
                     </button>
                 </a>
             </div>

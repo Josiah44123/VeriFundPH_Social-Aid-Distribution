@@ -2,16 +2,14 @@ import React, { useState } from 'react';
 import Dashboard from './components/Dashboard';
 import Sidebar from './components/Sidebar';
 import VerificationModal from './components/VerificationModal';
-import LandingV2 from './components/LandingV2';
-import CitizenLogin from './components/CitizenLogin';
+import LandingPage from './components/LandingPage';
 import LocationSelector from './components/LocationSelector';
 import CitizenPortal from './components/CitizenPortal';
-import FieldConsole from './components/FieldConsole';
 import { INITIAL_BENEFICIARIES, INITIAL_TRANSACTIONS, generateHash } from './utils/mockData';
 import { Beneficiary, Transaction, LocationContextType } from './types';
 
 function App() {
-  const [viewState, setViewState] = useState<'landing' | 'location' | 'dashboard' | 'citizen' | 'citizen_login' | 'field_console'>('landing');
+  const [viewState, setViewState] = useState<'landing' | 'location' | 'dashboard' | 'citizen'>('landing');
   const [location, setLocation] = useState<LocationContextType>({
     region: 'National Capital Region',
     province: 'Metro Manila',
@@ -62,25 +60,11 @@ function App() {
   };
 
   if (viewState === 'landing') {
-    return (
-      <LandingV2 
-        onLoginStart={() => setViewState('citizen_login')} 
-        onAdminStart={() => setViewState('field_console')}
-      />
-    );
-  }
-
-  if (viewState === 'citizen_login') {
-    return (
-      <CitizenLogin 
-        onSuccess={() => setViewState('citizen')} 
-        onBack={() => setViewState('landing')} 
-      />
-    );
+    return <LandingPage onEnter={() => setViewState('location')} onEnterCitizen={() => setViewState('citizen')} />;
   }
 
   if (viewState === 'citizen') {
-    return <CitizenPortal onBack={() => setViewState('landing')} initialView="dashboard" />;
+    return <CitizenPortal onBack={() => setViewState('landing')} />;
   }
 
   if (viewState === 'location') {
@@ -91,14 +75,6 @@ function App() {
             setViewState('dashboard');
         }} 
         onBack={() => setViewState('landing')}
-      />
-    );
-  }
-
-  if (viewState === 'field_console') {
-    return (
-      <FieldConsole 
-        onBack={() => setViewState('landing')} 
       />
     );
   }

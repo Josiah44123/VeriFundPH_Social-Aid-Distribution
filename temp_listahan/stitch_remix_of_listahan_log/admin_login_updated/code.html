@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fil"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VeriFund Admin Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "on-tertiary": "#ffffff",
+                "secondary-container": "#e12531",
+                "on-secondary-container": "#fffbff",
+                "surface-container-highest": "#e0e2e7",
+                "surface-variant": "#e0e2e7",
+                "on-error": "#ffffff",
+                "outline-variant": "#c4c5d5",
+                "on-primary-container": "#96adff",
+                "secondary": "#bb001e",
+                "on-secondary": "#ffffff",
+                "surface-container-lowest": "#ffffff",
+                "on-secondary-fixed-variant": "#930015",
+                "surface": "#f7f9fe",
+                "on-tertiary-fixed": "#231b00",
+                "on-primary": "#ffffff",
+                "on-primary-fixed-variant": "#093cab",
+                "secondary-fixed": "#ffdad7",
+                "inverse-surface": "#2d3135",
+                "tertiary-fixed": "#ffe17b",
+                "error": "#ba1a1a",
+                "on-primary-fixed": "#00164f",
+                "on-tertiary-fixed-variant": "#554500",
+                "primary-fixed-dim": "#b6c4ff",
+                "primary-container": "#0038a8",
+                "surface-dim": "#d8dadf",
+                "surface-tint": "#3056c4",
+                "on-background": "#181c20",
+                "inverse-primary": "#b6c4ff",
+                "inverse-on-surface": "#eff1f6",
+                "tertiary-fixed-dim": "#ecc300",
+                "primary": "#002576",
+                "surface-container-high": "#e6e8ed",
+                "tertiary": "#715c00",
+                "outline": "#747685",
+                "surface-container": "#eceef3",
+                "tertiary-container": "#cca800",
+                "on-error-container": "#93000a",
+                "background": "#f7f9fe",
+                "on-surface-variant": "#444653",
+                "secondary-fixed-dim": "#ffb3ae",
+                "on-surface": "#181c20",
+                "surface-bright": "#f7f9fe",
+                "on-tertiary-container": "#4d3e00",
+                "primary-fixed": "#dce1ff",
+                "error-container": "#ffdad6",
+                "surface-container-low": "#f1f4f9",
+                "on-secondary-fixed": "#410004"
+              },
+              fontFamily: {
+                "headline": ["Plus Jakarta Sans"],
+                "body": ["Plus Jakarta Sans"],
+                "label": ["Plus Jakarta Sans"]
+              },
+              borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .vinta-gradient {
+            background: linear-gradient(135deg, #002576 0%, #0038a8 100%);
+        }
+        .asymmetric-shape {
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0% 100%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background font-body text-on-surface antialiased min-h-screen flex flex-col">
+<!-- TopAppBar suppressed for login as per focus journey rule -->
+<main class="flex-grow flex items-center justify-center px-6 py-20 relative overflow-hidden">
+<!-- Background Elements for Modern Vanguard Aesthetic -->
+<div class="absolute top-[-10%] right-[-5%] w-[40rem] h-[40rem] bg-primary-fixed/30 rounded-full blur-[120px] -z-10"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[30rem] h-[30rem] bg-secondary-fixed/20 rounded-full blur-[100px] -z-10"></div>
+<div class="absolute top-1/4 left-1/4 w-2 h-24 bg-tertiary-fixed rounded-full rotate-45 opacity-40 -z-10"></div>
+<div class="w-full max-w-[440px] z-10">
+<!-- Header Section -->
+<div class="mb-12 text-center md:text-left">
+<div class="inline-flex items-center gap-3 mb-6">
+<div class="w-12 h-12 vinta-gradient flex items-center justify-center rounded-xl shadow-[0_8px_32px_rgba(0,56,168,0.12)]">
+<span class="material-symbols-outlined text-white text-2xl" data-icon="account_balance">account_balance</span>
+</div>
+<span class="text-2xl font-black text-primary tracking-tighter">VeriFund</span>
+</div>
+<h1 class="text-4xl font-headline font-extrabold text-on-surface tracking-tight leading-tight mb-3">Admin Login</h1>
+<p class="text-on-surface-variant font-medium">Ipasok ang iyong mga kredensyal para sa ligtas na pag-access.</p>
+</div>
+<!-- Login Card -->
+<div class="bg-surface-container-lowest rounded-xl p-8 shadow-[0_8px_32px_rgba(0,56,168,0.06)] relative overflow-hidden">
+<!-- Subtle Accent Bar -->
+<div class="absolute top-0 left-0 w-1.5 h-full bg-tertiary-fixed"></div>
+<div class="absolute top-0 right-0 w-16 h-16 bg-secondary-fixed/10 rounded-bl-full"></div>
+<form class="space-y-8">
+<!-- Username Field -->
+<div class="space-y-2">
+<label class="block text-sm font-bold text-primary uppercase tracking-wider" for="username">Pangalan ng User</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="person">person</span>
+</div>
+<input class="w-full pl-12 pr-4 py-4 bg-surface-container-low border-none border-b-2 border-surface-dim focus:ring-0 focus:border-primary focus:bg-primary-fixed/10 transition-all rounded-t-lg font-medium text-on-surface" id="username" name="username" placeholder="Hal. juan_delacruz" type="text"/>
+</div>
+</div>
+<!-- Password Field -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="block text-sm font-bold text-primary uppercase tracking-wider" for="password">Password</label>
+<a class="text-xs font-bold text-secondary hover:text-on-secondary-fixed-variant transition-colors" href="#">Nakalimutan?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-outline">
+<span class="material-symbols-outlined text-[20px]" data-icon="lock">lock</span>
+</div>
+<input class="w-full pl-12 pr-12 py-4 bg-surface-container-low border-none border-b-2 border-surface-dim focus:ring-0 focus:border-primary focus:bg-primary-fixed/10 transition-all rounded-t-lg font-medium text-on-surface" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute inset-y-0 right-4 flex items-center text-outline hover:text-primary transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- CTA Button -->
+<div class="pt-4">
+<button class="w-full vinta-gradient text-white py-4 px-6 rounded-xl font-bold text-lg shadow-[0_8px_20px_rgba(0,37,118,0.25)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3" type="submit">
+                            Mag-login sa System
+                            <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Trust Indicator -->
+<div class="mt-8 flex items-center justify-center gap-6 opacity-60 grayscale hover:grayscale-0 transition-all">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="verified_user">verified_user</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">End-to-End Encryption</span>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container" data-icon="shield_with_heart">shield_with_heart</span>
+<span class="text-[10px] font-bold uppercase tracking-widest">Gov Secure Port</span>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer / Legal -->
+<footer class="py-8 px-6 text-center">
+<p class="text-xs font-medium text-on-surface-variant tracking-wide">
+            © 2024 VeriFund PH. Lahat ng karapatan ay nakalaan. 
+            <span class="mx-2 text-outline-variant">|</span>
+<a class="hover:text-primary transition-colors" href="#">Patakaran sa Privacy</a>
+</p>
+</footer>
+<!-- BottomNavBar suppressed for focused login task -->
+</body></html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="fil"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>I-Enroll | VeriFund</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary": "#ffffff",
+              "secondary-container": "#e12531",
+              "on-secondary-container": "#fffbff",
+              "surface-container-highest": "#e0e2e7",
+              "surface-variant": "#e0e2e7",
+              "on-error": "#ffffff",
+              "outline-variant": "#c4c5d5",
+              "on-primary-container": "#96adff",
+              "secondary": "#bb001e",
+              "on-secondary": "#ffffff",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary-fixed-variant": "#930015",
+              "surface": "#f7f9fe",
+              "on-tertiary-fixed": "#231b00",
+              "on-primary": "#ffffff",
+              "on-primary-fixed-variant": "#093cab",
+              "secondary-fixed": "#ffdad7",
+              "inverse-surface": "#2d3135",
+              "tertiary-fixed": "#ffe17b",
+              "error": "#ba1a1a",
+              "on-primary-fixed": "#00164f",
+              "on-tertiary-fixed-variant": "#554500",
+              "primary-fixed-dim": "#b6c4ff",
+              "primary-container": "#0038a8",
+              "surface-dim": "#d8dadf",
+              "surface-tint": "#3056c4",
+              "on-background": "#181c20",
+              "inverse-primary": "#b6c4ff",
+              "inverse-on-surface": "#eff1f6",
+              "tertiary-fixed-dim": "#ecc300",
+              "primary": "#002576",
+              "surface-container-high": "#e6e8ed",
+              "tertiary": "#715c00",
+              "outline": "#747685",
+              "surface-container": "#eceef3",
+              "tertiary-container": "#cca800",
+              "on-error-container": "#93000a",
+              "background": "#f7f9fe",
+              "on-surface-variant": "#444653",
+              "secondary-fixed-dim": "#ffb3ae",
+              "on-surface": "#181c20",
+              "surface-bright": "#f7f9fe",
+              "on-tertiary-container": "#4d3e00",
+              "primary-fixed": "#dce1ff",
+              "error-container": "#ffdad6",
+              "surface-container-low": "#f1f4f9",
+              "on-secondary-fixed": "#410004"
+            },
+            fontFamily: {
+              "headline": ["Plus Jakarta Sans"],
+              "body": ["Plus Jakarta Sans"],
+              "label": ["Plus Jakarta Sans"]
+            },
+            borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .vinta-gradient {
+            background: linear-gradient(135deg, #002576 0%, #0038a8 100%);
+        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar Shell -->
+<header class="bg-[#f7f9fe] dark:bg-slate-950 shadow-[0_8px_32px_rgba(0,56,168,0.06)] fixed top-0 w-full z-50">
+<div class="flex justify-between items-center w-full px-6 h-16">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#0038A8] text-2xl" data-icon="account_balance">account_balance</span>
+<h1 class="font-['Plus_Jakarta_Sans'] font-bold tracking-tight text-xl font-black text-[#0038A8]">VeriFund</h1>
+</div>
+<div class="flex items-center">
+<span class="text-[#0038A8] font-bold text-sm px-4 py-2 rounded-full bg-primary-fixed/30">Demo Mode</span>
+</div>
+</div>
+<div class="bg-[#eceef3] dark:bg-slate-800 h-[1px] w-full"></div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Header Section -->
+<section class="mb-10">
+<h2 class="text-4xl font-extrabold tracking-tight text-on-surface mb-2">I-Enroll</h2>
+<p class="text-on-surface-variant font-medium">Mag-rehistro ng bagong miyembro sa systema.</p>
+</section>
+<!-- Scanning / Photo Section (Priority) -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+<!-- ID Photo Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm group active:scale-95 transition-all cursor-pointer border-b-2 border-surface-dim">
+<div class="flex flex-col items-center justify-center space-y-4 py-6">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl" data-icon="badge">badge</span>
+</div>
+<div class="text-center">
+<p class="font-bold text-on-surface">ID Photo</p>
+<p class="text-xs text-on-surface-variant mt-1">Kuhanan ang harap ng ID</p>
+</div>
+</div>
+</div>
+<!-- Face Photo Card -->
+<div class="bg-surface-container-lowest p-6 rounded-xl shadow-sm group active:scale-95 transition-all cursor-pointer border-b-2 border-surface-dim">
+<div class="flex flex-col items-center justify-center space-y-4 py-6">
+<div class="w-16 h-16 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-3xl" data-icon="face">face</span>
+</div>
+<div class="text-center">
+<p class="font-bold text-on-surface">Face Photo</p>
+<p class="text-xs text-on-surface-variant mt-1">Kuhanan ang mukha</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Form Section -->
+<form class="space-y-8">
+<div class="space-y-6 bg-surface-container-low p-8 rounded-2xl">
+<h3 class="text-lg font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+                    Personal na Impormasyon
+                </h3>
+<div class="grid grid-cols-1 gap-6">
+<!-- Input Field: Pangalan -->
+<div class="group">
+<label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2 px-1">Buong Pangalan</label>
+<input class="w-full bg-surface-container-lowest border-none border-b-2 border-surface-dim focus:border-primary focus:ring-0 text-body-lg p-4 rounded-t-lg transition-colors" placeholder="Hal: Juan Dela Cruz" type="text"/>
+</div>
+<!-- Input Field: Kaarawan -->
+<div class="group">
+<label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2 px-1">Petsa ng Kapanganakan</label>
+<input class="w-full bg-surface-container-lowest border-none border-b-2 border-surface-dim focus:border-primary focus:ring-0 text-body-lg p-4 rounded-t-lg transition-colors" type="date"/>
+</div>
+<!-- Input Field: Kasarian -->
+<div class="group">
+<label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2 px-1">Kasarian</label>
+<div class="flex gap-4">
+<button class="flex-1 py-3 bg-surface-container-lowest border-b-2 border-primary font-bold text-primary rounded-t-lg" type="button">Lalaki</button>
+<button class="flex-1 py-3 bg-surface-container-lowest border-b-2 border-surface-dim font-bold text-on-surface-variant rounded-t-lg" type="button">Babae</button>
+</div>
+</div>
+</div>
+</div>
+<div class="space-y-6 bg-surface-container-low p-8 rounded-2xl">
+<h3 class="text-lg font-bold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined" data-icon="home_pin">home_pin</span>
+                    Tirahan
+                </h3>
+<div class="grid grid-cols-1 gap-6">
+<div class="group">
+<label class="block text-xs font-bold uppercase tracking-wider text-on-surface-variant mb-2 px-1">Barangay at Lungsod</label>
+<input class="w-full bg-surface-container-lowest border-none border-b-2 border-surface-dim focus:border-primary focus:ring-0 text-body-lg p-4 rounded-t-lg transition-colors" placeholder="Hal: Brgy. 123, Quezon City" type="text"/>
+</div>
+</div>
+</div>
+<!-- Action Button -->
+<div class="pt-4">
+<button class="w-full vinta-gradient text-white font-bold py-5 rounded-xl shadow-[0_8px_32px_rgba(0,56,168,0.15)] active:scale-95 transition-transform flex items-center justify-center gap-3" type="submit">
+<span class="material-symbols-outlined" data-icon="how_to_reg">how_to_reg</span>
+                    I-SUBMIT ANG REGISTRATION
+                </button>
+<p class="text-center text-xs text-on-surface-variant mt-4 px-8 leading-relaxed">
+                    Sa pag-pindot, sumasang-ayon ka sa mga patakaran ng <span class="text-primary font-bold">VeriFund Data Privacy</span>.
+                </p>
+</div>
+</form>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md shadow-[0_-4px_16px_rgba(0,56,168,0.04)] border-t border-[#c4c5d5]/15 rounded-t-2xl">
+<!-- Active Nav: I-Enroll -->
+<a class="flex flex-col items-center justify-center bg-[#0038A8] text-white rounded-xl py-1 px-4 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined" data-icon="add_circle" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-bold mt-1">I-Enroll</span>
+</a>
+<!-- Inactive Nav: I-Verify -->
+<a class="flex flex-col items-center justify-center text-[#181c20] dark:text-slate-400 py-1 px-4 active:scale-90 transition-transform hover:bg-[#eceef3]" href="#">
+<span class="material-symbols-outlined" data-icon="qr_code_scanner">qr_code_scanner</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-bold mt-1">I-Verify</span>
+</a>
+<!-- Inactive Nav: Listahan -->
+<a class="flex flex-col items-center justify-center text-[#181c20] dark:text-slate-400 py-1 px-4 active:scale-90 transition-transform hover:bg-[#eceef3]" href="#">
+<span class="material-symbols-outlined" data-icon="format_list_bulleted">format_list_bulleted</span>
+<span class="font-['Plus_Jakarta_Sans'] text-xs font-bold mt-1">Listahan</span>
+</a>
+</nav>
+</body></html>
