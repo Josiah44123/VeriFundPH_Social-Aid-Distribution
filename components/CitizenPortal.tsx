@@ -7,23 +7,23 @@ import {
   QrCode,
   Calendar,
   Bell,
-  Wallet,
   CheckCircle2,
   ChevronLeft,
   RefreshCw,
   Smartphone,
-  CreditCard,
+  MapPin,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
 interface CitizenPortalProps {
   onBack: () => void;
+  initialView?: CitizenState;
 }
 
 type CitizenState = "login" | "register_ocr" | "register_face" | "dashboard";
 
-const CitizenPortal: React.FC<CitizenPortalProps> = ({ onBack }) => {
-  const [viewState, setViewState] = useState<CitizenState>("login");
+const CitizenPortal: React.FC<CitizenPortalProps> = ({ onBack, initialView = "login" }) => {
+  const [viewState, setViewState] = useState<CitizenState>(initialView);
   const [isScanning, setIsScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [notifications, setNotifications] = useState<
@@ -37,9 +37,6 @@ const CitizenPortal: React.FC<CitizenPortalProps> = ({ onBack }) => {
     idNumber: "",
     address: "",
     dob: "",
-    walletLinked: false,
-    walletType: "",
-    walletNumber: "",
     nextVerification: "2027-01-15",
     schedule: "Tomorrow, 10:00 AM - 11:00 AM",
     scheduleLocation: "Barangay Hall, Quezon City",
@@ -101,22 +98,7 @@ const CitizenPortal: React.FC<CitizenPortalProps> = ({ onBack }) => {
     }, 200);
   };
 
-  const linkWallet = (type: string) => {
-    setUserData((prev) => ({
-      ...prev,
-      walletLinked: true,
-      walletType: type,
-      walletNumber: "0917-XXX-XXXX",
-    }));
-    setNotifications((prev) => [
-      {
-        id: Date.now().toString(),
-        message: `Successfully linked ${type} account for online disbursement.`,
-        read: false,
-      },
-      ...prev,
-    ]);
-  };
+
 
   const renderLogin = () => (
     <div className="flex flex-col items-center justify-center h-full max-w-md mx-auto px-6">
@@ -320,8 +302,8 @@ const CitizenPortal: React.FC<CitizenPortalProps> = ({ onBack }) => {
           <h3 className="text-lg font-bold text-white mb-2">
             Claiming QR Code
           </h3>
-          <p className="text-xs text-slate-400 mb-6">
-            Present this at the distribution center or use for online claiming.
+          <p className="text-xs text-slate-400 mb-6 font-medium">
+            Present this QR code physically at your assigned distribution center for secure verification and fund release.
           </p>
           <div className="bg-white p-4 rounded-xl mb-4">
             <QRCodeSVG value={userData.idNumber || "dummy-data"} size={150} />
@@ -376,88 +358,61 @@ const CitizenPortal: React.FC<CitizenPortalProps> = ({ onBack }) => {
           </div>
         </div>
 
-        {/* Online Money & Blockchain */}
+        {/* Face-to-Face Instructions */}
         <div className="space-y-6">
-          <div className="bg-gov-800 border border-gov-500 rounded-2xl p-6 shadow-lg">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-green-500/20 rounded-lg flex items-center justify-center text-green-400">
-                <Wallet className="w-5 h-5" />
+          <div className="bg-gov-800 border border-gov-500 rounded-2xl p-6 shadow-lg relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-brand-blue/5 -mr-8 -mt-8 rounded-full border border-brand-blue/10"></div>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-brand-red/10 rounded-xl flex items-center justify-center text-brand-red border border-brand-red/20 shadow-inner">
+                <MapPin className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="font-bold text-white">Online Disbursement</h3>
-                <p className="text-xs text-slate-400">
-                  Receive funds directly to e-wallet
-                </p>
+                <h3 className="font-bold text-white text-lg">Face-to-Face Claiming</h3>
+                <p className="text-xs text-brand-red font-bold uppercase tracking-widest">Mandatory Physical Presence</p>
               </div>
             </div>
+            
+            <div className="space-y-4">
+              <div className="p-4 bg-gov-900/80 rounded-xl border border-gov-600 relative">
+                <p className="text-sm text-slate-300 leading-relaxed">
+                  To ensure maximum security and prevent fraud, all social aid disbursements are now conducted <strong className="text-white">strictly face-to-face</strong>.
+                </p>
+              </div>
 
-            {userData.walletLinked ? (
-              <div className="bg-gov-900 rounded-xl p-4 border border-gov-600 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {userData.walletType === "GCash" ? (
-                    <Smartphone className="w-5 h-5 text-blue-400" />
-                  ) : (
-                    <CreditCard className="w-5 h-5 text-green-400" />
-                  )}
-                  <div>
-                    <p className="text-white font-bold text-sm">
-                      {userData.walletType}
-                    </p>
-                    <p className="text-xs text-slate-400 font-mono">
-                      {userData.walletNumber}
-                    </p>
-                  </div>
+              <div className="flex items-start gap-3 p-3 bg-brand-blue/10 rounded-lg border border-brand-blue/20">
+                <ShieldCheck className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
+                <p className="text-xs text-slate-200">
+                  Please bring your <strong className="text-white">National ID</strong> and the <strong className="text-white">Claiming QR Code</strong> shown on this dashboard.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Verification Status</span>
+                  <span className="text-[10px] font-bold text-brand-yellow px-2 py-0.5 bg-brand-yellow/10 rounded-full border border-brand-yellow/20">Awaiting Arrival</span>
                 </div>
-                <span className="text-xs text-green-400 font-bold">Linked</span>
+                <div className="w-full h-1.5 bg-gov-900 rounded-full overflow-hidden">
+                  <div className="w-1/3 h-full bg-brand-yellow animate-pulse"></div>
+                </div>
               </div>
-            ) : (
-              <div className="space-y-3">
-                <button
-                  onClick={() => linkWallet("GCash")}
-                  className="w-full py-2 bg-blue-600/20 text-blue-400 border border-blue-600/50 rounded-lg text-sm font-bold hover:bg-blue-600/30 transition-colors flex items-center justify-center gap-2"
-                >
-                  <Smartphone className="w-4 h-4" /> Link GCash
-                </button>
-                <button
-                  onClick={() => linkWallet("Maya")}
-                  className="w-full py-2 bg-green-600/20 text-green-400 border border-green-600/50 rounded-lg text-sm font-bold hover:bg-green-600/30 transition-colors flex items-center justify-center gap-2"
-                >
-                  <CreditCard className="w-4 h-4" /> Link Maya
-                </button>
-              </div>
-            )}
+            </div>
           </div>
 
-          <div className="bg-gov-800 border border-gov-500 rounded-2xl p-6 shadow-lg">
-            <h3 className="font-bold text-white mb-4 text-sm uppercase tracking-wider text-slate-400">
-              Blockchain Ledger
-            </h3>
-            <div className="space-y-3">
-              <div className="bg-gov-900 p-3 rounded-lg border border-gov-600">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs text-brand-yellow font-bold">
-                    Registration Hash
-                  </span>
-                  <span className="text-[10px] text-slate-500">Just now</span>
-                </div>
-                <p className="text-[10px] font-mono text-slate-400 truncate">
-                  0x{Math.random().toString(16).slice(2, 10)}...
-                  {Math.random().toString(16).slice(2, 10)}
-                </p>
-              </div>
-              <div className="bg-gov-900 p-3 rounded-lg border border-gov-600 opacity-50">
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-xs text-slate-400 font-bold">
-                    Previous Claim
-                  </span>
-                  <span className="text-[10px] text-slate-500">1 year ago</span>
-                </div>
-                <p className="text-[10px] font-mono text-slate-500 truncate">
-                  0x{Math.random().toString(16).slice(2, 10)}...
-                  {Math.random().toString(16).slice(2, 10)}
-                </p>
-              </div>
-            </div>
+          <div className="bg-gov-800 border border-gov-500 rounded-2xl p-6 shadow-lg border-t-4 border-t-brand-blue">
+             <h4 className="text-sm font-bold text-white mb-3">Claiming Process</h4>
+             <ul className="space-y-3">
+               {[
+                 "Arrive at Barangay Hall during your slot",
+                 "Present your physical ID for scanning",
+                 "Show the Claiming QR Code on your phone",
+                 "Receive funds after biometric confirmation"
+               ].map((step, i) => (
+                 <li key={i} className="flex gap-3 text-xs text-slate-400 font-medium">
+                   <span className="flex items-center justify-center w-5 h-5 bg-gov-900 rounded-full text-brand-blue text-[10px] border border-gov-600 shrink-0">{i+1}</span>
+                   {step}
+                 </li>
+               ))}
+             </ul>
           </div>
         </div>
       </div>
