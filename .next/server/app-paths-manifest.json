@@ -1,7 +1,7 @@
 {
-  "/citizen/login/page": "app/citizen/login/page.js",
-  "/admin/console/page": "app/admin/console/page.js",
   "/page": "app/page.js",
+  "/citizen/login/page": "app/citizen/login/page.js",
+  "/citizen/dashboard/page": "app/citizen/dashboard/page.js",
   "/admin/login/page": "app/admin/login/page.js",
-  "/citizen/dashboard/page": "app/citizen/dashboard/page.js"
+  "/admin/console/page": "app/admin/console/page.js"
 }

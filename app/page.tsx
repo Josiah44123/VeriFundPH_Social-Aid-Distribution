@@ -1,117 +1,146 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { ShieldCheck, User } from "lucide-react"
+import { ShieldCheck, User, ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { motion, AnimatePresence } from "framer-motion"
+
+const pageVariants = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.4, 0, 0.2, 1] } },
+  exit: { opacity: 0, y: -8, transition: { duration: 0.15 } }
+}
+
+const containerVariants = {
+  animate: { transition: { staggerChildren: 0.1 } }
+}
+const cardVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.2 } }
+}
 
 export default function LandingPage() {
   const router = useRouter()
 
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden bg-[var(--surface)]">
-      {/* Decorative Sun Motif Background */}
-      <div className="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] opacity-10 pointer-events-none z-0">
-        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className="fill-[var(--ph-gold)]">
-          <path d="M50 15L55 35L75 30L60 45L80 55L60 60L65 80L50 65L35 80L40 60L20 55L40 45L25 30L45 35Z" />
-          <circle cx="50" cy="50" r="12" />
-        </svg>
-      </div>
-
-      {/* Header */}
-      <div className="flex flex-col items-center justify-center pt-24 pb-12 z-10 px-4">
-        <h1 className="text-[32px] font-extrabold text-[var(--navy-deep)] tracking-tight">
-          VeriFund
-        </h1>
-        <p className="text-[14px] text-[var(--text-muted)] mt-2 text-center font-medium max-w-[280px]">
-          Siguruhing makakarating ang tulong sa tamang tao.
-        </p>
-      </div>
-
-      {/* Hero Icon */}
-      <div className="flex justify-center mb-12 z-10">
-        <div className="relative w-32 h-32 flex items-center justify-center -translate-y-4">
-          <div className="absolute inset-0 bg-[var(--ph-blue)] opacity-5 rounded-full blur-xl" />
-          <User className="w-16 h-16 text-[var(--ph-blue)] relative z-10" />
-          <ShieldCheck className="w-8 h-8 text-[var(--ph-gold)] absolute bottom-4 right-4 z-20 bg-white rounded-full p-1 shadow-sm" />
+    <AnimatePresence mode="wait">
+      <motion.div 
+        key="landing"
+        className="min-h-screen flex flex-col relative overflow-hidden"
+        style={{ background: 'linear-gradient(160deg, #001A5E 0%, #0038A8 60%, #002985 100%)' }}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+      >
+        {/* Header & Hero Text */}
+        <div className="flex flex-col items-center justify-center pt-24 pb-12 z-10 px-4 flex-1">
+          {/* Logo and Sun Watermark */}
+          <div className="relative flex items-center justify-center mb-8">
+            <svg viewBox="0 0 100 100" className="absolute w-[120px] h-[120px] fill-[var(--ph-gold)] opacity-15 pointer-events-none z-0">
+              <path d="M50 15L55 35L75 30L60 45L80 55L60 60L65 80L50 65L35 80L40 60L20 55L40 45L25 30L45 35Z" />
+              <circle cx="50" cy="50" r="12" />
+            </svg>
+            <h1 className="text-[40px] font-extrabold text-white tracking-tight relative z-10">
+              VeriFund
+            </h1>
+          </div>
+          
+          <h2 className="text-[22px] font-bold text-white text-center max-w-[280px] leading-[1.4] mb-3">
+            Siguruhing makakarating ang tulong sa tamang tao.
+          </h2>
+          
+          <p className="text-[12px] text-white/60 text-center font-medium">
+            Official Government Social Aid Platform
+          </p>
         </div>
-      </div>
 
-      {/* Portal Cards */}
-      <div className="flex-1 px-4 flex flex-col gap-4 z-10 max-w-md mx-auto w-full">
-        {/* Citizen Portal Card */}
-        <Card 
-          className="v-card overflow-hidden p-0 border-[0.5px] border-[#E0E4EF] hover:-translate-y-1 hover:shadow-md transition-all cursor-pointer"
-          onClick={() => router.push('/citizen/login')}
+        {/* Portal Cards Panel */}
+        <motion.div 
+          className="w-full bg-white px-[24px] pt-[32px] pb-[calc(24px+env(safe-area-inset-bottom))]"
+          style={{ borderRadius: '28px 28px 0 0' }}
+          variants={containerVariants}
+          initial="initial"
+          animate="animate"
         >
-          <div className="h-2 bg-[var(--ph-blue)] w-full" />
-          <div className="p-4 flex flex-col h-full">
-            <div className="flex items-center gap-3 mb-1">
-              <div className="p-2 bg-blue-50 rounded-lg shrink-0">
-                <User className="w-6 h-6 text-[var(--ph-blue)]" />
+          <div className="flex flex-col gap-[16px] max-w-md mx-auto w-full">
+            {/* Citizen Portal Card */}
+            <motion.div 
+              variants={cardVariants}
+              className="flex flex-col w-full cursor-pointer"
+              onClick={() => router.push('/citizen/login')}
+              whileTap={{ scale: 0.97 }}
+            >
+              <div className="w-full h-[6px] rounded-[6px] mb-[16px]" style={{ background: 'linear-gradient(135deg, #0038A8, #185ADB)' }} />
+              <div className="flex flex-col">
+                <div className="flex items-center gap-[16px]">
+                  <div className="w-[56px] h-[56px] rounded-full bg-[var(--info-light)] flex items-center justify-center shrink-0">
+                    <User className="w-[28px] h-[28px] text-[var(--ph-blue)]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-[18px] font-bold text-[var(--text-primary)] leading-tight">
+                      Para sa Benepisyaryo
+                    </h3>
+                    <p className="text-[13px] text-[var(--text-muted)] mt-[2px]">
+                      I-check ang iyong status at QR code
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-[20px]">
+                  <button 
+                    className="w-full h-[52px] rounded-full text-white font-bold text-[15px] flex items-center justify-center gap-2 transition-transform active:scale-[0.98]"
+                    style={{ background: '#0038A8' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/citizen/login');
+                    }}
+                  >
+                    Mag-login <ArrowRight className="w-[18px] h-[18px]" />
+                  </button>
+                </div>
               </div>
-              <h2 className="text-[18px] font-bold text-[var(--text-primary)]">
-                Para sa Benepisyaryo
-              </h2>
-            </div>
-            <p className="text-[13px] text-[var(--text-muted)] mb-4 pl-12 line-clamp-2">
-              I-check ang iyong status at history ng ayuda
-            </p>
-            <div className="mt-auto">
-              <button 
-                className="primary-btn w-full bg-[var(--ph-blue)] text-white"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push('/citizen/login');
-                }}
-              >
-                Mag-login
-              </button>
-            </div>
-          </div>
-        </Card>
+            </motion.div>
 
-        {/* Admin Portal Card */}
-        <Card 
-          className="v-card overflow-hidden p-0 border-[0.5px] border-[#E0E4EF] hover:-translate-y-1 hover:shadow-md transition-all cursor-pointer"
-          onClick={() => router.push('/admin/login')}
-        >
-          <div className="h-2 bg-[var(--ph-red)] w-full" />
-          <div className="p-4 flex flex-col h-full">
-            <div className="flex items-center gap-3 mb-1">
-              <div className="p-2 bg-red-50 rounded-lg shrink-0">
-                <ShieldCheck className="w-6 h-6 text-[var(--ph-red)]" />
+            {/* Officer Portal Card */}
+            <motion.div 
+              variants={cardVariants}
+              className="flex flex-col w-full cursor-pointer"
+              onClick={() => router.push('/admin/login')}
+              whileTap={{ scale: 0.97 }}
+            >
+              <div className="w-full h-[6px] rounded-[6px] mb-[16px]" style={{ background: 'linear-gradient(135deg, #CE1126, #E8354A)' }} />
+              <div className="flex flex-col">
+                <div className="flex items-center gap-[16px]">
+                  <div className="w-[56px] h-[56px] rounded-full bg-[var(--danger-light)] flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-[28px] h-[28px] text-[var(--ph-red)]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <h3 className="text-[18px] font-bold text-[var(--text-primary)] leading-tight">
+                      Para sa Barangay Officer
+                    </h3>
+                    <p className="text-[13px] text-[var(--text-muted)] mt-[2px]">
+                      I-register at i-verify ang mga benepisyaryo
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-[20px]">
+                  <button 
+                    className="w-full h-[52px] rounded-full text-white font-bold text-[15px] flex items-center justify-center transition-transform active:scale-[0.98]"
+                    style={{ background: '#CE1126' }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/admin/login');
+                    }}
+                  >
+                    Mag-login bilang Officer
+                  </button>
+                </div>
               </div>
-              <h2 className="text-[18px] font-bold text-[var(--text-primary)]">
-                Para sa Barangay Officer
-              </h2>
-            </div>
-            <p className="text-[13px] text-[var(--text-muted)] mb-4 pl-12 line-clamp-2">
-              I-register at i-verify ang mga benepisyaryo
-            </p>
-            <div className="mt-auto">
-              <button 
-                className="primary-btn w-full bg-[var(--ph-red)] text-white"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  router.push('/admin/login');
-                }}
-              >
-                Mag-login bilang Officer
-              </button>
-            </div>
-          </div>
-        </Card>
-      </div>
+            </motion.div>
 
-      {/* Footer */}
-      <div className="py-8 flex justify-center items-center gap-2 z-10 w-full mt-4">
-        <span className="text-[11px] text-[var(--text-muted)] font-medium">
-          VeriFund PH · Official Government Platform
-        </span>
-        <svg viewBox="0 0 100 100" className="w-[12px] h-[12px] fill-[var(--ph-gold)]">
-          <path d="M50 15L55 35L75 30L60 45L80 55L60 60L65 80L50 65L35 80L40 60L20 55L40 45L25 30L45 35Z" />
-        </svg>
-      </div>
-    </div>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   )
 }

@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { CheckCircle2, XCircle } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { QRScanner } from "@/components/QRScanner"
 import { QR_RESPONSES } from "@/lib/data"
 import { cn } from "@/lib/utils"
@@ -35,14 +34,15 @@ export function VerifyTab({ onConfirmClaim }: VerifyTabProps) {
   }
 
   return (
-    <div className="flex flex-col h-full relative overflow-clip animate-in fade-in">
+    <div className="flex flex-col h-full relative overflow-clip animate-in fade-in px-[16px] pt-[16px] pb-[32px]">
       {/* Current Dist Info */}
-      <div className="v-card bg-red-50 border-[var(--ph-red)]/20 mb-6">
-        <div className="flex justify-between items-start mb-1">
-          <h3 className="font-bold text-[15px] text-[var(--text-primary)]">SAP 2025 — Una</h3>
-          <span className="bg-[var(--success-green)] text-white text-[10px] px-2 py-0.5 rounded-full font-bold">AKTIBO</span>
+      <div className="bg-[var(--ph-blue)] rounded-[16px] p-[16px] mb-[24px] shadow-sm flex flex-col relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[120px] h-[120px] bg-white opacity-5 rounded-full -mt-[40px] -mr-[40px] pointer-events-none" />
+        <div className="flex justify-between items-start mb-[8px] relative z-10">
+          <h3 className="font-bold text-[16px] text-white">SAP 2025 — Una</h3>
+          <span className="bg-white text-[var(--ph-blue)] text-[11px] px-[10px] py-[4px] rounded-full font-bold shadow-sm">AKTIBO</span>
         </div>
-        <p className="text-[12px] text-[var(--text-muted)]">Marso 15, 2025 • ₱1,500 bawat isa</p>
+        <p className="text-[13px] text-white/80 font-medium relative z-10">Marso 15, 2025 • ₱1,500 bawat isa</p>
       </div>
 
       <QRScanner 
@@ -50,23 +50,23 @@ export function VerifyTab({ onConfirmClaim }: VerifyTabProps) {
         onScanSuccess={(code) => handleVerify(code)}
       />
 
-      <div className="flex items-center gap-4 my-6">
-        <div className="h-px bg-gray-200 flex-1" />
-        <span className="text-[12px] text-[var(--text-muted)] font-bold">o</span>
-        <div className="h-px bg-gray-200 flex-1" />
+      <div className="flex items-center gap-[16px] my-[24px]">
+        <div className="h-[2px] bg-[#E8ECF7] flex-1 rounded-full" />
+        <span className="text-[13px] text-[var(--text-muted)] font-bold uppercase tracking-wider">o</span>
+        <div className="h-[2px] bg-[#E8ECF7] flex-1 rounded-full" />
       </div>
 
-      <div className="flex gap-2">
-        <Input 
+      <div className="flex gap-[8px]">
+        <input 
           value={manualCode}
           onChange={(e: any) => setManualCode(e.target.value)}
           placeholder="I-type ang QR code"
-          className="bg-white flex-1"
+          className="bg-white flex-1 h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] border-transparent outline-none transition-colors focus:border-[var(--ph-red)] font-mono shadow-sm"
         />
         <button 
           onClick={() => handleVerify(manualCode)}
           disabled={!manualCode}
-          className="h-[52px] bg-gray-900 text-white px-6 font-bold rounded-[12px] disabled:bg-gray-300 transition-colors"
+          className="h-[52px] bg-[var(--navy-deep)] text-white px-[24px] font-bold rounded-[14px] disabled:bg-[#E8ECF7] disabled:text-[#A0ABC0] transition-colors shadow-sm active:scale-[0.98] disabled:active:scale-100"
         >
           I-Verify
         </button>
@@ -74,31 +74,34 @@ export function VerifyTab({ onConfirmClaim }: VerifyTabProps) {
 
       {/* Result Cards */}
       {result && result.result === "VERIFIED" && (
-        <div className="absolute inset-x-0 bottom-0 bg-white border border-gray-200 shadow-2xl rounded-t-[24px] p-6 animate-in slide-in-from-bottom-12 z-10">
-          <div className="w-16 h-1 h-2 bg-gray-300 rounded-full mx-auto mb-6 absolute top-2 left-1/2 -translate-x-1/2" />
-          <div className="w-[48px] h-[48px] bg-[var(--success-green)] rounded-full flex items-center justify-center mx-auto mb-2">
-            <CheckCircle2 className="w-6 h-6 text-white" />
+        <div className="fixed inset-x-0 bottom-0 bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.1)] rounded-t-[28px] p-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-[100%] duration-300 z-50 flex flex-col items-center border-[1.5px] border-[#E8ECF7]">
+          <div className="w-[48px] h-[6px] bg-[#E8ECF7] rounded-full mb-[24px]" />
+          
+          <div className="w-[64px] h-[64px] bg-[var(--success)] rounded-full flex items-center justify-center mb-[16px] shadow-sm animate-in zoom-in-50 delay-150 relative">
+            <div className="absolute inset-0 bg-[var(--success)] rounded-full animate-ping opacity-20" />
+            <CheckCircle2 className="w-[32px] h-[32px] text-white relative z-10" />
           </div>
-          <h2 className="text-[20px] font-bold text-[var(--success-green)] text-center mb-1">VERIFIED</h2>
-          <p className="text-[13px] text-[var(--text-muted)] text-center mb-6">Maaaring kumuha ng ayuda</p>
+          <h2 className="text-[24px] font-bold text-[var(--success)] text-center mb-[4px] leading-tight">VERIFIED</h2>
+          <p className="text-[14px] text-[var(--text-muted)] font-medium text-center mb-[24px]">Maaaring kumuha ng ayuda</p>
 
-          <div className="flex items-center gap-4 mb-6 bg-gray-50 p-4 rounded-xl">
-            <div className="w-12 h-12 bg-[var(--ph-blue)] text-white font-bold rounded-full flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-[16px] mb-[24px] bg-[var(--surface-page)] w-full p-[16px] rounded-[20px] border border-[#E8ECF7]">
+            <div className="w-[56px] h-[56px] bg-[var(--ph-blue)] text-white font-bold text-[20px] rounded-full flex items-center justify-center shrink-0 shadow-sm border-[2px] border-white">
               {result.initials}
             </div>
-            <div>
-              <p className="font-bold text-[16px] text-[var(--text-primary)]">{result.name}</p>
-              <p className="text-[12px] text-[var(--text-muted)]">{result.barangay}</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-[18px] text-[var(--text-primary)] truncate leading-tight mb-[2px]">{result.name}</p>
+              <p className="text-[13px] text-[var(--text-muted)] truncate">{result.barangay}</p>
             </div>
           </div>
           
-          <div className="text-center mb-6">
-            <span className="text-[22px] font-bold text-[color:var(--ph-gold)]">₱1,500</span>
+          <div className="text-center mb-[32px] w-full bg-[var(--info-light)] py-[12px] rounded-[16px] border border-[var(--ph-blue)]/10">
+            <span className="text-[12px] text-[var(--text-muted)] font-bold uppercase tracking-widest block mb-[2px]">Halaga</span>
+            <span className="text-[28px] font-bold text-[var(--ph-gold-dark)] leading-none block">₱1,500</span>
           </div>
 
           <button 
             onClick={handleConfirm}
-            className="w-full h-[56px] bg-[var(--success-green)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-95"
+            className="w-full h-[56px] bg-[var(--success)] text-white font-bold rounded-[16px] text-[16px] transition-transform active:scale-[0.98] shadow-[0_4px_12px_rgba(34,197,94,0.3)] hover:bg-green-600"
           >
             Kumpirmahin — Nakuha na!
           </button>
@@ -106,20 +109,32 @@ export function VerifyTab({ onConfirmClaim }: VerifyTabProps) {
       )}
 
       {result && result.result === "REJECTED" && (
-        <div className="absolute inset-x-0 bottom-0 bg-white border border-red-200 shadow-2xl rounded-t-[24px] p-6 animate-in slide-in-from-bottom-12 z-10 border-t-4 border-t-[var(--ph-red)]">
-          <div className="w-[48px] h-[48px] bg-[var(--ph-red)] rounded-full flex items-center justify-center mx-auto mb-2 mt-2">
-            <XCircle className="w-6 h-6 text-white" />
+        <div className="fixed inset-x-0 bottom-0 bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.1)] rounded-t-[28px] p-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-[100%] duration-300 z-50 flex flex-col items-center border-[1.5px] border-[var(--danger)]">
+          <div className="w-[48px] h-[6px] bg-[#E8ECF7] rounded-full mb-[24px]" />
+
+          <div className="w-[64px] h-[64px] bg-[var(--danger)] rounded-full flex items-center justify-center mb-[16px] shadow-sm animate-in zoom-in-50 delay-150">
+            <XCircle className="w-[32px] h-[32px] text-white" />
           </div>
-          <h2 className="text-[20px] font-bold text-[var(--ph-red)] text-center mb-1">HINDI PUWEDE</h2>
-          <p className="text-[14px] text-[var(--text-primary)] text-center font-semibold mb-8">{result.reason}</p>
+          <h2 className="text-[24px] font-bold text-[var(--danger)] text-center mb-[8px] leading-tight">HINDI PUWEDE</h2>
+          <div className="w-full bg-[var(--danger-light)] p-[16px] rounded-[16px] mb-[32px]">
+            <p className="text-[15px] text-[var(--danger)] text-center font-bold">{result.reason}</p>
+          </div>
 
           <button 
             onClick={() => setResult(null)}
-            className="w-full h-[56px] border-[1.5px] border-gray-300 text-gray-700 font-bold rounded-[14px] text-[15px] transition-transform active:scale-95"
+            className="w-full h-[56px] bg-[var(--surface-page)] text-[var(--text-primary)] font-bold rounded-[16px] text-[16px] transition-transform active:scale-[0.98] shadow-sm border-[1.5px] border-[#E8ECF7] hover:bg-gray-100"
           >
             Scan Ulit
           </button>
         </div>
+      )}
+      
+      {/* Backdrop for bottom sheet */}
+      {result && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-40 animate-in fade-in"
+          onClick={() => result.result === "REJECTED" && setResult(null)}
+        />
       )}
     </div>
   )

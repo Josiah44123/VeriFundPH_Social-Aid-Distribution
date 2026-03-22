@@ -2,8 +2,6 @@
 
 import { useState } from "react"
 import { Camera, CheckCircle2, UserPlus } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { QRCode } from "@/components/QRCode"
 import { cn } from "@/lib/utils"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
@@ -69,37 +67,39 @@ export function RegisterTab() {
 
   if (step === 3) {
     return (
-      <div className="fixed inset-0 z-50 bg-white flex flex-col items-center justify-center p-6 animate-in fade-in slide-in-from-bottom-8">
-        <div className="w-[80px] h-[80px] bg-[var(--success-green)] rounded-full flex items-center justify-center mb-6 animate-in zoom-in">
-          <CheckCircle2 className="w-10 h-10 text-white" />
+      <div className="fixed inset-0 z-[100] bg-[var(--surface-page)] flex flex-col items-center justify-center p-[24px] animate-in fade-in zoom-in-95 duration-200">
+        <div className="w-[100px] h-[100px] bg-[var(--success)] rounded-full flex items-center justify-center mb-[24px] shadow-lg animate-in zoom-in-50 delay-150">
+          <CheckCircle2 className="w-[56px] h-[56px] text-white" />
         </div>
-        <h1 className="text-[24px] font-bold text-[var(--text-primary)] mb-1">Registered ka na!</h1>
-        <p className="text-[16px] text-[var(--text-muted)] mb-2 uppercase">{formData.firstName} {formData.lastName}</p>
-        <div className="font-mono text-[16px] font-bold text-[var(--ph-gold)] mb-6">
+        <h1 className="text-[28px] font-bold text-[var(--text-primary)] mb-[8px] text-center leading-tight">Registered ka na!</h1>
+        <p className="text-[16px] text-[var(--text-secondary)] mb-[8px] uppercase font-bold tracking-wide">{formData.firstName} {formData.lastName}</p>
+        <div className="font-mono text-[16px] font-bold text-[var(--ph-gold)] mb-[32px] bg-[var(--info-light)] px-[16px] py-[6px] rounded-[10px]">
           VF-2025-0156-STC
         </div>
         
-        <div className="mb-8 p-4 border rounded-xl border-dashed">
-          <QRCode value="VF-2025-0156-STC" size={120} />
+        <div className="mb-[32px] p-[20px] bg-white rounded-[24px] shadow-sm border border-[#E8ECF7]">
+          <QRCode value="VF-2025-0156-STC" id="qr-code" size={160} />
         </div>
 
-        <button 
-          onClick={() => window.print()}
-          className="w-full h-[56px] border-[1.5px] border-[var(--ph-red)] text-[var(--ph-red)] font-bold rounded-[14px] text-[15px] mb-3 transition-transform active:scale-95"
-        >
-          I-print ang QR Card
-        </button>
-        <button 
-          onClick={() => {
-            setFormData({ lastName: "", firstName: "", middleName: "", phone: "", idType: "", idNumber: "" })
-            setIdScanned(false)
-            setSelfieScanned(false)
-            setStep(1)
-          }}
-          className="w-full h-[56px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-95"
-        >
-          Mag-register ng Bago
-        </button>
+        <div className="w-full flex justify-center gap-[12px] flex-col max-w-sm">
+          <button 
+            onClick={() => window.print()}
+            className="w-full h-[52px] border-[2px] border-[var(--ph-red)] text-[var(--ph-red)] font-bold rounded-[14px] text-[15px] transition-transform active:scale-95"
+          >
+            I-print ang QR Card
+          </button>
+          <button 
+            onClick={() => {
+              setFormData({ lastName: "", firstName: "", middleName: "", phone: "", idType: "", idNumber: "" })
+              setIdScanned(false)
+              setSelfieScanned(false)
+              setStep(1)
+            }}
+            className="w-full h-[52px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-95 shadow-sm hover:opacity-90"
+          >
+            Mag-register ng Bago
+          </button>
+        </div>
 
         <style dangerouslySetInnerHTML={{__html: `
           @media print {
@@ -113,101 +113,102 @@ export function RegisterTab() {
   }
 
   return (
-    <div className="flex flex-col h-full animate-in fade-in">
+    <div className="flex flex-col h-full animate-in fade-in px-[16px] pt-[24px] pb-[32px]">
       <LoadingOverlay isVisible={loading} />
       
       {/* Step Indicator */}
-      <div className="mb-6">
-        <div className="text-[13px] font-semibold text-[color:var(--text-muted)] mb-2">
+      <div className="mb-[24px]">
+        <div className="text-[13px] font-bold text-[var(--text-secondary)] mb-[8px]">
           Hakbang {step} ng 2 — {step === 1 ? "Impormasyon" : "Litrato at ID"}
         </div>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="w-full h-[6px] bg-[#E8ECF7] rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[var(--ph-red)] transition-all duration-300"
+            className="h-full bg-[var(--ph-red)] transition-all duration-300 ease-out rounded-full"
             style={{ width: step === 1 ? '50%' : '100%' }}
           />
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 text-[13px] font-semibold p-3 rounded-xl mb-4 text-center">
+        <div className="bg-[var(--danger-light)] border border-red-200 text-[var(--danger)] text-[13px] font-bold p-[12px] rounded-[12px] mb-[16px] text-center animate-in mb-4 slide-in-from-top-2">
           {error}
         </div>
       )}
 
       {step === 1 && (
-        <div className="space-y-4">
+        <div className="space-y-[16px]">
           <div>
-            <label className="section-label mb-1.5 block">Apelyido</label>
-            <Input 
+            <label className="section-label mb-[6px] block">Apelyido</label>
+            <input 
               value={formData.lastName}
               onChange={(e: any) => setFormData({...formData, lastName: e.target.value})}
-              className={cn("bg-white", error && !formData.lastName ? "border-[var(--ph-red)]" : "")}
+              className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] outline-none transition-colors", error && !formData.lastName ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" : "border-transparent bg-white text-[var(--text-primary)] focus:border-[var(--ph-red)]")}
             />
           </div>
           <div>
-            <label className="section-label mb-1.5 block">Pangalan</label>
-            <Input 
+            <label className="section-label mb-[6px] block">Pangalan</label>
+            <input 
               value={formData.firstName}
               onChange={(e: any) => setFormData({...formData, firstName: e.target.value})}
-              className={cn("bg-white", error && !formData.firstName ? "border-[var(--ph-red)]" : "")}
+              className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] outline-none transition-colors", error && !formData.firstName ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" : "border-transparent bg-white text-[var(--text-primary)] focus:border-[var(--ph-red)]")}
             />
           </div>
           <div>
-            <label className="section-label mb-1.5 block">Karagdagang Pangalan (Optional)</label>
-            <Input 
+            <label className="section-label mb-[6px] block">Karagdagang Pangalan (Optional)</label>
+            <input 
               value={formData.middleName}
               onChange={(e: any) => setFormData({...formData, middleName: e.target.value})}
-              className="bg-white"
+              className="w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] border-transparent bg-white text-[var(--text-primary)] outline-none transition-colors focus:border-[var(--ph-red)]"
             />
           </div>
           <div>
-            <label className="section-label mb-1.5 block">Numero ng Telepono</label>
-            <Input 
+            <label className="section-label mb-[6px] block">Numero ng Telepono</label>
+            <input 
               type="tel"
               placeholder="09XXXXXXXXX"
               value={formData.phone}
               onChange={(e: any) => setFormData({...formData, phone: e.target.value})}
-              className={cn("bg-white", error && !formData.phone ? "border-[var(--ph-red)]" : "")}
+              className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] outline-none transition-colors font-mono tracking-wide", error && !formData.phone ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" : "border-transparent bg-white text-[var(--text-primary)] focus:border-[var(--ph-red)]")}
             />
           </div>
           <div>
-            <label className="section-label mb-1.5 block">Uri ng ID</label>
-            <Select value={formData.idType} onValueChange={(v: any) => setFormData({...formData, idType: v})}>
-              <SelectTrigger className={cn("h-[52px] bg-white rounded-[12px]", error && !formData.idType ? "border-[var(--ph-red)]" : "")}>
-                <SelectValue placeholder="Pumili ng ID" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="philsys">PhilSys</SelectItem>
-                <SelectItem value="driver">Driver's License</SelectItem>
-                <SelectItem value="voter">Voter's ID</SelectItem>
-                <SelectItem value="postal">Postal ID</SelectItem>
-                <SelectItem value="sss">SSS ID</SelectItem>
-                <SelectItem value="gsis">GSIS ID</SelectItem>
-                <SelectItem value="passport">Passport</SelectItem>
-              </SelectContent>
-            </Select>
+            <label className="section-label mb-[6px] block">Uri ng ID</label>
+            <select 
+              value={formData.idType} 
+              onChange={(e: any) => setFormData({...formData, idType: e.target.value})}
+              className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] outline-none transition-colors appearance-none", error && !formData.idType ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" : "border-transparent bg-white text-[var(--text-primary)] focus:border-[var(--ph-red)]")}
+              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 16px center', backgroundSize: '20px' }}
+            >
+              <option value="" disabled>Pumili ng ID</option>
+              <option value="philsys">PhilSys</option>
+              <option value="driver">Driver's License</option>
+              <option value="voter">Voter's ID</option>
+              <option value="postal">Postal ID</option>
+              <option value="sss">SSS ID</option>
+              <option value="gsis">GSIS ID</option>
+              <option value="passport">Passport</option>
+            </select>
           </div>
           <div>
-            <label className="section-label mb-1.5 block">Numero ng ID</label>
-            <Input 
+            <label className="section-label mb-[6px] block">Numero ng ID</label>
+            <input 
               value={formData.idNumber}
               onChange={(e: any) => setFormData({...formData, idNumber: e.target.value})}
-              className={cn("bg-white font-mono", error && !formData.idNumber ? "border-[var(--ph-red)]" : "")}
+              className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] font-mono tracking-wide outline-none transition-colors", error && !formData.idNumber ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" : "border-transparent bg-white text-[var(--text-primary)] focus:border-[var(--ph-red)]")}
             />
           </div>
           <div>
-            <label className="section-label mb-1.5 block">Barangay</label>
-            <Input 
+            <label className="section-label mb-[6px] block">Barangay</label>
+            <input 
               value="Sta. Cruz, Quezon City"
               readOnly
-              className="bg-gray-50 text-gray-500"
+              className="w-full h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] border-transparent bg-[#E8ECF7] text-[var(--text-muted)] font-bold outline-none cursor-not-allowed"
             />
           </div>
 
           <button 
             onClick={handleNext}
-            className="w-full h-[52px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] mt-4 transition-transform active:scale-95"
+            className="w-full h-[52px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] mt-[8px] transition-transform active:scale-95 shadow-sm hover:opacity-90"
           >
             Susunod &rarr;
           </button>
@@ -215,69 +216,69 @@ export function RegisterTab() {
       )}
 
       {step === 2 && (
-        <div className="space-y-4">
+        <div className="space-y-[16px]">
           <div 
             className={cn(
-              "v-card h-[80px] flex items-center px-4 cursor-pointer transition-colors active:bg-gray-50 relative",
-              idScanned ? "border-green-500 bg-green-50/20" : ""
+              "h-[80px] rounded-[20px] bg-white flex items-center px-[20px] cursor-pointer transition-all active:scale-[0.98] border-[1.5px]",
+              idScanned ? "border-[var(--success)] bg-[var(--success-light)]" : "border-transparent shadow-sm hover:border-[#E8ECF7]"
             )}
             onClick={handleIdScan}
           >
-            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
-              <Camera className="w-5 h-5 text-blue-600" />
+            <div className={cn("w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0", idScanned ? "bg-[var(--success)]" : "bg-[var(--info-light)]")}>
+              <Camera className={cn("w-[24px] h-[24px]", idScanned ? "text-white" : "text-[var(--ph-blue)]")} />
             </div>
-            <div className="ml-3 flex-1">
-              <h3 className="text-[15px] font-bold text-[var(--text-primary)]">I-Scan ang ID</h3>
-              <p className="text-[12px] text-[var(--text-muted)]">OCR — mababasa ang ID automatically</p>
+            <div className="ml-[16px] flex-1">
+              <h3 className={cn("text-[16px] font-bold", idScanned ? "text-[var(--success)]" : "text-[var(--text-primary)]")}>I-Scan ang ID</h3>
+              <p className={cn("text-[12px]", idScanned ? "text-[var(--success)]/80 font-semibold" : "text-[var(--text-muted)]")}>OCR — mababasa ang ID automatically</p>
             </div>
             <div className="shrink-0">
               {idScanned ? (
-                <CheckCircle2 className="w-6 h-6 text-green-500" />
+                <CheckCircle2 className="w-[28px] h-[28px] text-[var(--success)]" />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-gray-200" />
+                <div className="w-[28px] h-[28px] rounded-full bg-[#E8ECF7]" />
               )}
             </div>
           </div>
 
           <div 
             className={cn(
-              "v-card h-[80px] flex items-center px-4 cursor-pointer transition-colors active:bg-gray-50 relative",
-              selfieScanned ? "border-green-500 bg-green-50/20" : ""
+              "h-[80px] rounded-[20px] bg-white flex items-center px-[20px] cursor-pointer transition-all active:scale-[0.98] border-[1.5px]",
+              selfieScanned ? "border-[var(--success)] bg-[var(--success-light)]" : "border-transparent shadow-sm hover:border-[#E8ECF7]"
             )}
             onClick={handleSelfieScan}
           >
-            <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0 overflow-hidden">
+            <div className={cn("w-[48px] h-[48px] rounded-full flex items-center justify-center shrink-0 overflow-hidden", selfieScanned ? "bg-[var(--success)]" : "bg-[var(--danger-light)]")}>
               {selfieScanned ? (
                 <img src={`https://ui-avatars.com/api/?name=${formData.firstName}+${formData.lastName}&background=random`} alt="selfie" className="w-full h-full object-cover" />
               ) : (
-                <UserPlus className="w-5 h-5 text-red-600" />
+                <UserPlus className="w-[24px] h-[24px] text-[var(--danger)]" />
               )}
             </div>
-            <div className="ml-3 flex-1">
-              <h3 className="text-[15px] font-bold text-[var(--text-primary)]">Kunan ng Selfie</h3>
-              <p className="text-[12px] text-[var(--text-muted)]">Siguraduhing malinaw ang mukha</p>
+            <div className="ml-[16px] flex-1">
+              <h3 className={cn("text-[16px] font-bold", selfieScanned ? "text-[var(--success)]" : "text-[var(--text-primary)]")}>Kunan ng Selfie</h3>
+              <p className={cn("text-[12px]", selfieScanned ? "text-[var(--success)]/80 font-semibold" : "text-[var(--text-muted)]")}>Siguraduhing malinaw ang mukha</p>
             </div>
             <div className="shrink-0">
               {selfieScanned ? (
-                <CheckCircle2 className="w-6 h-6 text-green-500" />
+                <CheckCircle2 className="w-[28px] h-[28px] text-[var(--success)]" />
               ) : (
-                <div className="w-6 h-6 rounded-full bg-gray-200" />
+                <div className="w-[28px] h-[28px] rounded-full bg-[#E8ECF7]" />
               )}
             </div>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-[32px]">
             <button 
               onClick={handleRegister}
               disabled={(!idScanned || !selfieScanned)}
-              className="w-full h-[56px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-95 disabled:bg-gray-300"
+              className="w-full h-[52px] bg-[var(--ph-red)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-[0.98] shadow-sm hover:opacity-90 disabled:bg-[#E8ECF7] disabled:text-[#A0ABC0] disabled:active:scale-100 disabled:shadow-none"
             >
               I-Register
             </button>
-            <div className="text-center mt-4">
+            <div className="text-center mt-[16px]">
               <button 
                 onClick={() => handleRegister()}
-                className="text-[13px] text-[var(--text-muted)] font-semibold hover:text-gray-900"
+                className="text-[13px] text-[var(--text-muted)] font-bold hover:text-[var(--text-secondary)] py-[8px] px-[16px] rounded-full transition-colors active:bg-[#E8ECF7]"
               >
                 Laktawan (Demo)
               </button>

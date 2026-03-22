@@ -3,10 +3,10 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, User } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { OTPInput } from "@/components/OTPInput"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
 import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
 
 export default function CitizenLogin() {
   const router = useRouter()
@@ -53,104 +53,139 @@ export default function CitizenLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
+    <div className="min-h-screen bg-[var(--surface-page)] flex flex-col">
       <LoadingOverlay isVisible={loading} />
       
       {/* Header */}
-      <div className="bg-[var(--ph-blue)] h-[64px] flex items-center px-4 shrink-0">
-        <button onClick={() => step === 2 ? setStep(1) : router.push("/")} className="p-2 -ml-2 text-white">
+      <div 
+        className="h-[120px] flex items-start pt-[24px] px-[16px] shrink-0 relative z-0"
+        style={{ background: 'linear-gradient(135deg, #0038A8, #185ADB)' }}
+      >
+        <button onClick={() => step === 2 ? setStep(1) : router.push("/")} className="p-2 -ml-2 text-white relative z-20">
           <ArrowLeft className="w-6 h-6" />
         </button>
-        <span className="text-white font-bold ml-2 text-[18px]">Mag-login</span>
+        <span className="text-white font-bold text-[18px] absolute w-full text-center left-0 top-[32px] pointer-events-none z-10">
+          VeriFund
+        </span>
       </div>
 
-      <div className="flex-1 px-4 pt-8 pb-8 flex flex-col max-w-md mx-auto w-full">
-        <div className="flex justify-center mb-6">
-          <div className="w-[40px] h-[40px] bg-[var(--ph-blue)] rounded-xl flex items-center justify-center">
-            <User className="w-5 h-5 text-white" />
-          </div>
+      {/* Content Area overlapped */}
+      <div className="flex-1 bg-white rounded-t-[24px] -mt-[20px] relative z-10 px-[16px] flex flex-col items-center pt-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+        {/* Absolute Avatar */}
+        <div className="absolute -top-[32px] w-[64px] h-[64px] rounded-full bg-[var(--ph-blue)] border-[4px] border-white flex items-center justify-center shadow-sm">
+          <User className="w-[32px] h-[32px] text-white" />
         </div>
 
-        {step === 1 ? (
-          <div className="flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
-            <h1 className="text-[16px] font-bold text-center mb-1 text-[var(--text-primary)]">
-              I-enter ang iyong numero o email
-            </h1>
-            <p className="text-[13px] text-[var(--text-muted)] text-center mb-6">
-              Magpapadala kami ng verification code.
-            </p>
-
-            <Input 
-              value={contact}
-              onChange={(e: any) => setContact(e.target.value)}
-              placeholder="09XXXXXXXXX o email@gmail.com"
-              className="mb-4 text-center font-medium"
-            />
-
-            <div className="flex gap-2 mb-8">
-              <button 
-                onClick={() => setMethod("sms")}
-                className={cn("flex-1 py-2 rounded-full text-[13px] font-semibold transition-colors border", 
-                  method === "sms" ? "bg-[var(--surface)] border-[var(--ph-blue)] text-[var(--ph-blue)]" : "border-transparent text-[var(--text-muted)]"
-                )}
+        <div className="w-full max-w-md mt-[16px]">
+          <AnimatePresence mode="wait">
+            {step === 1 ? (
+              <motion.div 
+                key="step1"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col w-full"
               >
-                SMS
-              </button>
-              <button 
-                onClick={() => setMethod("email")}
-                className={cn("flex-1 py-2 rounded-full text-[13px] font-semibold transition-colors border", 
-                  method === "email" ? "bg-[var(--surface)] border-[var(--ph-blue)] text-[var(--ph-blue)]" : "border-transparent text-[var(--text-muted)]"
-                )}
-              >
-                Email
-              </button>
-            </div>
+                <h1 className="text-[18px] font-bold text-center mb-[4px] text-[var(--text-primary)]">
+                  I-enter ang iyong numero o email
+                </h1>
+                <p className="text-[13px] text-[var(--text-muted)] text-center mb-[32px]">
+                  Magpapadala kami ng verification code.
+                </p>
 
-            <button 
-              onClick={handleSendCode}
-              disabled={!contact}
-              className="primary-btn w-full bg-[var(--ph-blue)] text-[var(--ph-gold)]"
-            >
-              Mag-send ng Code
-            </button>
-          </div>
-        ) : (
-          <div className="flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
-            <h1 className="text-[16px] font-bold text-center mb-1 text-[var(--text-primary)]">
-              I-enter ang OTP
-            </h1>
-            <p className="text-[13px] text-[var(--text-muted)] text-center mb-8">
-              Napadala na ang code sa {contact}
-            </p>
+                {/* Segmented Control */}
+                <div className="bg-[#F0F3FA] p-[4px] rounded-full flex relative mb-[24px]">
+                  <button 
+                    onClick={() => setMethod("sms")}
+                    className={cn(
+                      "flex-1 py-[10px] rounded-full text-[14px] font-bold z-10 transition-colors",
+                      method === "sms" ? "text-[var(--ph-blue)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                    )}
+                  >
+                    SMS
+                  </button>
+                  <button 
+                    onClick={() => setMethod("email")}
+                    className={cn(
+                      "flex-1 py-[10px] rounded-full text-[14px] font-bold z-10 transition-colors",
+                      method === "email" ? "text-[var(--ph-blue)]" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                    )}
+                  >
+                    Email
+                  </button>
+                  {/* Active Indicator */}
+                  <motion.div 
+                    className="absolute top-[4px] bottom-[4px] bg-white rounded-full shadow-sm z-0"
+                    initial={false}
+                    animate={{ 
+                      left: method === "sms" ? "4px" : "50%", 
+                      width: "calc(50% - 4px)" 
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                </div>
 
-            <OTPInput length={6} onComplete={handleOTPComplete} error={otpError} />
+                <input 
+                  value={contact}
+                  onChange={(e: any) => setContact(e.target.value)}
+                  placeholder={method === "sms" ? "09XXXXXXXXX" : "juan@email.com"}
+                  className="w-full h-[56px] text-center rounded-[14px] mb-[24px] text-[15px] outline-none bg-[#F0F3FA] border-[2px] border-transparent focus:bg-white focus:border-[#0038A8] text-[#0D1B3E] transition-colors"
+                />
 
-            <div className="h-6 mt-4 flex justify-center items-center">
-              {otpError && (
-                <span className="text-[13px] font-semibold text-[color:var(--ph-red)] animate-in fade-in">
-                  Mali ang code. Subukan ulit.
-                </span>
-              )}
-            </div>
-
-            <div className="mt-8 flex justify-center">
-              {countdown > 0 ? (
-                <span className="text-[13px] text-[var(--text-muted)] font-medium">
-                  Maghintay ng {countdown}s para maka-resend
-                </span>
-              ) : (
                 <button 
-                  onClick={() => {
-                    startCountdown()
-                  }}
-                  className="text-[13px] font-semibold text-[var(--ph-blue)]"
+                  onClick={handleSendCode}
+                  className="w-full h-[52px] rounded-[14px] bg-[var(--ph-blue)] text-white font-bold text-[15px] transition-transform active:scale-[0.98]"
                 >
-                  Wala pang natanggap? I-resend
+                  Mag-send ng Code
                 </button>
-              )}
-            </div>
-          </div>
-        )}
+              </motion.div>
+            ) : (
+              <motion.div 
+                key="step2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.25 }}
+                className="flex flex-col w-full"
+              >
+                <h1 className="text-[18px] font-bold text-center mb-[4px] text-[var(--text-primary)]">
+                  I-enter ang OTP
+                </h1>
+                <p className="text-[14px] text-[var(--text-muted)] text-center mb-[32px]">
+                  Napadala na sa {contact}
+                </p>
+
+                <OTPInput length={6} onComplete={handleOTPComplete} error={otpError} />
+
+                <div className="h-[24px] mt-[16px] flex justify-center items-center">
+                  {otpError && (
+                    <span className="text-[13px] font-bold text-[var(--danger)] animate-in fade-in">
+                      Mali ang code. Subukan ulit.
+                    </span>
+                  )}
+                </div>
+
+                <div className="mt-[32px] flex justify-center">
+                  {countdown > 0 ? (
+                    <span className="px-[16px] py-[6px] rounded-full bg-[var(--surface-page)] text-[12px] font-bold text-[var(--text-muted)]">
+                      Resend in 0:{countdown.toString().padStart(2, '0')}
+                    </span>
+                  ) : (
+                    <button 
+                      onClick={() => {
+                        startCountdown()
+                      }}
+                      className="text-[13px] font-bold text-[var(--ph-blue)] px-[16px] py-[6px] rounded-full bg-[var(--info-light)] hover:bg-[var(--surface-page)] transition-colors"
+                    >
+                      I-resend ang code
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   )

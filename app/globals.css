@@ -23,18 +23,38 @@
     --border: 221 39% 94%;
     --input: 221 39% 94%;
     --ring: 220 100% 33%;
-    --radius: 12px;
+    --radius: 16px;
     
-    --ph-blue: #0038a8;
-    --ph-red: #ce1126;
-    --ph-gold: #fcd116;
-    --ph-white: #ffffff;
-    --navy-deep: #001a5e;
-    --navy-mid: #002985;
-    --success-green: #1a8c4e;
-    --text-primary: #0d1f35;
-    --text-muted: #6b7a9a;
-    --surface: #f4f6fb;
+    /* Philippine Flag Color System */
+    --ph-blue: #0038A8;
+    --ph-blue-dark: #002985;
+    --ph-blue-deeper: #001A5E;
+    --ph-red: #CE1126;
+    --ph-red-dark: #A50E1E;
+    --ph-gold: #FCD116;
+    --ph-gold-dark: #E6BE00;
+
+    /* Surfaces */
+    --surface-page: #F0F3FA;       /* Page background — never pure white */
+    --surface-card: #FFFFFF;       /* Card background */
+    --surface-elevated: #FFFFFF;   /* Modal/overlay */
+
+    /* Semantic */
+    --success: #1A8C4E;
+    --success-light: #E8F5EE;
+    --danger: #CE1126;
+    --danger-light: #FDE8EB;
+    --warning: #B45309;
+    --warning-light: #FEF3C7;
+    --info: #0038A8;
+    --info-light: #E8EEFA;
+
+    /* Text */
+    --text-primary: #0D1B3E;
+    --text-secondary: #4A5568;
+    --text-muted: #8896B3;
+    --text-on-dark: #FFFFFF;
+    --text-on-gold: #0D1B3E;
 
     --transition-fast: 150ms ease;
     --transition-normal: 250ms ease;
@@ -47,28 +67,39 @@
     @apply border-border;
   }
   body {
-    @apply bg-[var(--surface)] text-[var(--text-primary)] antialiased;
+    @apply bg-[var(--surface-page)] text-[var(--text-primary)] antialiased;
   }
 }
 
 @layer components {
-  /* Inconsistency fixes */
+  /* Inconsistency fixes for standard inputs */
   input[type="tel"], input[type="text"], input[type="password"], input[type="email"] {
-    @apply h-[52px] rounded-[12px];
+    @apply h-[52px] rounded-[12px] bg-[var(--surface-page)] text-[15px] px-[16px] text-[var(--text-primary)] border-[1.5px] border-transparent outline-none transition-colors;
+  }
+  input[type="tel"]:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
+    @apply border-[var(--ph-blue)] bg-[var(--surface-card)];
+  }
+  input[aria-invalid="true"] {
+    @apply border-[var(--danger)] bg-[var(--danger-light)];
   }
   
   /* Primary buttons */
   button.primary-btn {
-    @apply h-[52px] rounded-[14px] text-[15px] font-bold transition-transform active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none;
+    @apply h-[52px] rounded-[14px] text-[15px] font-bold transition-transform active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none bg-[var(--ph-blue)] text-[var(--text-on-dark)] flex items-center justify-center;
+  }
+
+  /* Dangerous buttons / Red buttons */
+  button.danger-btn {
+    @apply h-[52px] rounded-[14px] text-[15px] font-bold transition-transform active:scale-[0.97] disabled:opacity-40 disabled:pointer-events-none bg-[var(--ph-red)] text-[var(--text-on-dark)] flex items-center justify-center;
   }
 
   /* Section labels */
   .section-label {
-    @apply text-[12px] font-semibold text-[color:var(--text-muted)];
+    @apply text-[11px] font-bold text-[var(--text-muted)] tracking-[0.1em] uppercase;
   }
 
   /* Cards */
   .v-card {
-    @apply rounded-[16px] border border-[#E8ECF7] bg-white p-4 shadow-none;
+    @apply rounded-[16px] bg-[var(--surface-card)] p-[16px] shadow-none border-none;
   }
 }

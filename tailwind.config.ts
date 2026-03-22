@@ -26,22 +26,35 @@ const config = {
         foreground: "hsl(var(--foreground))",
         ph: {
           blue: "var(--ph-blue)",
+          "blue-dark": "var(--ph-blue-dark)",
+          "blue-deeper": "var(--ph-blue-deeper)",
           red: "var(--ph-red)",
+          "red-dark": "var(--ph-red-dark)",
           gold: "var(--ph-gold)",
-          white: "var(--ph-white)",
+          "gold-dark": "var(--ph-gold-dark)",
         },
-        navy: {
-          deep: "var(--navy-deep)",
-          mid: "var(--navy-mid)",
+        semantic: {
+          success: "var(--success)",
+          "success-light": "var(--success-light)",
+          danger: "var(--danger)",
+          "danger-light": "var(--danger-light)",
+          warning: "var(--warning)",
+          "warning-light": "var(--warning-light)",
+          info: "var(--info)",
+          "info-light": "var(--info-light)",
         },
-        success: {
-          green: "var(--success-green)",
+        surface: {
+          page: "var(--surface-page)",
+          card: "var(--surface-card)",
+          elevated: "var(--surface-elevated)",
         },
         text: {
           primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
           muted: "var(--text-muted)",
+          "on-dark": "var(--text-on-dark)",
+          "on-gold": "var(--text-on-gold)",
         },
-        surface: "var(--surface)",
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",

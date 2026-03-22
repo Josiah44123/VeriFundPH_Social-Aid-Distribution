@@ -15,16 +15,20 @@ export const metadata: Metadata = {
   description: "Official Government Platform for Social Aid Distribution",
 }
 
+import { Suspense } from "react"
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn(jakarta.variable, "font-sans")}>
-      <body className="font-sans antialiased text-[color:var(--text-primary)] bg-[color:var(--surface)] selection:bg-[color:var(--ph-gold)] selection:text-black">
+    <html lang="en" className={cn(jakarta.variable, "font-sans")} suppressHydrationWarning>
+      <body className="font-sans antialiased text-[color:var(--text-primary)] bg-[color:var(--surface-page)] selection:bg-[color:var(--ph-gold)] selection:text-[color:var(--text-on-gold)]">
         <main className="min-h-screen pb-[env(safe-area-inset-bottom)]">
-          {children}
+          <Suspense fallback={null}>
+            {children}
+          </Suspense>
         </main>
         <Toaster />
       </body>

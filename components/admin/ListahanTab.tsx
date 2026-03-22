@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { CheckCircle2, XCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface ListahanTabProps {
   listahan: any[]
@@ -15,33 +16,32 @@ export function ListahanTab({ listahan }: ListahanTabProps) {
   const tinanggihanCount = listahan.filter(item => item.status === "TINANGGIHAN").length
 
   return (
-    <div className="flex flex-col h-full animate-in fade-in">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-[16px] font-bold text-[var(--text-primary)]">Listahan Ngayon</h2>
-        <span className="bg-[var(--success-green)]/10 text-[var(--success-green)] text-[12px] font-bold px-3 py-1 rounded-full">
+    <div className="flex flex-col h-full animate-in fade-in px-[16px] pt-[16px] pb-[32px]">
+      <div className="flex justify-between items-center mb-[16px]">
+        <h2 className="text-[18px] font-bold text-[var(--text-primary)]">Listahan Ngayon</h2>
+        <span className="bg-[var(--success-light)] text-[var(--success)] text-[11px] font-bold px-[12px] py-[4px] rounded-full flex items-center gap-[4px]">
+          <CheckCircle2 className="w-[12px] h-[12px]" />
           {nakuhaCount} Nakuha
         </span>
       </div>
 
-      {/* Summary Bar */}
-      <div className="bg-[var(--navy-deep)] rounded-[12px] p-4 flex justify-between mb-6 shadow-sm">
-        <div className="text-center">
-          <div className="text-[20px] font-bold text-white">{listahan.length}</div>
-          <div className="text-[11px] text-gray-400 font-medium uppercase mt-0.5">Total Scanned</div>
+      {/* Summary Stats - 3 Distinct Cards */}
+      <div className="flex gap-[12px] mb-[24px]">
+        <div className="flex-1 bg-[var(--navy-deep)] rounded-[16px] p-[16px] flex flex-col items-center justify-center shadow-sm">
+          <div className="text-[24px] font-bold text-white leading-none">{listahan.length}</div>
+          <div className="text-[10px] text-white/70 font-bold uppercase mt-[4px] tracking-wide">Lahat</div>
         </div>
-        <div className="w-px bg-white/10" />
-        <div className="text-center">
-          <div className="text-[20px] font-bold text-[var(--success-green)]">{nakuhaCount}</div>
-          <div className="text-[11px] text-gray-400 font-medium uppercase mt-0.5">Nakuha</div>
+        <div className="flex-1 bg-[var(--success)] rounded-[16px] p-[16px] flex flex-col items-center justify-center shadow-sm">
+          <div className="text-[24px] font-bold text-white leading-none">{nakuhaCount}</div>
+          <div className="text-[10px] text-white/80 font-bold uppercase mt-[4px] tracking-wide">Nakuha</div>
         </div>
-        <div className="w-px bg-white/10" />
-        <div className="text-center">
-          <div className="text-[20px] font-bold text-[var(--ph-red)]">{tinanggihanCount}</div>
-          <div className="text-[11px] text-gray-400 font-medium uppercase mt-0.5">Tinanggihan</div>
+        <div className="flex-1 bg-[var(--danger)] rounded-[16px] p-[16px] flex flex-col items-center justify-center shadow-sm">
+          <div className="text-[24px] font-bold text-white leading-none">{tinanggihanCount}</div>
+          <div className="text-[10px] text-white/80 font-bold uppercase mt-[4px] tracking-wide">Tinanggihan</div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-3 pb-32">
+      <div className="flex flex-col gap-[12px]">
         {listahan.map((item, i) => {
           const isNakuha = item.status === "NAKUHA"
           const isExpanded = expandedId === `${i}-${item.verifundId}`
@@ -50,57 +50,65 @@ export function ListahanTab({ listahan }: ListahanTabProps) {
             <div 
               key={`${i}-${item.verifundId}`} 
               className={cn(
-                "v-card p-4 transition-colors cursor-pointer border-[1px]",
-                !isNakuha && "bg-[rgba(206,17,38,0.04)] border-[var(--ph-red)]/20"
+                "bg-white rounded-[12px] p-[16px] shadow-sm transition-colors cursor-pointer border",
+                !isNakuha ? "border-[var(--danger-light)] bg-red-50/30" : "border-[#E8ECF7]"
               )}
               onClick={() => setExpandedId(isExpanded ? null : `${i}-${item.verifundId}`)}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-[12px]">
                 <div className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center font-bold text-white shrink-0",
+                  "w-[44px] h-[44px] rounded-full flex items-center justify-center font-bold text-[16px] text-white shrink-0 shadow-sm",
                   isNakuha ? "bg-[var(--ph-blue)]" : "bg-[var(--ph-red)]"
                 )}>
                   {item.initials}
                 </div>
                 
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-[14px] font-bold text-[var(--text-primary)] truncate">{item.name}</h4>
-                  <div className="text-[12px] text-[var(--text-muted)] mt-0.5 flex gap-2">
+                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                  <h4 className="text-[15px] font-bold text-[var(--text-primary)] truncate leading-tight">{item.name}</h4>
+                  <div className="text-[12px] text-[var(--text-muted)] mt-[2px] flex items-center gap-[6px]">
                     <span>{item.time}</span>
                     {item.method && (
                       <>
-                        <span>•</span>
-                        <span className="font-semibold">{item.method}</span>
+                        <span className="w-[3px] h-[3px] rounded-full bg-gray-300" />
+                        <span className="font-semibold text-[color:var(--text-secondary)]">{item.method}</span>
                       </>
                     )}
                   </div>
                 </div>
 
-                <div className="shrink-0 ml-2">
+                <div className="shrink-0 ml-[8px]">
                   <span className={cn(
-                    "inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold",
-                    isNakuha ? "bg-[var(--success-green)]/10 text-[var(--success-green)]" : "bg-[var(--ph-red)]/10 text-[var(--ph-red)]"
+                    "inline-flex items-center px-[10px] py-[6px] rounded-full text-[11px] font-bold",
+                    isNakuha ? "bg-[var(--success-light)] text-[var(--success)]" : "bg-[var(--danger-light)] text-[var(--danger)]"
                   )}>
-                    {isNakuha ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
                     {item.status}
                   </span>
                 </div>
               </div>
 
-              {isExpanded && (
-                <div className="mt-4 pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-2">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-[12px] text-[var(--text-muted)]">VeriFund ID</span>
-                    <span className="font-mono text-[13px] font-semibold text-[color:var(--ph-gold)]">{item.verifundId}</span>
-                  </div>
-                  {!isNakuha && item.reason && (
-                    <div className="flex justify-between items-center">
-                      <span className="text-[12px] text-[var(--text-muted)]">Dahilan</span>
-                      <span className="text-[13px] font-semibold text-[var(--ph-red)]">{item.reason}</span>
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-[16px] pt-[16px] border-t border-[#E8ECF7] flex flex-col gap-[8px]">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[13px] text-[var(--text-muted)] font-medium">VeriFund ID</span>
+                        <span className="font-mono text-[13px] font-bold text-[var(--ph-gold)] bg-[var(--info-light)] px-[8px] py-[2px] rounded-md">{item.verifundId}</span>
+                      </div>
+                      {!isNakuha && item.reason && (
+                        <div className="flex justify-between items-center">
+                          <span className="text-[13px] text-[var(--text-muted)] font-medium">Dahilan</span>
+                          <span className="text-[13px] font-bold text-[var(--danger)]">{item.reason}</span>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-              )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           )
         })}

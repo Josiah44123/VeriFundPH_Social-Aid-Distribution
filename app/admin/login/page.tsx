@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, Eye, EyeOff, ShieldCheck } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
 import { OFFICER } from "@/lib/data"
 
@@ -31,70 +30,71 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--surface)] flex flex-col">
+    <div className="min-h-screen bg-[var(--surface-page)] flex flex-col">
       <LoadingOverlay isVisible={loading} />
       
       {/* Header */}
-      <div className="bg-[var(--ph-red)] h-[64px] flex items-center justify-between px-4 shrink-0 shadow-sm relative z-10">
-        <div className="flex items-center">
-          <button onClick={() => router.push("/")} className="p-2 -ml-2 text-white transition-opacity active:opacity-50">
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <span className="text-white font-bold ml-2 text-[18px]">Officer Login</span>
-        </div>
+      <div 
+        className="h-[120px] flex items-start pt-[24px] px-[16px] shrink-0 relative z-0"
+        style={{ background: 'linear-gradient(135deg, #CE1126, #E8354A)' }}
+      >
+        <button onClick={() => router.push("/")} className="p-2 -ml-2 text-white relative z-20">
+          <ArrowLeft className="w-6 h-6" />
+        </button>
+        <span className="text-white font-bold text-[18px] absolute w-full text-center left-0 top-[32px] pointer-events-none z-10">
+          Officer Login
+        </span>
       </div>
 
-      <div className="flex-1 px-4 pt-12 flex flex-col max-w-md mx-auto w-full bg-white sm:shadow-sm sm:mt-4 sm:rounded-2xl sm:max-h-[600px] overflow-hidden">
-        <div className="flex justify-center mb-6">
-          <div className="w-[56px] h-[56px] bg-red-50 rounded-2xl flex items-center justify-center">
-            <ShieldCheck className="w-8 h-8 text-[var(--ph-red)]" />
-          </div>
+      <div className="flex-1 bg-white rounded-t-[24px] -mt-[20px] relative z-10 px-[16px] flex flex-col items-center pt-[32px] shadow-[0_-4px_24px_rgba(0,0,0,0.05)]">
+        <div className="absolute -top-[32px] w-[64px] h-[64px] rounded-full bg-[var(--ph-red)] border-[4px] border-white flex items-center justify-center shadow-sm">
+          <ShieldCheck className="w-[32px] h-[32px] text-white" />
         </div>
 
-        <div className="flex flex-col">
-          <h1 className="text-[20px] font-bold text-center mb-2 text-[var(--text-primary)]">
+        <div className="w-full max-w-md mt-[16px] flex flex-col">
+          <h1 className="text-[18px] font-bold text-center mb-[4px] text-[var(--text-primary)]">
             Officer Login
           </h1>
-          <p className="text-[14px] text-[var(--text-muted)] text-center mb-8">
+          <p className="text-[13px] text-[var(--text-muted)] text-center mb-[32px]">
             Para sa mga awtorisadong barangay officer.
           </p>
 
-          <div className="space-y-4 mb-2">
+          <div className="space-y-[16px] mb-[8px]">
             <div>
-              <label className="section-label mb-1.5 block">Email Address</label>
-              <Input 
+              <label className="section-label mb-[6px] block">Email Address</label>
+              <input 
                 type="email"
                 value={email}
                 onChange={(e: any) => setEmail(e.target.value)}
                 placeholder="officer@stacruz.gov.ph"
-                className="font-medium bg-[var(--surface)] focus:bg-white"
+                className="w-full text-left bg-[var(--surface-page)] text-[15px] px-[16px] text-[var(--text-primary)] border-[1.5px] border-transparent outline-none transition-colors h-[52px] rounded-[12px] focus:border-[var(--ph-red)] focus:bg-white"
               />
             </div>
             
             <div>
-              <label className="section-label mb-1.5 block">Password</label>
+              <label className="section-label mb-[6px] block">Password</label>
               <div className="relative">
-                <Input 
+                <input 
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e: any) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="font-medium pr-12 bg-[var(--surface)] focus:bg-white"
+                  className="w-full text-left bg-[var(--surface-page)] text-[15px] px-[16px] pr-[48px] text-[var(--text-primary)] border-[1.5px] border-transparent outline-none transition-colors h-[52px] rounded-[12px] focus:border-[var(--ph-red)] focus:bg-white"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[var(--ph-red)] p-1 transition-colors"
+                  className="absolute right-[12px] top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--ph-red)] transition-colors"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-[20px] h-[20px]" /> : <Eye className="w-[20px] h-[20px]" />}
                 </button>
               </div>
             </div>
           </div>
 
-          <div className="h-8 flex items-center justify-center mb-6">
+          <div className="h-[24px] flex items-center justify-center mb-[24px]">
             {error && (
-              <span className="text-[13px] font-semibold text-[color:var(--ph-red)] animate-[shake_300ms_ease-in-out]">
+              <span className="text-[13px] font-bold text-[var(--danger)] animate-[shake_300ms_ease-in-out]">
                 Mali ang email o password.
               </span>
             )}
@@ -103,7 +103,7 @@ export default function AdminLogin() {
           <button 
             onClick={handleLogin}
             disabled={!email || !password}
-            className="primary-btn w-full bg-[var(--ph-red)] text-white hover:bg-red-700 disabled:bg-red-300"
+            className="danger-btn w-full"
           >
             Mag-login
           </button>
