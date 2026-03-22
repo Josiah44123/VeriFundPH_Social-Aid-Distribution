@@ -1221,9 +1221,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 .max-h-\[400px\] {
   max-height: 400px;
 }
-.max-h-\[calc\(100vh-40px\)\] {
-  max-height: calc(100vh - 40px);
-}
 .min-h-full {
   min-height: 100%;
 }
@@ -1685,11 +1682,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
   margin-top: calc(1.5rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1.5rem * var(--tw-space-y-reverse));
 }
-.space-y-\[14px\] > :not([hidden]) ~ :not([hidden]) {
-  --tw-space-y-reverse: 0;
-  margin-top: calc(14px * calc(1 - var(--tw-space-y-reverse)));
-  margin-bottom: calc(14px * var(--tw-space-y-reverse));
-}
 .space-y-\[16px\] > :not([hidden]) ~ :not([hidden]) {
   --tw-space-y-reverse: 0;
   margin-top: calc(16px * calc(1 - var(--tw-space-y-reverse)));
@@ -1874,9 +1866,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 }
 .border-\[rgba\(0\2c 0\2c 0\2c 0\.04\)\] {
   border-color: rgba(0,0,0,0.04);
-}
-.border-\[rgba\(0\2c 0\2c 0\2c 0\.06\)\] {
-  border-color: rgba(0,0,0,0.06);
 }
 .border-\[rgba\(0\2c 0\2c 0\2c 0\.08\)\] {
   border-color: rgba(0,0,0,0.08);
@@ -2084,9 +2073,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
   --tw-bg-opacity: 1;
   background-color: rgb(254 242 242 / var(--tw-bg-opacity, 1));
 }
-.bg-transparent {
-  background-color: transparent;
-}
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
@@ -2172,9 +2158,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 }
 .p-8 {
   padding: 2rem;
-}
-.p-\[10px\] {
-  padding: 10px;
 }
 .p-\[12px\] {
   padding: 12px;
@@ -2458,9 +2441,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 }
 .pt-\[16px\] {
   padding-top: 16px;
-}
-.pt-\[20px\] {
-  padding-top: 20px;
 }
 .pt-\[24px\] {
   padding-top: 24px;
@@ -2795,11 +2775,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
   --tw-shadow-colored: 0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
-.shadow-2xl {
-  --tw-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-}
 .shadow-\[0_-8px_32px_rgba\(0\2c 0\2c 0\2c 0\.08\)\] {
   --tw-shadow: 0 -8px 32px rgba(0,0,0,0.08);
   --tw-shadow-colored: 0 -8px 32px var(--tw-shadow-color);
@@ -2929,6 +2904,9 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 .outline-none {
   outline: 2px solid transparent;
   outline-offset: 2px;
+}
+.outline {
+  outline-style: solid;
 }
 .ring-offset-background {
   --tw-ring-offset-color: hsl(var(--background));
@@ -3331,34 +3309,8 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 }
 @media (min-width: 640px) {
 
-  .sm\:inset-auto {
-    inset: auto;
-  }
-
-  .sm\:left-1\/2 {
-    left: 50%;
-  }
-
-  .sm\:top-1\/2 {
-    top: 50%;
-  }
-
   .sm\:block {
     display: block;
-  }
-
-  .sm\:w-\[480px\] {
-    width: 480px;
-  }
-
-  .sm\:-translate-x-1\/2 {
-    --tw-translate-x: -50%;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-  }
-
-  .sm\:-translate-y-1\/2 {
-    --tw-translate-y: -50%;
-    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
   }
 
   .sm\:grid-cols-2 {
@@ -3371,10 +3323,6 @@ button.primary-btn:active { transform: scale(0.97); filter: brightness(0.92); }
 
   .sm\:items-center {
     align-items: center;
-  }
-
-  .sm\:rounded-\[20px\] {
-    border-radius: 20px;
   }
 
   .sm\:p-12 {

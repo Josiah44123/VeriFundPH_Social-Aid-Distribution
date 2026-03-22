@@ -216,100 +216,194 @@ export default function DistributionsPage() {
       {/* Create Modal */}
       <AnimatePresence>
         {showModal && (
-          <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            style={{
+              position: 'fixed',
+              inset: 0,
+              background: 'rgba(13,25,102,0.55)',
+              zIndex: 100,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px',
+            }}
+            onClick={() => setShowModal(false)}
+          >
+            {/* Modal shell — constrained height */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40"
-              style={{ background: 'rgba(13,27,62,0.6)' }}
-              onClick={() => setShowModal(false)}
-            />
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 40 }}
-              transition={{ type: "spring", damping: 25 }}
-              className="fixed inset-x-0 bottom-0 z-50 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[480px] bg-white rounded-t-[24px] sm:rounded-[20px] shadow-2xl flex flex-col overflow-hidden max-h-[calc(100vh-40px)] mx-auto"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
+              onClick={e => e.stopPropagation()} // prevent backdrop click from closing
+              style={{
+                background: 'white',
+                borderRadius: 20,
+                width: '100%',
+                maxWidth: 480,
+                maxHeight: 'calc(100vh - 32px)',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+              }}
             >
-              {/* Header */}
-              <div className="flex items-center justify-between shrink-0 p-[24px] pb-[16px] border-b border-[rgba(0,0,0,0.06)]">
-                <h2 className="text-[18px] font-bold text-[var(--text-primary)]">Bagong Distribusyon</h2>
-                <button onClick={() => setShowModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
-                  <X className="w-[20px] h-[20px]" />
-                </button>
+              {/* Header — fixed, never scrolls */}
+              <div style={{
+                padding: '20px 24px 16px',
+                borderBottom: '1px solid rgba(0,0,0,0.06)',
+                flexShrink: 0,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: 'var(--text-primary)' }}>Bagong Distribusyon</h2>
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  style={{
+                    width: 30, height: 30, borderRadius: '50%',
+                    background: '#F2F2F7', border: 'none',
+                    cursor: 'pointer', fontSize: 14, color: '#3C3C43',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >✕</button>
               </div>
 
-              {/* Body */}
-              <div className="flex-1 overflow-y-auto p-[24px] pt-[20px] space-y-[14px]">
-                {formError && <div className="text-[13px] font-bold text-[var(--danger)] bg-[var(--danger-light)] p-[10px] rounded-[10px]">{formError}</div>}
+              {/* Scrollable form body */}
+              <div style={{
+                padding: '16px 24px',
+                overflowY: 'auto',
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 14,
+              }}>
+                {formError && <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--danger)', background: 'var(--danger-light)', padding: 10, borderRadius: 10 }}>{formError}</div>}
                 
-                {[
-                  { label: "Distribution Title", key: "title", placeholder: "SAP 2025 — Ikalawa" },
-                  { label: "Barangay", key: "barangay", placeholder: "Sta. Cruz, Quezon City" },
-                  { label: "Amount per Recipient (₱)", key: "amount", placeholder: "1500", type: "number" },
-                ].map(f => (
-                  <div key={f.key}>
-                    <label className="section-label mb-[4px] block">{f.label}</label>
-                    <input
-                      type={f.type ?? "text"}
-                      placeholder={f.placeholder}
-                      value={(form as Record<string, string>)[f.key]}
-                      onChange={e => setForm(prev => ({ ...prev, [f.key]: e.target.value }))}
-                      className="w-full h-[48px] rounded-[12px] bg-[var(--surface-page)] px-[14px] text-[14px] border-[1.5px] border-transparent outline-none focus:border-[var(--navy)] transition-colors"
-                    />
-                  </div>
-                ))}
-
+                {/* Distribution Title */}
                 <div>
-                  <label className="section-label mb-[4px] block">Petsa</label>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8E8E93', display: 'block', marginBottom: 6 }}>
+                    Distribution Title
+                  </label>
                   <input
-                    type="date"
-                    value={form.scheduledDate}
-                    onChange={e => setForm(prev => ({ ...prev, scheduledDate: e.target.value }))}
-                    className="w-full h-[48px] rounded-[12px] bg-[var(--surface-page)] px-[14px] text-[14px] border-[1.5px] border-transparent outline-none focus:border-[var(--navy)] transition-colors"
+                    value={form.title}
+                    onChange={e => setForm(f => ({ ...f, title: e.target.value }))}
+                    placeholder="SAP 2025 — Ikalawa"
+                    style={{ width: '100%', height: 48, background: '#F2F2F7', border: '1.5px solid transparent', borderRadius: 12, padding: '0 14px', fontSize: 14, boxSizing: 'border-box', outline: 'none', color: 'var(--text-primary)' }}
                   />
                 </div>
 
+                {/* Barangay */}
                 <div>
-                  <label className="section-label mb-[4px] block">Disbursement Method</label>
-                  <div className="flex gap-[8px] flex-wrap">
-                    {(["Cash", "GCash", "Palawan", "Mixed"] as Distribution["disbursementMethod"][]).map(m => (
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8E8E93', display: 'block', marginBottom: 6 }}>
+                    Barangay
+                  </label>
+                  <input
+                    value={form.barangay}
+                    onChange={e => setForm(f => ({ ...f, barangay: e.target.value }))}
+                    placeholder="Sta. Cruz, Quezon City"
+                    style={{ width: '100%', height: 48, background: '#F2F2F7', border: '1.5px solid transparent', borderRadius: 12, padding: '0 14px', fontSize: 14, boxSizing: 'border-box', outline: 'none', color: 'var(--text-primary)' }}
+                  />
+                </div>
+
+                {/* Amount */}
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8E8E93', display: 'block', marginBottom: 6 }}>
+                    Halaga sa Bawat Benepisyaryo (₱)
+                  </label>
+                  <input
+                    type="number"
+                    value={form.amount}
+                    onChange={e => setForm(f => ({ ...f, amount: e.target.value }))}
+                    placeholder="1500"
+                    style={{ width: '100%', height: 48, background: '#F2F2F7', border: '1.5px solid transparent', borderRadius: 12, padding: '0 14px', fontSize: 14, boxSizing: 'border-box', outline: 'none', color: 'var(--text-primary)' }}
+                  />
+                </div>
+
+                {/* Petsa */}
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8E8E93', display: 'block', marginBottom: 6 }}>
+                    Petsa
+                  </label>
+                  <input
+                    type="date"
+                    value={form.scheduledDate}
+                    onChange={e => setForm(f => ({ ...f, scheduledDate: e.target.value }))}
+                    style={{ width: '100%', height: 48, background: '#F2F2F7', border: '1.5px solid transparent', borderRadius: 12, padding: '0 14px', fontSize: 14, boxSizing: 'border-box', outline: 'none', color: 'var(--text-primary)' }}
+                  />
+                </div>
+
+                {/* Disbursement Method */}
+                <div>
+                  <label style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8E8E93', display: 'block', marginBottom: 8 }}>
+                    Disbursement Method
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                    {(['Cash', 'GCash', 'Palawan', 'Mixed'] as Distribution["disbursementMethod"][]).map(method => (
                       <button
-                        key={m}
-                        onClick={() => setForm(prev => ({ ...prev, disbursementMethod: m }))}
-                        className={cn(
-                          "px-[14px] py-[8px] rounded-[10px] text-[13px] font-bold transition-colors border-[1.5px]",
-                          form.disbursementMethod === m
-                            ? "bg-[var(--navy)] text-white border-[var(--navy)]"
-                            : "bg-[var(--surface-page)] text-[var(--text-muted)] border-transparent hover:border-[var(--navy)]"
-                        )}
+                        key={method}
+                        type="button"
+                        onClick={() => setForm(f => ({ ...f, disbursementMethod: method }))}
+                        style={{
+                          height: 42,
+                          borderRadius: 10,
+                          border: '1.5px solid',
+                          borderColor: form.disbursementMethod === method ? '#FF0048' : '#E0E0E0',
+                          background: form.disbursementMethod === method ? '#FFF0F3' : 'white',
+                          color: form.disbursementMethod === method ? '#FF0048' : '#8E8E93',
+                          fontSize: 14,
+                          fontWeight: form.disbursementMethod === method ? 700 : 400,
+                          cursor: 'pointer',
+                        }}
                       >
-                        {m}
+                        {method}
                       </button>
                     ))}
                   </div>
                 </div>
+
               </div>
 
-              {/* Footer */}
-              <div className="shrink-0 p-[24px] pt-[16px] border-t border-[rgba(0,0,0,0.06)] flex flex-col gap-[8px]">
+              {/* Footer — fixed at bottom, never scrolls away */}
+              <div style={{
+                padding: '12px 24px 20px',
+                borderTop: '1px solid rgba(0,0,0,0.06)',
+                flexShrink: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 8,
+              }}>
                 <button
+                  type="button"
                   onClick={handleCreate}
-                  className="w-full h-[52px] rounded-[14px] font-bold text-[15px] text-[var(--navy-deep)] transition-all hover:opacity-90 shadow-sm active:scale-[0.97]"
-                  style={{ background: 'var(--ph-gold)' }}
+                  style={{
+                    width: '100%', height: 50,
+                    background: '#FF0048', color: 'white',
+                    border: 'none', borderRadius: 14,
+                    fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                  }}
                 >
                   I-save ang Distribusyon
                 </button>
                 <button
+                  type="button"
                   onClick={() => setShowModal(false)}
-                  className="w-full h-[44px] bg-transparent text-[var(--text-muted)] font-bold text-[14px] transition-colors hover:text-[var(--text-primary)]"
+                  style={{
+                    width: '100%', height: 40,
+                    background: 'none', border: 'none',
+                    color: '#8E8E93', fontSize: 14, cursor: 'pointer',
+                  }}
                 >
                   I-cancel
                 </button>
               </div>
+
             </motion.div>
-          </>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>
