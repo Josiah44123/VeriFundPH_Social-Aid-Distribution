@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation"
 import { ArrowLeft, Eye, EyeOff, ShieldCheck, CheckCircle2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
-const USERS = [
-  { email: "officer@stacruZ.gov.ph", password: "verifund2025", name: "Josefa Reyes", role: "OFFICER", barangay: "Sta. Cruz, Quezon City" },
-  { email: "admin@lgu-qc.gov.ph", password: "admin2025", name: "LGU Admin", role: "ADMIN", barangay: "Quezon City" }
-]
+import { OFFICER_CREDENTIALS } from "@/lib/constants"
+
+const USERS = OFFICER_CREDENTIALS
 
 export default function AdminLogin() {
   const router = useRouter()

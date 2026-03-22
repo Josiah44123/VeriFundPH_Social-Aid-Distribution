@@ -4,12 +4,14 @@ import { useState, useRef, useCallback } from "react"
 import { CheckCircle2, XCircle, Upload as UploadIcon } from "lucide-react"
 import { QRScanner } from "@/components/QRScanner"
 import { useVeriFundStore } from "@/lib/store"
-import type { Claim, AuditEntry, FraudFlag } from "@/lib/store"
-import { cn } from "@/lib/utils"
+import type { Claim, AuditEntry } from "@/lib/store"
 import { motion, AnimatePresence } from "framer-motion"
+import { cn } from "@/lib/utils"
 
-const OFFICER_NAME = "Josefa Reyes"
-const BARANGAY = "Sta. Cruz, Quezon City"
+import { DEFAULT_BARANGAY, OFFICER_CREDENTIALS } from "@/lib/constants"
+
+const OFFICER_NAME = OFFICER_CREDENTIALS[0].name
+const BARANGAY = DEFAULT_BARANGAY
 const ACTIVE_DISTRIBUTION = {
   id: "SAP-2025-Q1",
   title: "SAP 2025 — Una",
@@ -22,8 +24,10 @@ export function VerifyTab() {
   
   const [scanResult, setScanResult] = useState<{
     type: 'VERIFIED' | 'REJECTED';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     beneficiary?: any;
     reason?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     distribution?: any;
   } | null>(null);
 
@@ -49,6 +53,7 @@ export function VerifyTab() {
       b => b.id === id || b.qrData === id
     );
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const activeDistribution = store.distributions?.find((d: any) => d.status === 'ACTIVE') || ACTIVE_DISTRIBUTION;
 
     const alreadyClaimed = activeDistribution
@@ -138,6 +143,7 @@ export function VerifyTab() {
     setShowManualEntry(false)
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initials = (b: any) => `${b.firstName[0]}${b.lastName[0]}`
 
   return (
@@ -262,23 +268,12 @@ export function VerifyTab() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              style={{
-                position: 'fixed',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                background: 'white',
-                borderRadius: '24px 24px 0 0',
-                padding: '16px 20px',
-                paddingBottom: 'calc(16px + env(safe-area-inset-bottom) + 64px)',
-                zIndex: 60,
-                boxShadow: '0 -8px 32px rgba(0,0,0,0.12)',
-              }}
+              className="fixed inset-x-0 bottom-0 bg-white z-[60] rounded-t-[24px] shadow-[var(--shadow-lg)] px-[20px] pt-[16px] pb-[calc(24px+env(safe-area-inset-bottom)+80px)] md:pb-[calc(32px+env(safe-area-inset-bottom))]"
             >
               {/* Drag handle */}
-              <div style={{ width: 32, height: 4, background: '#E0E0E0', borderRadius: 9999, margin: '0 auto 16px' }} />
+              <div className="w-[32px] h-[4px] bg-[#E8ECF7] rounded-full mx-auto mb-[16px]" />
 
-              <p style={{ fontSize: 16, fontWeight: 700, marginBottom: 12, textAlign: 'center' }}>
+              <p className="text-[16px] font-bold text-[var(--text-primary)] mb-[16px] text-center">
                 I-type ang VeriFund ID
               </p>
 
@@ -286,36 +281,17 @@ export function VerifyTab() {
                 value={manualCode}
                 onChange={e => setManualCode(e.target.value)}
                 placeholder="VF-2025-0001-STC"
-                style={{
-                  width: '100%',
-                  height: 52,
-                  background: '#F2F2F7',
-                  border: '1.5px solid transparent',
-                  borderRadius: 14,
-                  padding: '0 16px',
-                  fontSize: 15,
-                  fontFamily: 'monospace',
-                  marginBottom: 12,
-                  display: 'block',
-                }}
+                className="w-full h-[52px] bg-[var(--surface-input)] border-[1.5px] border-transparent rounded-[14px] px-[16px] text-[15px] font-mono mb-[12px] block outline-none focus:border-[var(--blue)] focus:bg-white transition-colors"
                 onKeyDown={e => e.key === 'Enter' && handleManualVerify()}
               />
 
               <button
                 onClick={handleManualVerify}
                 disabled={!manualCode.trim()}
-                style={{
-                  width: '100%',
-                  height: 52,
-                  background: !manualCode.trim() ? '#E8ECF7' : '#FF0048',
-                  color: !manualCode.trim() ? '#A0ABC0' : 'white',
-                  border: 'none',
-                  borderRadius: 14,
-                  fontSize: 15,
-                  fontWeight: 700,
-                  cursor: !manualCode.trim() ? 'not-allowed' : 'pointer',
-                  display: 'block',
-                }}
+                className={cn(
+                  "w-full h-[52px] font-bold rounded-[14px] text-[15px] transition-all",
+                  !manualCode.trim() ? "bg-[#E8ECF7] text-[#A0ABC0] cursor-not-allowed" : "bg-[var(--red)] text-white shadow-[var(--shadow-sm)] active:scale-[0.98]"
+                )}
               >
                 I-Verify
               </button>

@@ -1,12 +1,14 @@
 "use client"
 
-import { CheckCircle2, ChevronDown, ChevronRight, XCircle, QrCode } from "lucide-react"
+import { CheckCircle2, ChevronDown, ChevronRight, QrCode } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { useVeriFundStore } from "@/lib/store"
 import { useState } from "react"
 
-const BARANGAY = "Sta. Cruz, Quezon City"
+import { DEFAULT_BARANGAY } from "@/lib/constants"
+
+const BARANGAY = DEFAULT_BARANGAY
 
 interface ListahanTabProps {
   onSwitchToVerify?: () => void

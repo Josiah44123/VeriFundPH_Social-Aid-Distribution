@@ -4,6 +4,7 @@ import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, User, CheckCircle2 } from "lucide-react"
 import { OTPInput } from "@/components/OTPInput"
+import { VALID_OTP } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -46,7 +47,7 @@ export default function CitizenLogin() {
   }, [])
 
   const handleOTPComplete = useCallback((code: string) => {
-    if (code === "123456") {
+    if (code === VALID_OTP) {
       setOtpSuccess(true)
       setTimeout(() => {
         router.push("/citizen/dashboard")

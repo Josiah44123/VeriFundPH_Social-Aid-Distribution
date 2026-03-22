@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useVeriFundStore } from "@/lib/store"
 import type { Distribution, AuditEntry } from "@/lib/store"
-import { Plus, Gift, ChevronDown, ChevronUp, X, CheckCircle2 } from "lucide-react"
+import { Plus, Gift, ChevronDown, ChevronUp, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -92,7 +92,7 @@ export default function DistributionsPage() {
     return (
       <div className="bg-white rounded-[20px] shadow-[var(--shadow-md)] overflow-hidden relative">
         <div className="absolute left-0 top-0 bottom-0 w-[4px] rounded-r-full" style={{ background: cfg.border }} />
-        
+
         <div className="p-[20px] cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : d.id)}>
           <div className="flex items-start justify-between mb-[12px]">
             <div>
@@ -283,7 +283,7 @@ export default function DistributionsPage() {
                 gap: 14,
               }}>
                 {formError && <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--danger)', background: 'var(--danger-light)', padding: 10, borderRadius: 10 }}>{formError}</div>}
-                
+
                 {/* Distribution Title */}
                 <div>
                   <label style={{ fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#8E8E93', display: 'block', marginBottom: 6 }}>

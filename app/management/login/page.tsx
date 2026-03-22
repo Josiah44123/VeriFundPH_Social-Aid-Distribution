@@ -57,9 +57,9 @@ export default function ManagementLogin() {
               <input 
                 type="email"
                 value={email}
-                onChange={(e: any) => setEmail(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                 placeholder="admin@lgu-qc.gov.ph"
-                onKeyDown={(e: any) => e.key === "Enter" && handleLogin()}
+                onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleLogin()}
                 className="w-full h-[52px] rounded-[12px] bg-[var(--surface-page)] px-[16px] text-[15px] text-[var(--text-primary)] border-[1.5px] border-transparent outline-none transition-colors focus:border-[var(--ph-blue-deeper)] focus:bg-white"
               />
             </div>
@@ -69,9 +69,9 @@ export default function ManagementLogin() {
                 <input 
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e: any) => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  onKeyDown={(e: any) => e.key === "Enter" && handleLogin()}
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => e.key === "Enter" && handleLogin()}
                   className="w-full h-[52px] rounded-[12px] bg-[var(--surface-page)] px-[16px] pr-[48px] text-[15px] text-[var(--text-primary)] border-[1.5px] border-transparent outline-none transition-colors focus:border-[var(--ph-blue-deeper)] focus:bg-white"
                 />
                 <button

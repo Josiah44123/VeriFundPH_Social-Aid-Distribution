@@ -1,0 +1,10 @@
+﻿.next/types/app/admin/portal/audit/page.ts(2,24): error TS2307: Cannot find module '../../../../../../app/admin/portal/audit/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/audit/page.ts(5,29): error TS2307: Cannot find module '../../../../../../app/admin/portal/audit/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/beneficiaries/page.ts(2,24): error TS2307: Cannot find module '../../../../../../app/admin/portal/beneficiaries/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/beneficiaries/page.ts(5,29): error TS2307: Cannot find module '../../../../../../app/admin/portal/beneficiaries/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/distributions/page.ts(2,24): error TS2307: Cannot find module '../../../../../../app/admin/portal/distributions/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/distributions/page.ts(5,29): error TS2307: Cannot find module '../../../../../../app/admin/portal/distributions/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/page.ts(2,24): error TS2307: Cannot find module '../../../../../app/admin/portal/page.js' or its corresponding type declarations.
+.next/types/app/admin/portal/page.ts(5,29): error TS2307: Cannot find module '../../../../../app/admin/portal/page.js' or its corresponding type declarations.
+.next/types/app/admin/selection/page.ts(2,24): error TS2307: Cannot find module '../../../../../app/admin/selection/page.js' or its corresponding type declarations.
+.next/types/app/admin/selection/page.ts(5,29): error TS2307: Cannot find module '../../../../../app/admin/selection/page.js' or its corresponding type declarations.

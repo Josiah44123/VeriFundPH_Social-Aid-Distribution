@@ -35,7 +35,7 @@ function formatTime(iso: string) {
 
 export default function ManagementDashboard() {
   const router = useRouter()
-  const { beneficiaries, claims, fraudFlags, auditLog, resolveFraudFlag, distributions } = useVeriFundStore()
+  const { beneficiaries, claims, fraudFlags, auditLog, resolveFraudFlag } = useVeriFundStore()
 
   const nakuhaCount = claims.filter(c => c.status === "NAKUHA").length
   const activeCount = beneficiaries.filter(b => b.status === "ACTIVE").length
