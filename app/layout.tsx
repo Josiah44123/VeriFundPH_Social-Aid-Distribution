@@ -1,22 +1,18 @@
 import "./globals.css"
 import type { Metadata } from "next"
-import { Plus_Jakarta_Sans } from "next/font/google"
-import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { VeriFundProvider } from "@/lib/store"
-
-const jakarta = Plus_Jakarta_Sans({ 
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-  variable: "--font-jakarta"
-})
+import { Suspense } from "react"
+import type { Viewport } from "next"
 
 export const metadata: Metadata = {
-  title: "VeriFund PH",
-  description: "Official Government Platform for Social Aid Distribution",
+  title: 'VeriFund PH — Official Social Aid Distribution Platform',
+  description: 'Siguruhing makakarating ang tulong sa tamang tao.',
 }
 
-import { Suspense } from "react"
+export const viewport: Viewport = {
+  themeColor: '#18269B',
+}
 
 export default function RootLayout({
   children,
@@ -24,10 +20,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={cn(jakarta.variable, "font-sans")} suppressHydrationWarning>
-      <body className="font-sans antialiased text-[color:var(--text-primary)] bg-[color:var(--surface-page)] selection:bg-[color:var(--ph-gold)] selection:text-[color:var(--text-on-gold)]">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#18269B" />
+      </head>
+      <body className="antialiased font-sans flex flex-col min-h-screen">
         <VeriFundProvider>
-          <main className="min-h-screen pb-[env(safe-area-inset-bottom)]">
+          <main className="flex-1 flex flex-col w-full pb-[env(safe-area-inset-bottom)] relative">
             <Suspense fallback={null}>
               {children}
             </Suspense>

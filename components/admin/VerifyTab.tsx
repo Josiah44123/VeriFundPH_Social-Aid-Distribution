@@ -6,6 +6,7 @@ import { QRScanner } from "@/components/QRScanner"
 import { useVeriFundStore } from "@/lib/store"
 import type { Claim, AuditEntry, FraudFlag } from "@/lib/store"
 import { cn } from "@/lib/utils"
+import { motion, AnimatePresence } from "framer-motion"
 
 const OFFICER_NAME = "Josefa Reyes"
 const BARANGAY = "Sta. Cruz, Quezon City"
@@ -20,6 +21,7 @@ export function VerifyTab() {
   const { beneficiaries, claims, addClaim, addAuditEntry, addFraudFlag } = useVeriFundStore()
   const [manualCode, setManualCode] = useState("")
   const [result, setResult] = useState<any>(null)
+  const [showManualEntry, setShowManualEntry] = useState(false)
 
   const handleVerify = (code: string) => {
     const trimmed = code.trim()
@@ -70,14 +72,15 @@ export function VerifyTab() {
     setResult({ type: "VERIFIED", beneficiary })
   }
 
-  const handleConfirm = (method: "Cash" | "GCash" | "Palawan") => {
+  const handleConfirm = () => {
     if (!result?.beneficiary) return
     const { beneficiary } = result
+    const method = "Cash" // Simplified per the new button requirement "KUMPIRMAHIN" instead of 3 buttons
 
     const claim: Claim = {
       id: `CLM-${Date.now()}`,
       beneficiaryId: beneficiary.id,
-      beneficiaryName: `${beneficiary.firstName} ${beneficiary.middleName ? beneficiary.middleName + " " : ""}${beneficiary.lastName}`,
+      beneficiaryName: `${beneficiary.firstName} ${beneficiary.lastName}`,
       distributionId: ACTIVE_DISTRIBUTION.id,
       distributionTitle: ACTIVE_DISTRIBUTION.title,
       amount: ACTIVE_DISTRIBUTION.amount,
@@ -104,121 +107,205 @@ export function VerifyTab() {
     addAuditEntry(auditEntry)
     setResult(null)
     setManualCode("")
+    setShowManualEntry(false)
+    
+    // Toast notification would go here in a full app, using a global toast system
+    // but the store update will automatically update Listahan.
   }
 
   const initials = (b: any) => `${b.firstName[0]}${b.lastName[0]}`
 
   return (
-    <div className="flex flex-col h-full relative overflow-clip animate-in fade-in px-[16px] pt-[16px] pb-[32px]">
-      {/* Current Distribution Info */}
-      <div className="bg-[var(--ph-blue)] rounded-[16px] p-[16px] mb-[24px] shadow-sm flex flex-col relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-[120px] h-[120px] bg-white opacity-5 rounded-full -mt-[40px] -mr-[40px] pointer-events-none" />
-        <div className="flex justify-between items-start mb-[8px] relative z-10">
-          <h3 className="font-bold text-[16px] text-white">{ACTIVE_DISTRIBUTION.title}</h3>
-          <span className="bg-white text-[var(--ph-blue)] text-[11px] px-[10px] py-[4px] rounded-full font-bold shadow-sm">AKTIBO</span>
+    <div className="flex flex-col h-full animate-in fade-in pb-[100px] bg-[var(--surface-page)] min-h-full">
+      <div className="px-[16px] pt-[24px]">
+        {/* Distribution Info Card */}
+        <div className="bg-white rounded-[16px] p-[16px] mb-[32px] shadow-[var(--shadow-sm)] flex border-l-[3px] border-l-[var(--red)]">
+          <div className="flex-1">
+            <h3 className="font-bold text-[16px] text-[var(--text-primary)] leading-tight mb-[4px]">{ACTIVE_DISTRIBUTION.title}</h3>
+            <p className="text-[13px] text-[var(--text-muted)] font-medium">{ACTIVE_DISTRIBUTION.date} • ₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</p>
+          </div>
+          <div className="shrink-0 flex items-center">
+            <span className="bg-[var(--success)] text-white text-[11px] px-[12px] py-[4px] rounded-[9999px] font-bold">AKTIBO</span>
+          </div>
         </div>
-        <p className="text-[13px] text-white/80 font-medium relative z-10">{ACTIVE_DISTRIBUTION.date} • ₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()} bawat isa</p>
-      </div>
 
-      <QRScanner 
-        isScanning={!result}
-        onScanSuccess={(code) => handleVerify(code)}
-      />
-
-      <div className="flex items-center gap-[16px] my-[24px]">
-        <div className="h-[2px] bg-[#E8ECF7] flex-1 rounded-full" />
-        <span className="text-[13px] text-[var(--text-muted)] font-bold uppercase tracking-wider">o</span>
-        <div className="h-[2px] bg-[#E8ECF7] flex-1 rounded-full" />
-      </div>
-
-      <div className="flex gap-[8px]">
-        <input 
-          value={manualCode}
-          onChange={(e: any) => setManualCode(e.target.value)}
-          placeholder="I-type ang VF ID o QR code"
-          className="bg-white flex-1 h-[52px] rounded-[14px] px-[16px] text-[15px] border-[1.5px] border-transparent outline-none transition-colors focus:border-[var(--ph-red)] font-mono shadow-sm"
+        {/* Scanner */}
+        <QRScanner 
+          isScanning={!result}
+          onScanSuccess={(code) => handleVerify(code)}
         />
-        <button 
-          onClick={() => handleVerify(manualCode)}
-          disabled={!manualCode}
-          className="h-[52px] bg-[var(--navy-deep)] text-white px-[24px] font-bold rounded-[14px] disabled:bg-[#E8ECF7] disabled:text-[#A0ABC0] transition-colors shadow-sm active:scale-[0.98] disabled:active:scale-100"
-        >
-          I-Verify
-        </button>
-      </div>
 
-      {/* VERIFIED Result */}
-      {result?.type === "VERIFIED" && result.beneficiary && (
-        <div className="fixed inset-x-0 bottom-0 bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.1)] rounded-t-[28px] p-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-[100%] duration-300 z-50 flex flex-col items-center border-[1.5px] border-[#E8ECF7]">
-          <div className="w-[48px] h-[6px] bg-[#E8ECF7] rounded-full mb-[24px]" />
-          
-          <div className="w-[64px] h-[64px] bg-[var(--success)] rounded-full flex items-center justify-center mb-[16px] shadow-sm animate-in zoom-in-50 delay-150 relative">
-            <div className="absolute inset-0 bg-[var(--success)] rounded-full animate-ping opacity-20" />
-            <CheckCircle2 className="w-[32px] h-[32px] text-white relative z-10" />
-          </div>
-          <h2 className="text-[24px] font-bold text-[var(--success)] text-center mb-[4px] leading-tight">VERIFIED</h2>
-          <p className="text-[14px] text-[var(--text-muted)] font-medium text-center mb-[24px]">Maaaring kumuha ng ayuda</p>
-
-          <div className="flex items-center gap-[16px] mb-[16px] bg-[var(--surface-page)] w-full p-[16px] rounded-[20px] border border-[#E8ECF7]">
-            <div className="w-[56px] h-[56px] bg-[var(--ph-blue)] text-white font-bold text-[20px] rounded-full flex items-center justify-center shrink-0 shadow-sm border-[2px] border-white">
-              {initials(result.beneficiary)}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-[18px] text-[var(--text-primary)] truncate leading-tight mb-[2px]">{result.beneficiary.firstName} {result.beneficiary.lastName}</p>
-              <p className="text-[13px] text-[var(--text-muted)] truncate">{result.beneficiary.barangay}</p>
-            </div>
-          </div>
-          
-          <div className="text-center mb-[16px] w-full bg-[var(--info-light)] py-[12px] rounded-[16px] border border-[var(--ph-blue)]/10">
-            <span className="text-[12px] text-[var(--text-muted)] font-bold uppercase tracking-widest block mb-[2px]">Halaga</span>
-            <span className="text-[28px] font-bold text-[var(--ph-gold)] leading-none block">₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</span>
-          </div>
-
-          <p className="text-[12px] font-bold text-[var(--text-muted)] uppercase tracking-wider mb-[8px] self-start">Paraan ng Bayad:</p>
-          <div className="flex gap-[8px] w-full mb-[8px]">
-            {(["Cash", "GCash", "Palawan"] as const).map(method => (
-              <button
-                key={method}
-                onClick={() => handleConfirm(method)}
-                className="flex-1 h-[52px] bg-[var(--success)] text-white font-bold rounded-[14px] text-[14px] transition-transform active:scale-[0.97] shadow-sm hover:opacity-90"
-              >
-                {method}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* REJECTED Result */}
-      {result?.type === "REJECTED" && (
-        <div className="fixed inset-x-0 bottom-0 bg-white shadow-[0_-8px_32px_rgba(0,0,0,0.1)] rounded-t-[28px] p-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] animate-in slide-in-from-bottom-[100%] duration-300 z-50 flex flex-col items-center border-[1.5px] border-[var(--danger)]">
-          <div className="w-[48px] h-[6px] bg-[#E8ECF7] rounded-full mb-[24px]" />
-
-          <div className="w-[64px] h-[64px] bg-[var(--danger)] rounded-full flex items-center justify-center mb-[16px] shadow-sm animate-in zoom-in-50 delay-150">
-            <XCircle className="w-[32px] h-[32px] text-white" />
-          </div>
-          <h2 className="text-[24px] font-bold text-[var(--danger)] text-center mb-[8px] leading-tight">HINDI PUWEDE</h2>
-          <div className="w-full bg-[var(--danger-light)] p-[16px] rounded-[16px] mb-[32px]">
-            <p className="text-[15px] text-[var(--danger)] text-center font-bold">{result.reason}</p>
-          </div>
-
+        {/* Manual Entry Toggle */}
+        <div className="text-center mt-[24px]">
           <button 
-            onClick={() => { setResult(null); setManualCode("") }}
-            className="w-full h-[56px] bg-[var(--surface-page)] text-[var(--text-primary)] font-bold rounded-[16px] text-[16px] transition-transform active:scale-[0.98] shadow-sm border-[1.5px] border-[#E8ECF7] hover:bg-gray-100"
+            onClick={() => setShowManualEntry(true)}
+            className="text-[13px] font-bold text-[var(--text-muted)] border-b border-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors pb-1"
           >
-            Scan Ulit
+            Hindi gumagana ang camera?
           </button>
         </div>
-      )}
+      </div>
+
+      {/* Manual Entry Bottom Sheet */}
+      <AnimatePresence>
+        {showManualEntry && !result && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowManualEntry(false)}
+              className="fixed inset-0 bg-black/40 z-40"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed inset-x-0 bottom-0 bg-white z-50 rounded-t-[24px] shadow-[var(--shadow-lg)] pb-[calc(24px+env(safe-area-inset-bottom))] px-[24px] pt-[12px]"
+            >
+              <div className="flex justify-center mb-[24px]">
+                <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full" />
+              </div>
+              <h3 className="text-[18px] font-bold text-[var(--text-primary)] mb-[16px] text-center">I-type ang VeriFund ID</h3>
+              <input 
+                value={manualCode}
+                onChange={(e: any) => setManualCode(e.target.value)}
+                placeholder="VF-2025-0001-STC"
+                className="w-full h-[52px] rounded-[14px] px-[16px] bg-[var(--surface-input)] text-[15px] border-[1.5px] border-transparent outline-none transition-colors focus:border-[var(--blue)] font-mono text-center tracking-wide mb-[16px]"
+              />
+              <button 
+                onClick={() => handleVerify(manualCode)}
+                disabled={!manualCode}
+                className="w-full h-[52px] bg-[var(--navy)] text-white font-bold rounded-[14px] text-[15px] tracking-[-0.2px] disabled:bg-[#E8ECF7] disabled:text-[#A0ABC0] transition-colors shadow-[var(--shadow-sm)]"
+              >
+                I-Verify
+              </button>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* VERIFIED Result Bottom Sheet */}
+      <AnimatePresence>
+        {result?.type === "VERIFIED" && result.beneficiary && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setResult(null)}
+              className="fixed inset-0 bg-[#1C1C1E]/60 z-40"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 22, stiffness: 200 }}
+              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] z-50 overflow-hidden"
+            >
+              {/* Top Accent Bar */}
+              <div className="h-[4px] w-full bg-[var(--red)] absolute top-0 left-0" />
+              
+              <div className="pt-[16px] px-[24px] flex flex-col items-center relative">
+                <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full mb-[24px]" />
+                
+                {/* Spring Checkmark */}
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
+                  className="w-[72px] h-[72px] bg-[var(--success)] rounded-full flex items-center justify-center mb-[16px] shadow-[var(--shadow-sm)] text-white"
+                >
+                  <CheckCircle2 className="w-[40px] h-[40px]" />
+                </motion.div>
+
+                <h2 className="text-[22px] font-bold text-[var(--text-primary)] text-center mb-[4px] leading-tight">Verified!</h2>
+                <p className="text-[14px] text-[var(--text-muted)] font-medium text-center mb-[24px]">Pwedeng kumuha ng ayuda</p>
+
+                {/* Recipient Row */}
+                <div className="flex items-center gap-[16px] mb-[24px] w-full">
+                  <div className="w-[52px] h-[52px] bg-[var(--navy)] text-white font-bold text-[18px] rounded-full flex items-center justify-center shrink-0">
+                    {initials(result.beneficiary)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-[16px] text-[var(--text-primary)] truncate leading-tight mb-[2px]">{result.beneficiary.firstName} {result.beneficiary.lastName}</p>
+                    <p className="text-[13px] text-[var(--text-muted)] truncate">{result.beneficiary.barangay}</p>
+                  </div>
+                </div>
+                
+                <div className="text-center mb-[32px] w-full">
+                  <span className="text-[24px] font-extrabold text-[var(--red)] leading-none block tracking-tight">₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</span>
+                </div>
+
+                <button
+                  onClick={handleConfirm}
+                  className="w-full h-[52px] bg-[var(--success)] text-white font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98] shadow-[var(--shadow-sm)] mb-[16px]"
+                >
+                  KUMPIRMAHIN
+                </button>
+                <button 
+                  onClick={() => setResult(null)}
+                  className="text-[13px] font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                  I-cancel
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* REJECTED Result Bottom Sheet */}
+      <AnimatePresence>
+        {result?.type === "REJECTED" && (
+          <>
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setResult(null)}
+              className="fixed inset-0 bg-[#1C1C1E]/60 z-40"
+            />
+            <motion.div 
+              initial={{ y: "100%" }}
+              animate={{ y: 0 }}
+              exit={{ y: "100%" }}
+              transition={{ type: "spring", damping: 22, stiffness: 200 }}
+              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom))] z-50 overflow-hidden"
+            >
+              {/* Top Accent Bar */}
+              <div className="h-[4px] w-full bg-[var(--danger)] absolute top-0 left-0" />
+              
+              <div className="pt-[16px] px-[24px] flex flex-col items-center relative">
+                <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full mb-[24px]" />
+                
+                <motion.div 
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
+                  className="w-[72px] h-[72px] bg-[var(--danger)] rounded-full flex items-center justify-center mb-[16px] shadow-[var(--shadow-sm)] text-white"
+                >
+                  <XCircle className="w-[40px] h-[40px]" />
+                </motion.div>
+
+                <h2 className="text-[22px] font-bold text-[var(--danger)] text-center mb-[8px] leading-tight">Hindi Puwede</h2>
+                <div className="w-full bg-[var(--danger-light)] p-[16px] rounded-[16px] mb-[32px]">
+                  <p className="text-[14px] text-[var(--danger)] text-center font-bold tracking-tight leading-[1.4]">{result.reason}</p>
+                </div>
+
+                <button 
+                  onClick={() => setResult(null)}
+                  className="w-full h-[52px] bg-white border-[1.5px] border-[var(--red)] text-[var(--red)] font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98] shadow-[var(--shadow-sm)]"
+                >
+                  Scan Ulit
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
       
-      {/* Backdrop */}
-      {result && (
-        <div 
-          className="fixed inset-0 z-40 animate-in fade-in"
-          style={{ background: 'rgba(13, 27, 62, 0.6)' }}
-          onClick={() => result.type === "REJECTED" && setResult(null)}
-        />
-      )}
     </div>
   )
 }

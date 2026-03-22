@@ -74,8 +74,8 @@ export function OTPInput({ length = 6, onComplete, error }: OTPInputProps) {
             className={cn(
               "w-[48px] h-[56px] text-center text-[22px] font-bold rounded-[12px] border-[2px] transition-all outline-none",
               error ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" 
-                : data ? "bg-white border-[var(--ph-blue)] text-[var(--ph-blue)] shadow-[0_2px_8px_rgba(0,56,168,0.15)]"
-                : "bg-[var(--surface-page)] border-transparent text-[var(--text-primary)] focus:border-[var(--ph-blue)] focus:bg-white"
+                : data ? "bg-white border-[var(--navy)] text-[var(--navy)] shadow-[0_2px_8px_rgba(24,38,155,0.15)]"
+                : "bg-[var(--surface-input)] border-transparent text-[var(--text-primary)] focus:border-[var(--navy)] focus:bg-white"
             )}
             maxLength={1}
           />

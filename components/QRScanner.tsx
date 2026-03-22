@@ -45,17 +45,37 @@ export function QRScanner({ onScanSuccess, isScanning }: QRScannerProps) {
   }, [isScanning, onScanSuccess])
 
   return (
-    <div className="relative w-full max-w-[300px] mx-auto aspect-square bg-[color:var(--navy-deep)] rounded-[20px] overflow-hidden">
-      {/* Target brackets with pulse animation */}
-      <div className="absolute inset-4 z-10 pointer-events-none">
-        <div className="absolute top-0 left-0 w-8 h-8 border-t-4 border-l-4 border-[color:var(--ph-gold)] animate-pulse" />
-        <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-[color:var(--ph-gold)] animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-[color:var(--ph-gold)] animate-pulse" />
-        <div className="absolute bottom-0 right-0 w-8 h-8 border-b-4 border-r-4 border-[color:var(--ph-gold)] animate-pulse" />
+    <div className="flex flex-col items-center w-full">
+      <div className="relative w-full max-w-[280px] aspect-square bg-[#1C1C1E] rounded-[20px] overflow-hidden shadow-[var(--shadow-lg)] mb-[12px]">
+        
+        {/* Dark Vignette Overlay */}
+        <div className="absolute inset-0 pointer-events-none z-10" style={{ boxShadow: 'inset 0 0 40px rgba(0,0,0,0.6)' }} />
+        
+        {/* Target brackets */}
+        <div className="absolute inset-[24px] z-20 pointer-events-none animate-[pulse_1.8s_ease-in-out_infinite]">
+          <div className="absolute top-0 left-0 w-[40px] h-[40px] border-t-[3px] border-l-[3px] border-[#FFB800]" />
+          <div className="absolute top-0 right-0 w-[40px] h-[40px] border-t-[3px] border-r-[3px] border-[#FFB800]" />
+          <div className="absolute bottom-0 left-0 w-[40px] h-[40px] border-b-[3px] border-l-[3px] border-[#FFB800]" />
+          <div className="absolute bottom-0 right-0 w-[40px] h-[40px] border-b-[3px] border-r-[3px] border-[#FFB800]" />
+        </div>
+
+        {/* Horizontal Scan Line */}
+        <div className="absolute left-0 right-0 h-[2px] bg-[var(--red)] z-20 pointer-events-none shadow-[0_0_8px_var(--red)] animate-[scan_2s_linear_infinite]" />
+        
+        {/* Scanner Element */}
+        <div id="reader" className="w-full h-full [&>video]:object-cover [&>video]:scale-105" />
+
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes scan {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(280px); }
+            100% { transform: translateY(0); }
+          }
+        `}} />
       </div>
-      
-      {/* Scanner Element */}
-      <div id="reader" className="w-full h-full [&>video]:object-cover" />
+      <p className="text-[12px] text-[var(--text-muted)] text-center font-medium">
+        I-align ang QR sa loob ng frame
+      </p>
     </div>
   )
 }

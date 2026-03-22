@@ -10,6 +10,7 @@ export interface Beneficiary {
   firstName: string
   middleName?: string
   phone: string
+  gender?: "Lalaki" | "Babae" | "Iba pa"
   idType: string
   idNumber: string
   barangay: string
@@ -91,31 +92,31 @@ interface VeriFundStore {
 const SEED_BENEFICIARIES: Beneficiary[] = [
   {
     id: "VF-2025-0001-STC", lastName: "dela Cruz", firstName: "Maria", middleName: "Santos",
-    phone: "09171234567", idType: "PhilSys", idNumber: "1234-5678-9012-3456",
+    phone: "09171234567", gender: "Babae", idType: "PhilSys", idNumber: "1234-5678-9012-3456",
     barangay: "Sta. Cruz, Quezon City", status: "ACTIVE",
     enrolledAt: "2025-03-10T08:14:00Z", enrolledBy: "Josefa Reyes", qrData: "VF-2025-0001-STC"
   },
   {
     id: "VF-2025-0099-STC", lastName: "Bautista", firstName: "Juan", middleName: "Reyes",
-    phone: "09281234567", idType: "Voter's ID", idNumber: "QC-2020-00456",
+    phone: "09281234567", gender: "Lalaki", idType: "Voter's ID", idNumber: "QC-2020-00456",
     barangay: "Sta. Cruz, Quezon City", status: "ACTIVE",
     enrolledAt: "2025-03-10T09:22:00Z", enrolledBy: "Josefa Reyes", qrData: "VF-2025-0099-STC"
   },
   {
     id: "VF-2025-0045-STC", lastName: "Mercado", firstName: "Ana", middleName: "Lim",
-    phone: "09391234567", idType: "Driver's License", idNumber: "N01-98-765432",
+    phone: "09391234567", gender: "Babae", idType: "Driver's License", idNumber: "N01-98-765432",
     barangay: "Sta. Cruz, Quezon City", status: "ACTIVE",
     enrolledAt: "2025-03-10T09:35:00Z", enrolledBy: "Josefa Reyes", qrData: "VF-2025-0045-STC"
   },
   {
     id: "VF-2025-0003-STC", lastName: "Cruz", firstName: "Pedro", middleName: "Garcia",
-    phone: "09451234567", idType: "PhilSys", idNumber: "9876-5432-1098-7654",
+    phone: "09451234567", gender: "Lalaki", idType: "PhilSys", idNumber: "9876-5432-1098-7654",
     barangay: "Sta. Cruz, Quezon City", status: "FLAGGED",
     enrolledAt: "2025-03-10T09:41:00Z", enrolledBy: "Josefa Reyes", qrData: "VF-2025-0003-STC"
   },
   {
     id: "VF-2025-0078-STC", lastName: "Santos", firstName: "Rosa", middleName: "Cruz",
-    phone: "09561234567", idType: "PhilSys", idNumber: "4567-8901-2345-6789",
+    phone: "09561234567", gender: "Babae", idType: "PhilSys", idNumber: "4567-8901-2345-6789",
     barangay: "Sta. Cruz, Quezon City", status: "ACTIVE",
     enrolledAt: "2025-03-10T09:48:00Z", enrolledBy: "Josefa Reyes", qrData: "VF-2025-0078-STC"
   },

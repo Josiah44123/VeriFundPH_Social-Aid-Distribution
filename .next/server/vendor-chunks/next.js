@@ -10,16 +10,6 @@ exports.id = "vendor-chunks/next";
 exports.ids = ["vendor-chunks/next"];
 exports.modules = {
 
-/***/ "(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"app\\\\layout.tsx\",\"import\":\"Plus_Jakarta_Sans\",\"arguments\":[{\"subsets\":[\"latin\"],\"weight\":[\"400\",\"500\",\"600\",\"700\",\"800\"],\"variable\":\"--font-jakarta\"}],\"variableName\":\"jakarta\"}":
-/*!********************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/next/font/google/target.css?{"path":"app\\layout.tsx","import":"Plus_Jakarta_Sans","arguments":[{"subsets":["latin"],"weight":["400","500","600","700","800"],"variable":"--font-jakarta"}],"variableName":"jakarta"} ***!
-  \********************************************************************************************************************************************************************************************************************************************/
-/***/ ((module) => {
-
-eval("// Exports\nmodule.exports = {\n\t\"style\": {\"fontFamily\":\"'__Plus_Jakarta_Sans_a11773', '__Plus_Jakarta_Sans_Fallback_a11773'\",\"fontStyle\":\"normal\"},\n\t\"className\": \"__className_a11773\",\n\t\"variable\": \"__variable_a11773\"\n};\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKHJzYykvLi9ub2RlX21vZHVsZXMvbmV4dC9mb250L2dvb2dsZS90YXJnZXQuY3NzP3tcInBhdGhcIjpcImFwcFxcXFxsYXlvdXQudHN4XCIsXCJpbXBvcnRcIjpcIlBsdXNfSmFrYXJ0YV9TYW5zXCIsXCJhcmd1bWVudHNcIjpbe1wic3Vic2V0c1wiOltcImxhdGluXCJdLFwid2VpZ2h0XCI6W1wiNDAwXCIsXCI1MDBcIixcIjYwMFwiLFwiNzAwXCIsXCI4MDBcIl0sXCJ2YXJpYWJsZVwiOlwiLS1mb250LWpha2FydGFcIn1dLFwidmFyaWFibGVOYW1lXCI6XCJqYWthcnRhXCJ9IiwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7QUFDQSxXQUFXLHdHQUF3RztBQUNuSDtBQUNBO0FBQ0EiLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly92ZXJpZnVuZC8uL25vZGVfbW9kdWxlcy9uZXh0L2ZvbnQvZ29vZ2xlL3RhcmdldC5jc3M/MTFiMyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBFeHBvcnRzXG5tb2R1bGUuZXhwb3J0cyA9IHtcblx0XCJzdHlsZVwiOiB7XCJmb250RmFtaWx5XCI6XCInX19QbHVzX0pha2FydGFfU2Fuc19hMTE3NzMnLCAnX19QbHVzX0pha2FydGFfU2Fuc19GYWxsYmFja19hMTE3NzMnXCIsXCJmb250U3R5bGVcIjpcIm5vcm1hbFwifSxcblx0XCJjbGFzc05hbWVcIjogXCJfX2NsYXNzTmFtZV9hMTE3NzNcIixcblx0XCJ2YXJpYWJsZVwiOiBcIl9fdmFyaWFibGVfYTExNzczXCJcbn07XG4iXSwibmFtZXMiOltdLCJzb3VyY2VSb290IjoiIn0=\n//# sourceURL=webpack-internal:///(rsc)/./node_modules/next/font/google/target.css?{\"path\":\"app\\\\layout.tsx\",\"import\":\"Plus_Jakarta_Sans\",\"arguments\":[{\"subsets\":[\"latin\"],\"weight\":[\"400\",\"500\",\"600\",\"700\",\"800\"],\"variable\":\"--font-jakarta\"}],\"variableName\":\"jakarta\"}\n");
-
-/***/ }),
-
 /***/ "(ssr)/./node_modules/next/dist/api/navigation.js":
 /*!**************************************************!*\
   !*** ./node_modules/next/dist/api/navigation.js ***!
