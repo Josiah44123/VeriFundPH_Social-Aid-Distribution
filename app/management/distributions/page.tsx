@@ -230,16 +230,18 @@ export default function DistributionsPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
               transition={{ type: "spring", damping: 25 }}
-              className="fixed inset-x-0 bottom-0 z-50 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[480px] bg-white rounded-t-[24px] sm:rounded-[20px] p-[24px] shadow-2xl"
+              className="fixed inset-x-0 bottom-0 z-50 sm:inset-auto sm:top-1/2 sm:left-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[480px] bg-white rounded-t-[24px] sm:rounded-[20px] shadow-2xl flex flex-col overflow-hidden max-h-[calc(100vh-40px)] mx-auto"
             >
-              <div className="flex items-center justify-between mb-[20px]">
+              {/* Header */}
+              <div className="flex items-center justify-between shrink-0 p-[24px] pb-[16px] border-b border-[rgba(0,0,0,0.06)]">
                 <h2 className="text-[18px] font-bold text-[var(--text-primary)]">Bagong Distribusyon</h2>
                 <button onClick={() => setShowModal(false)} className="text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors">
                   <X className="w-[20px] h-[20px]" />
                 </button>
               </div>
 
-              <div className="space-y-[14px]">
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto p-[24px] pt-[20px] space-y-[14px]">
                 {formError && <div className="text-[13px] font-bold text-[var(--danger)] bg-[var(--danger-light)] p-[10px] rounded-[10px]">{formError}</div>}
                 
                 {[
@@ -290,13 +292,22 @@ export default function DistributionsPage() {
                 </div>
               </div>
 
-              <button
-                onClick={handleCreate}
-                className="w-full h-[52px] rounded-[14px] font-bold text-[15px] text-[var(--navy-deep)] mt-[20px] transition-all hover:opacity-90 shadow-sm active:scale-[0.97]"
-                style={{ background: 'var(--ph-gold)' }}
-              >
-                I-save ang Distribusyon
-              </button>
+              {/* Footer */}
+              <div className="shrink-0 p-[24px] pt-[16px] border-t border-[rgba(0,0,0,0.06)] flex flex-col gap-[8px]">
+                <button
+                  onClick={handleCreate}
+                  className="w-full h-[52px] rounded-[14px] font-bold text-[15px] text-[var(--navy-deep)] transition-all hover:opacity-90 shadow-sm active:scale-[0.97]"
+                  style={{ background: 'var(--ph-gold)' }}
+                >
+                  I-save ang Distribusyon
+                </button>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="w-full h-[44px] bg-transparent text-[var(--text-muted)] font-bold text-[14px] transition-colors hover:text-[var(--text-primary)]"
+                >
+                  I-cancel
+                </button>
+              </div>
             </motion.div>
           </>
         )}
