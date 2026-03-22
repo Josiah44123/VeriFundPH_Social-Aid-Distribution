@@ -1,4 +1,4 @@
-// File: C:\Users\devil\VeriFundPH_Social-Aid-Distribution\app\page.tsx
+// File: C:\PROJECTS\VeriFundPH_Social-Aid-Distribution\app\page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

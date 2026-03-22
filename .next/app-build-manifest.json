@@ -16,11 +16,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/citizen/login/page.js"
     ],
-    "/citizen/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/citizen/dashboard/page.js"
-    ],
     "/admin/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
