@@ -5,20 +5,14 @@ VeriFund is a decentralized crowdfunding platform designed to bridge the trust g
 
 🚀 Features
 Milestone-Based Funding: Funds are released in stages to ensure project accountability.
-
 Real-Time Tracking: Donors can see exactly how much has been raised and how funds are being allocated.
-
 Low Fees: Minimal overhead compared to traditional crowdfunding platforms.
-
 Immutable Records: Every transaction is securely logged and verifiable.
 
 🛠️ Tech Stack
 Frontend: React / Next.js
-
 Smart Contracts: Solidity (Hardhat/Foundry)
-
 Backend: Node.js / Supabase
-
 Deployment: Vercel
 
 🏁 Getting Started
@@ -58,6 +52,13 @@ Open http://localhost:3000 in your browser.
 Live Demo: https://verifundph.vercel.app
 
 Documentation: [Link to Docs/Wiki]
+
+Citizen Portal:
+Email/Phone Code:123456
+
+Barangay Official Portal:
+Email: officer@stacruZ.gov.ph
+Password: verifund2025
 
 🤝 Contributing
 Contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
