@@ -228,20 +228,6 @@ VeriFund PH implements a multi-layer anti-fraud system:
 
 ---
 
-## Hackathon Context
-
-**Event:** InterCICSkwela Hackathon 2026
-**Challenge:** #3 — Governance
-**Track:** *"How might we use technology to improve transparency and accountability in government processes?"*
-
-**Judging Criteria:**
-- Mastery & Use of Software Concepts (30%)
-- Novelty & Innovation (30%)
-- Real-world Impact & Viability (30%)
-- Compliance to Rules (10%)
-
----
-
 ## Live Demo
 
 🌐 **[https://verifundph.vercel.app](https://verifundph.vercel.app)**
