@@ -34,7 +34,7 @@ VeriFund PH solves all three at the last mile: getting the right money to the ri
 2. **Verify** recipients during distribution — scan QR code for instant VERIFIED/REJECTED result
 3. **Monitor** today's claims via the running Listahan log
 
-### For LGU Administrators (Management System)
+### For Barangay Officers (Management System)
 1. **Dashboard** — real-time metrics across all barangays
 2. **Beneficiary Management** — full database with search, filter, and export
 3. **Distribution Scheduling** — create and manage ayuda distribution events
@@ -84,7 +84,6 @@ For barangay officers to monitor all barangay activity, manage distributions, an
 | **QR Code** | `qrcode.react` |
 | **QR Scanner** | `html5-qrcode` |
 | **State / Storage** | React Context + localStorage |
-| **Charts** | Recharts |
 | **Deployment** | Vercel |
 
 ---
@@ -138,82 +137,6 @@ Use these credentials to explore all three portals:
 | Email | `officer@stacruZ.gov.ph` |
 | Password | `verifund2025` |
 
-### 🏛️ LGU Administrator (Management System only)
-| Field | Value |
-|---|---|
-| Email | `admin@lgu-qc.gov.ph` |
-| Password | `admin2025` |
-
----
-
-## Application Routes
-
-```
-/                          → Landing page — portal selector
-/citizen/login             → Citizen OTP login
-/citizen/dashboard         → Citizen dashboard + QR code
-
-/admin/login               → Officer / Admin login
-/admin/portal              → Portal selector (Field Console or Management System)
-/admin/console             → Field Console — I-Register, I-Verify, Listahan
-
-/management/dashboard      → LGU Admin dashboard
-/management/beneficiaries  → Full beneficiary database
-/management/distributions  → Distribution event management
-/management/audit-log      → Immutable audit trail
-```
-
----
-
-## Project Structure
-
-```
-app/
-├── page.tsx                      # Landing page
-├── citizen/
-│   ├── login/page.tsx            # Citizen OTP login
-│   └── dashboard/page.tsx        # Citizen dashboard
-├── admin/
-│   ├── login/page.tsx            # Officer login
-│   ├── portal/page.tsx           # Portal selector
-│   └── console/page.tsx          # Field Console
-└── management/
-    ├── dashboard/page.tsx         # Admin dashboard
-    ├── beneficiaries/page.tsx     # Beneficiary table
-    ├── distributions/page.tsx     # Distribution management
-    └── audit-log/page.tsx         # Audit log
-
-components/
-├── ui/                           # shadcn/ui base components
-├── QRScanner.tsx                 # html5-qrcode wrapper
-├── QRCode.tsx                    # qrcode.react wrapper
-├── OTPInput.tsx                  # 6-box OTP input
-├── TabBar.tsx                    # Field Console bottom nav
-└── Toast.tsx                     # Toast notification system
-
-lib/
-├── store.ts                      # Shared data store (Context + localStorage)
-├── constants.ts                  # Hardcoded credentials and seed data
-└── utils.ts                      # Phone formatter, ID generator
-```
-
----
-
-## Design System
-
-VeriFund PH uses a custom design system inspired by modern Filipino consumer apps (GCash, Maya, Grab).
-
-| Color | Hex | Usage |
-|---|---|---|
-| Red | `#FF0048` | Field Console identity, CTAs, danger states |
-| Navy | `#18269B` | Citizen Portal identity, Management System sidebar |
-| Deep Navy | `#0D1966` | Dark backgrounds, gradients |
-| Gold | `#FFB800` | Management System accent, success states, amounts |
-| Success Green | `#00C853` | Verified states, active badges |
-| Gray | `#F5F5F7` | Page backgrounds |
-
-**Typography:** SF Pro Text (`-apple-system, 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif`)
-
 ---
 
 ## Security Architecture
@@ -224,7 +147,6 @@ VeriFund PH implements a multi-layer anti-fraud system:
 2. **Duplicate Face Detection** — face image compared against enrolled beneficiaries (simulated in prototype)
 3. **Velocity Anomaly Detection** — blocks recipients from claiming the same distribution twice
 4. **Immutable Audit Log** — append-only database table; no record can be updated or deleted
-5. **Geofencing** — officers must be near the branch to submit (bypassed in prototype mode)
 
 ---
 
