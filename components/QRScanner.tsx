@@ -13,9 +13,6 @@ export function QRScanner({ onScanSuccess, isScanning }: QRScannerProps) {
 
   useEffect(() => {
     if (!isScanning) {
-      if (scannerRef.current?.isScanning) {
-        scannerRef.current.stop().catch(console.error)
-      }
       return
     }
 
@@ -32,14 +29,20 @@ export function QRScanner({ onScanSuccess, isScanning }: QRScannerProps) {
       (decodedText) => {
         onScanSuccess(decodedText)
       },
-      (errorMessage) => {
-        // ignored for continuous scanning
-      }
-    ).catch(console.error)
+      (errorMessage) => {}
+    ).catch((err) => {
+      console.warn("QR Scanner Start Error:", err)
+    })
 
     return () => {
-      if (scannerRef.current?.isScanning) {
-        scannerRef.current.stop().catch(console.error)
+      if (scannerRef.current) {
+        if (scannerRef.current.isScanning) {
+          scannerRef.current.stop().catch((err) => console.warn("QR Scanner Stop Error:", err))
+        }
+        try {
+          scannerRef.current.clear()
+        } catch (e) {}
+        scannerRef.current = null
       }
     }
   }, [isScanning, onScanSuccess])

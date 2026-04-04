@@ -45,7 +45,7 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
       <div className="px-5 pt-5 pb-4 bg-surface-container-lowest border-b border-outline-variant/20 sticky top-0 z-10">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-extrabold text-primary tracking-tight">Listahan Ngayon</h2>
-          <span className="bg-gradient-to-r from-primary to-primary-container text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+          <span className="bg-[#E8F5EE] text-[#1A8C4E] text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
             <CheckCircle2 className="w-3.5 h-3.5" /> {nakuhaCount} Nakuha
           </span>
         </div>
@@ -54,8 +54,8 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
       <div className="px-5 py-4 flex gap-3">
         {[
           { label: 'Scanned', value: totalScanned, gradient: 'from-primary to-primary-container', text: 'text-white' },
-          { label: 'Nakuha', value: nakuhaCount, gradient: 'from-secondary to-secondary-fixed-dim', text: 'text-[#271900]' },
-          { label: 'Tinanggihan', value: tinanggihanCount, gradient: 'from-tertiary to-tertiary-container', text: 'text-white' },
+          { label: 'Nakuha', value: nakuhaCount, gradient: 'from-[#1a56ad] to-[#2563eb]', text: 'text-white' },
+          { label: 'Tinanggihan', value: tinanggihanCount, gradient: 'from-[#CE1126] to-[#A30D1E]', text: 'text-white' },
         ].map(({ label, value, gradient, text }) => (
           <div key={label} className={`flex-1 bg-gradient-to-br ${gradient} rounded-2xl p-3 text-center editorial-shadow relative overflow-hidden`}>
             {/* Decorative blob */}
@@ -91,23 +91,23 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
               const name = claim.beneficiaryName
 
               return (
-                <motion.div 
-                  key={claim.id}
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className={`mx-5 mb-3 rounded-2xl p-4 cursor-pointer transition-all editorial-shadow border-l-4 ${
-                    isNakuha
-                      ? 'bg-surface-container-lowest border-l-primary-container'
-                      : 'bg-tertiary/5 border-l-tertiary'
-                  }`}
-                  onClick={() => setExpandedId(isExpanded ? null : claim.id)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className={cn(
-                      "w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0",
-                      isNakuha ? "bg-gradient-to-br from-primary to-primary-container" : "bg-tertiary"
-                    )}>
+                  <motion.div 
+                    key={claim.id}
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className={`mx-5 mb-3 rounded-2xl p-4 cursor-pointer transition-all editorial-shadow border-l-4 ${
+                      isNakuha
+                        ? 'bg-surface-container-lowest border-l-[#1a56ad]'
+                        : 'bg-[#FDE8EB] border-l-[#CE1126]'
+                    }`}
+                    onClick={() => setExpandedId(isExpanded ? null : claim.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={cn(
+                        "w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0",
+                        isNakuha ? "bg-gradient-to-br from-[#1a56ad] to-[#2563eb]" : "bg-[#CE1126]"
+                      )}>
                       {initials(name)}
                     </div>
                     
@@ -127,7 +127,7 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
                     <div className="shrink-0 ml-2 flex items-center gap-1">
                       <span className={cn(
                         "text-[10px] font-black px-3 py-1.5 rounded-full flex-shrink-0",
-                        isNakuha ? "bg-gradient-to-r from-primary to-primary-container text-white" : "bg-gradient-to-r from-tertiary-container to-tertiary text-white"
+                        isNakuha ? "bg-[#E8F5EE] text-[#1A8C4E]" : "bg-[#CE1126] text-white"
                       )}>
                         {claim.status}
                       </span>
@@ -150,7 +150,7 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
                         <div className="mt-4 pt-4 border-t border-screen-variant/20 flex flex-col gap-2">
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-on-surface-variant font-medium">VeriFund ID</span>
-                            <span className="font-mono text-xs font-bold text-tertiary py-0.5 px-2 bg-tertiary/10 rounded-md">{claim.beneficiaryId}</span>
+                            <span className="font-mono text-xs font-bold text-[#1a56ad] py-0.5 px-2 bg-[#EBF5FF] rounded-md">{claim.beneficiaryId}</span>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-xs text-on-surface-variant font-medium">Oras</span>
@@ -159,7 +159,7 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
                           {!isNakuha && claim.reason && (
                             <div className="flex justify-between items-center mt-1">
                               <span className="text-xs text-on-surface-variant font-medium">Dahilan</span>
-                              <span className="text-xs font-bold text-tertiary max-w-[200px] text-right leading-tight">{claim.reason}</span>
+                              <span className="text-xs font-bold text-[#CE1126] max-w-[200px] text-right leading-tight">{claim.reason}</span>
                             </div>
                           )}
                         </div>
