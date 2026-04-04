@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef } from "react"
-import { Camera, CheckCircle2, ChevronDown, CheckCircle, ScanLine, Check } from "lucide-react"
+import { Camera, CheckCircle2, ChevronDown, CheckCircle, ScanLine, Check, MapPin } from "lucide-react"
 import { QRCode } from "@/components/QRCode"
 import { cn } from "@/lib/utils"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
@@ -171,50 +171,36 @@ export function RegisterTab() {
 
   if (step === 3) {
     return (
-      <div className="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center p-[24px]">
-        {/* Confetti element */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden flex justify-center">
-          <div className="w-[10px] h-[10px] bg-[var(--ph-gold)] absolute top-0 animate-[fall_3s_linear_infinite]" style={{ left: '20%', animationDelay: '0s' }} />
-          <div className="w-[8px] h-[8px] bg-[var(--red)] absolute top-0 animate-[fall_2.5s_linear_infinite]" style={{ left: '50%', animationDelay: '0.5s' }} />
-          <div className="w-[12px] h-[12px] bg-[var(--blue)] absolute top-0 animate-[fall_4s_linear_infinite]" style={{ left: '80%', animationDelay: '1s' }} />
-        </div>
-        
-        <div className="w-[80px] h-[80px] bg-[var(--success)] rounded-full flex items-center justify-center mb-[24px] shadow-[var(--shadow-md)] animate-in zoom-in-50 delay-150">
-          <CheckCircle2 className="w-[48px] h-[48px] text-white" />
-        </div>
-        <h1 className="text-[24px] font-bold text-[var(--text-primary)] mb-[8px] text-center leading-tight">
-          Registered ka na!
-        </h1>
-        <p className="text-[16px] text-[var(--text-secondary)] mb-[8px] uppercase font-bold tracking-wide">
+      <div className="fixed inset-0 z-[100] bg-surface flex flex-col items-center justify-center p-6" style={{ fontFamily: 'Manrope, sans-serif' }}>
+        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }}
+          className="w-24 h-24 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mb-6 editorial-shadow">
+          <CheckCircle2 className="w-12 h-12 text-white" />
+        </motion.div>
+
+        <h1 className="text-2xl font-extrabold text-primary text-center mb-2 tracking-tight">Registered ka na!</h1>
+        <p className="text-lg font-bold text-on-surface text-center uppercase tracking-wide mb-1">
           {formData.firstName} {formData.lastName}
         </p>
-        <div className="font-mono text-[14px] font-bold text-[var(--red)] mb-[32px]">
+        <div className="font-mono text-sm font-bold text-tertiary bg-tertiary/10 px-4 py-2 rounded-full mb-8">
           {generatedId}
         </div>
-        
-        <div className="mb-[32px] p-[24px] bg-white rounded-[24px] shadow-[var(--shadow-sm)] border border-[rgba(0,0,0,0.04)] print-qr-container">
+
+        <div className="bg-surface-container-lowest p-5 rounded-2xl editorial-shadow mb-6 print-qr-container">
           <QRCode value={generatedId} id="qr-code" size={160} />
         </div>
 
-        <div className="w-full flex justify-center gap-[12px] flex-col max-w-sm px-[16px]">
-          <button 
-            onClick={() => window.print()}
-            className="w-full h-[52px] border-[1.5px] border-[var(--red)] text-[var(--red)] font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98]"
-          >
+        <div className="w-full max-w-sm flex flex-col gap-3">
+          <button onClick={() => window.print()}
+            className="w-full py-3.5 rounded-full border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-all">
             I-print ang Card
           </button>
-          <button 
-            onClick={resetForm}
-            className="w-full h-[52px] bg-[var(--red)] text-white font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98] shadow-[var(--shadow-sm)]"
-          >
+          <button onClick={resetForm}
+            className="w-full py-3.5 rounded-full bg-tertiary text-white font-bold shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all">
             Mag-register ng Bago
           </button>
         </div>
 
         <style dangerouslySetInnerHTML={{__html: `
-          @keyframes fall {
-            to { transform: translateY(100vh) rotate(360deg); }
-          }
           @media print {
             body * { visibility: hidden; }
             .print-qr-container, .print-qr-container * { visibility: visible; }
@@ -226,7 +212,7 @@ export function RegisterTab() {
   }
 
   return (
-    <div className="flex flex-col h-full animate-in fade-in pb-[100px] bg-[var(--surface-page)] min-h-full relative overflow-x-hidden">
+    <div className="flex flex-col h-full bg-surface-container-low min-h-full pb-[100px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
       <LoadingOverlay isVisible={loading} />
       
       {/* Toast Notification */}
@@ -238,7 +224,7 @@ export function RegisterTab() {
             exit={{ opacity: 0, y: -20, x: '-50%' }}
             className={cn(
               "fixed top-[80px] left-1/2 z-[200] px-[16px] py-[10px] rounded-[100px] shadow-[var(--shadow-lg)] backdrop-blur-md flex items-center gap-[8px] max-w-[90vw] whitespace-nowrap",
-              toast.type === 'success' ? "bg-[rgba(0,200,83,0.9)] text-white" : "bg-[rgba(255,0,72,0.9)] text-white"
+              toast.type === 'success' ? "bg-[rgba(0,200,83,0.9)] text-white" : "bg-tertiary text-white"
             )}
           >
             {toast.type === 'success' ? <CheckCircle2 size={18} /> : null}
@@ -247,108 +233,48 @@ export function RegisterTab() {
         )}
       </AnimatePresence>
 
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes highlightFlash {
-          0% { background-color: rgba(0,200,83,0.08); }
-          100% { background-color: white; }
-        }
-        .animate-highlight {
-          animation: highlightFlash 800ms ease-out forwards;
-        }
-        @keyframes scanLine {
-          0% { top: 10%; }
-          50% { top: 85%; }
-          100% { top: 10%; }
-        }
-        @keyframes faceScan {
-          0% { top: 20%; }
-          50% { top: 75%; }
-          100% { top: 20%; }
-        }
-      `}} />
-
-      {/* Header and Step Indicator */}
-      <div className="px-[16px] pt-[24px] pb-[16px] sticky top-0 bg-[var(--surface-page)] z-10">
-        <div className="flex items-center justify-center">
-          <div className="flex items-center gap-[12px]">
-            <div className="flex flex-col items-center gap-[4px] relative">
-              <div className={cn("w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold z-10", step === 2 ? "bg-[#F2F2F7] text-[#8E8E93]" : "bg-[#FF0048] text-white")}>
-                {step === 2 ? <Check size={16} /> : "1"}
-              </div>
-              <span className="text-[11px] text-[#8E8E93] absolute top-[32px] whitespace-nowrap">I-scan ang ID</span>
-            </div>
-            <div className="w-[32px] h-[2px] bg-[#D1D1D6] mb-[20px]" />
-            <div className="flex flex-col items-center gap-[4px] relative">
-              <div className={cn("w-[28px] h-[28px] rounded-full flex items-center justify-center text-[12px] font-bold z-10", step === 2 ? "bg-[#FF0048] text-white" : "bg-white text-[#8E8E93] border border-[#D1D1D6]")}>
-                2
-              </div>
-              <span className="text-[11px] text-[#8E8E93] absolute top-[32px] whitespace-nowrap">Face Scan</span>
-            </div>
+      <div className="px-5 pt-6 pb-4 bg-surface-container-lowest border-b border-outline-variant/20">
+        <div className="flex items-center gap-3 mb-2">
+          <span className="text-xs font-bold text-tertiary uppercase tracking-widest">Hakbang {step} ng 2</span>
+          <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
+            <div className="h-full bg-tertiary rounded-full transition-all" style={{ width: step === 1 ? '50%' : '100%' }} />
           </div>
         </div>
+        <h2 className="text-xl font-extrabold text-primary tracking-tight">
+          {step === 1 ? 'I-scan ang Government ID' : 'Face Verification'}
+        </h2>
       </div>
 
-      <div className="px-[16px] pb-[24px]">
+      <div>
         {error && !error.field && (
-          <div className="bg-[var(--danger)] text-white text-[13px] font-bold p-[16px] rounded-[16px] mb-[16px] text-center shadow-[var(--shadow-sm)] animate-in slide-in-from-top-2">
+          <div className="mx-5 mt-4 bg-[var(--danger)] text-white text-[13px] font-bold p-[16px] rounded-[16px] mb-[16px] text-center shadow-[var(--shadow-sm)] animate-in slide-in-from-top-2">
             {error.message}
           </div>
         )}
 
         {step === 1 && (
-          <div className="flex flex-col gap-[16px]">
-            {/* ID Scan card — top of step 1 */}
-            <div
-              onClick={handleIDScan}
-              style={{
-                background: scanDone ? '#F0FBF4' : 'white',
-                border: `2px ${scanDone ? 'solid' : 'dashed'} ${scanDone ? '#00C853' : '#D1D1D6'}`,
-                borderRadius: 16,
-                padding: 20,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 16,
-                cursor: 'pointer',
-                transition: 'all 200ms',
-                marginBottom: 20,
-              }}
-            >
-              {/* Icon */}
-              <div style={{
-                width: 56, height: 56, borderRadius: '50%', flexShrink: 0,
-                background: scanDone ? '#E8FAF0' : '#EEF0FB',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {scanDone
-                  ? <CheckCircle size={28} color="#00C853" />
-                  : <ScanLine size={28} color="#18269B" />
-                }
+          <div className="flex flex-col">
+            <div onClick={handleIDScan} className={`mx-5 mt-5 rounded-2xl p-5 flex items-center gap-4 cursor-pointer transition-all ${
+              scanDone
+                ? 'bg-gradient-to-r from-primary/10 to-primary-container/10 border-2 border-primary-container/30'
+                : 'bg-gradient-to-r from-primary/5 to-transparent border-2 border-dashed border-primary/20'
+            }`}>
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 ${
+                scanDone ? 'bg-primary-container text-white' : 'bg-primary/10 text-primary'
+              }`}>
+                {scanDone ? <CheckCircle className="w-7 h-7" /> : <ScanLine className="w-7 h-7" />}
               </div>
-
-              {/* Text */}
-              <div style={{ flex: 1 }}>
-                <p style={{ fontSize: 15, fontWeight: 700, margin: 0, color: scanDone ? '#00C853' : '#1C1C1E' }}>
+              <div className="flex-1">
+                <p className="font-bold text-on-surface text-sm">
                   {scanDone ? 'Na-scan na ang ID!' : 'I-scan ang Government ID'}
                 </p>
-                <p style={{ fontSize: 12, color: '#8E8E93', margin: '2px 0 0' }}>
-                  {scanDone
-                    ? 'Na-fill na ang mga detalye. I-check at i-edit kung may mali.'
-                    : 'Awtomatikong mafi-fill ang mga fields sa ibaba.'
-                  }
+                <p className="text-xs text-on-surface-variant mt-0.5">
+                  {scanDone ? 'Na-fill na ang mga detalye.' : 'Awtomatikong mafi-fill ang mga fields.'}
                 </p>
               </div>
-
-              {/* Status indicator */}
-              <div style={{
-                width: 28, height: 28, borderRadius: '50%', flexShrink: 0,
-                background: scanDone ? '#00C853' : '#F2F2F7',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                {scanDone && <Check size={16} color="white" />}
-              </div>
+              {scanDone && <CheckCircle2 className="w-5 h-5 text-primary-container flex-shrink-0" />}
             </div>
 
-            {/* Hidden file input for ID scan */}
             <input
               ref={idScanRef}
               type="file"
@@ -358,7 +284,6 @@ export function RegisterTab() {
               onChange={handleIDImageSelected}
             />
 
-            {/* Scanning overlay */}
             {isScanning && (
               <div style={{
                 position: 'fixed', inset: 0, zIndex: 200,
@@ -366,180 +291,88 @@ export function RegisterTab() {
                 display: 'flex', flexDirection: 'column',
                 alignItems: 'center', justifyContent: 'center', gap: 16,
               }}>
-                <div style={{
-                  width: 260, height: 164,
-                  background: '#1C1C1E',
-                  borderRadius: 12,
-                  position: 'relative',
-                  overflow: 'hidden',
-                  border: '2px solid rgba(255,255,255,0.2)',
-                }}>
-                  {[
-                    { top: 8, left: 8, borderWidth: '3px 0 0 3px' },
-                    { top: 8, right: 8, borderWidth: '3px 3px 0 0' },
-                    { bottom: 8, left: 8, borderWidth: '0 0 3px 3px' },
-                    { bottom: 8, right: 8, borderWidth: '0 3px 3px 0' },
-                  ].map((pos, i) => (
-                    <div key={i} style={{
-                      position: 'absolute', width: 20, height: 20,
-                      borderColor: '#FF0048', borderStyle: 'solid',
-                      ...pos,
-                    }} />
-                  ))}
-
-                  <div style={{
-                    position: 'absolute', left: 0, right: 0, height: 2,
-                    background: 'linear-gradient(to right, transparent, #FF0048, transparent)',
-                    animation: 'scanLine 1.5s ease-in-out infinite',
-                  }} />
-
-                  <div style={{
-                    position: 'absolute', inset: '20px 16px',
-                    borderRadius: 6, background: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                  }} />
+                <div style={{ width: 260, height: 164, background: '#1C1C1E', borderRadius: 12, position: 'relative', overflow: 'hidden', border: '2px solid rgba(255,255,255,0.2)' }}>
+                  <div style={{ position: 'absolute', inset: '20px 16px', borderRadius: 6, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }} />
                 </div>
-
-                <p style={{ color: 'white', fontSize: 15, fontWeight: 600 }}>
-                  Binabasa ang ID...
-                </p>
-                <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 13 }}>
-                  Sandali lang
-                </p>
+                <p style={{ color: 'white', fontSize: 15, fontWeight: 600 }}>Binabasa ang ID...</p>
               </div>
             )}
 
-            <div className={cn("bg-white rounded-[20px] shadow-[var(--shadow-md)] p-[20px] flex flex-col gap-[16px] transition-colors duration-800", scanDone ? "animate-highlight" : "")}>
+            <div className={`mx-5 mt-4 bg-surface-container-lowest rounded-3xl p-5 editorial-shadow space-y-4 mb-[100px] ${scanDone ? 'ring-2 ring-primary/10' : ''}`}>
               
               <div>
-                <label className="text-[13px] font-medium text-[var(--text-secondary)] mb-[6px] block">Apelyido (Last Name)</label>
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Apelyido</label>
                 <input 
                   value={formData.lastName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, lastName: e.target.value})}
-                  className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] bg-[var(--surface-input)] border-[1.5px] outline-none transition-colors", error?.field === "lastName" ? "border-[var(--danger)]" : "border-transparent focus:border-[var(--blue)] focus:bg-white")}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-medium", error?.field === "lastName" && "ring-2 ring-tertiary")}
                 />
                 {error?.field === "lastName" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
               </div>
 
               <div>
-                <label className="text-[13px] font-medium text-[var(--text-secondary)] mb-[6px] block">Pangalan (First Name)</label>
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Pangalan</label>
                 <input 
                   value={formData.firstName}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, firstName: e.target.value})}
-                  className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] bg-[var(--surface-input)] border-[1.5px] outline-none transition-colors", error?.field === "firstName" ? "border-[var(--danger)]" : "border-transparent focus:border-[var(--blue)] focus:bg-white")}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-medium", error?.field === "firstName" && "ring-2 ring-tertiary")}
                 />
                 {error?.field === "firstName" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
               </div>
 
-              {/* Phone number field */}
               <div>
-                <label style={{
-                  fontSize: 12, fontWeight: 600, color: '#8E8E93',
-                  display: 'block', marginBottom: 6,
-                }}>
-                  Numero ng Telepono
-                </label>
-                <div style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  height: 52,
-                  background: '#F2F2F7',
-                  borderRadius: 12,
-                  border: error?.field === "phone" ? '1.5px solid #FF0048' : '1.5px solid transparent',
-                  overflow: 'hidden',
-                  transition: 'border-color 150ms',
-                }}
-                onFocusCapture={e => {
-                  if (error?.field !== "phone") e.currentTarget.style.borderColor = '#0080F8';
-                }}
-                onBlurCapture={e => {
-                  if (error?.field !== "phone") e.currentTarget.style.borderColor = 'transparent';
-                }}
-                >
-                  {/* +63 prefix — fixed left side, never moves */}
-                  <div style={{
-                    padding: '0 12px',
-                    height: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    background: '#E8E8ED',
-                    borderRight: '1px solid #D1D1D6',
-                    flexShrink: 0,
-                    fontSize: 15,
-                    fontWeight: 600,
-                    color: '#3C3C43',
-                    whiteSpace: 'nowrap',
-                  }}>
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Numero ng Telepono</label>
+                <div className={cn("flex items-center h-[56px] bg-surface-container-low rounded-2xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 transition-all", error?.field === "phone" && "ring-2 ring-tertiary")}>
+                  <div className="px-4 h-full flex items-center bg-surface-container border-r border-outline-variant/30 text-on-surface font-bold text-sm">
                     +63
                   </div>
-
-                  {/* Actual input — starts after the prefix */}
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={e => {
-                      // Strip non-digits, limit to 10 digits (after +63)
                       const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
                       setFormData(f => ({ ...f, phone: digits }));
                     }}
                     placeholder="9XXXXXXXXX"
-                    style={{
-                      flex: 1,
-                      height: '100%',
-                      border: 'none',
-                      background: 'transparent',
-                      outline: 'none',
-                      padding: '0 14px',
-                      fontSize: 15,
-                      color: '#1C1C1E',
-                      fontFamily: 'inherit',
-                    }}
+                    className="flex-1 h-full bg-transparent border-none outline-none px-4 text-on-surface font-medium placeholder-outline"
                   />
                 </div>
-
-                {/* Validation error */}
-                {error?.field === "phone" && (
-                  <p style={{ fontSize: 12, color: '#FF0048', marginTop: 4 }}>
-                    {error.message}
-                  </p>
-                )}
+                {error?.field === "phone" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
               </div>
 
               <div>
-                <label className="text-[13px] font-medium text-[var(--text-secondary)] mb-[6px] block">Kasarian (Gender)</label>
-                <div className="flex bg-[var(--surface-input)] rounded-[14px] p-[4px] h-[52px]">
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Kasarian</label>
+                <div className="flex gap-2">
                   {(["Lalaki", "Babae", "Iba pa"] as const).map(option => (
                     <button
                       key={option}
                       onClick={() => setFormData({...formData, gender: option})}
-                      className={cn(
-                        "flex-1 rounded-[10px] text-[14px] font-medium transition-all",
-                        formData.gender === option 
-                          ? "bg-white text-[var(--text-primary)] shadow-[var(--shadow-sm)] font-bold" 
-                          : "text-[var(--text-muted)]"
-                      )}
+                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
+                        formData.gender === option
+                          ? 'bg-primary text-white shadow-sm'
+                          : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
+                      }`}
                     >
                       {option}
                     </button>
                   ))}
                 </div>
-                {error?.field === "gender" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
+                {error?.field === "gender" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
               </div>
 
               <div className="relative">
-                <label className="text-[13px] font-medium text-[var(--text-secondary)] mb-[6px] block">Uri ng ID</label>
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Uri ng ID</label>
                 <div 
                   onClick={() => setShowIdPicker(true)}
-                  className={cn("w-full h-[52px] rounded-[14px] px-[16px] flex items-center justify-between bg-[var(--surface-input)] border-[1.5px] cursor-pointer", error?.field === "idType" ? "border-[var(--danger)]" : "border-transparent")}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between cursor-pointer", error?.field === "idType" && "ring-2 ring-tertiary")}
                 >
-                  <span className={formData.idType ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}>
+                  <span className={formData.idType ? "text-on-surface font-medium" : "text-outline font-medium"}>
                     {formData.idType || "Pumili ng ID"}
                   </span>
-                  <ChevronDown className="w-[20px] h-[20px] text-[var(--text-muted)]" />
+                  <ChevronDown className="w-5 h-5 text-on-surface-variant" />
                 </div>
-                {error?.field === "idType" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
+                {error?.field === "idType" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
 
-                {/* ID Picker Bottom Sheet */}
                 <AnimatePresence>
                   {showIdPicker && (
                     <>
@@ -557,21 +390,21 @@ export function RegisterTab() {
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="fixed inset-x-0 bottom-0 bg-white z-50 rounded-t-[24px] shadow-[var(--shadow-lg)] pb-[calc(24px+env(safe-area-inset-bottom))]"
+                        className="fixed inset-x-0 bottom-0 bg-surface-container-lowest z-50 rounded-t-[24px] shadow-[0_-20px_60px_rgba(0,0,0,0.15)] pb-[calc(24px+env(safe-area-inset-bottom))]"
                       >
                         <div className="flex justify-center pt-[12px] pb-[8px]">
-                          <div className="w-[40px] h-[5px] bg-[#E8ECF7] rounded-full" />
+                          <div className="w-[40px] h-[5px] bg-surface-container-high rounded-full" />
                         </div>
-                        <h3 className="px-[24px] py-[12px] text-[16px] font-bold text-[var(--text-primary)]">Pumili ng Uri ng ID</h3>
-                        <div className="max-h-[300px] overflow-y-auto px-[16px]">
+                        <h3 className="px-6 py-3 text-base font-bold text-on-surface">Pumili ng Uri ng ID</h3>
+                        <div className="max-h-[300px] overflow-y-auto px-6">
                           {ID_TYPES.map(type => (
                             <button
                               key={type}
                               onClick={() => { setFormData({...formData, idType: type}); setShowIdPicker(false) }}
-                              className="w-full flex items-center justify-between px-[16px] py-[16px] border-b border-[#E8ECF7] last:border-0"
+                              className="w-full flex items-center justify-between py-4 border-b border-outline-variant/20 last:border-0"
                             >
-                              <span className="text-[15px] font-medium text-[var(--text-primary)]">{type}</span>
-                              {formData.idType === type && <CheckCircle2 className="w-[20px] h-[20px] text-[var(--blue)]" />}
+                              <span className="text-sm font-bold text-on-surface">{type}</span>
+                              {formData.idType === type && <CheckCircle2 className="w-5 h-5 text-primary" />}
                             </button>
                           ))}
                         </div>
@@ -582,207 +415,109 @@ export function RegisterTab() {
               </div>
 
               <div>
-                <label className="text-[13px] font-medium text-[var(--text-secondary)] mb-[6px] block">Numero ng ID</label>
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Numero ng ID</label>
                 <input 
                   value={formData.idNumber}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, idNumber: e.target.value})}
-                  className={cn("w-full h-[52px] rounded-[14px] px-[16px] text-[15px] bg-[var(--surface-input)] border-[1.5px] outline-none transition-colors font-mono tracking-wide", error?.field === "idNumber" ? "border-[var(--danger)]" : "border-transparent focus:border-[var(--blue)] focus:bg-white")}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-mono tracking-wide font-bold", error?.field === "idNumber" && "ring-2 ring-tertiary")}
                 />
-                {error?.field === "idNumber" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
+                {error?.field === "idNumber" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
               </div>
 
               <div>
-                <label className="text-[13px] font-medium text-[var(--text-secondary)] mb-[6px] block">Barangay</label>
-                <input 
-                  value={BARANGAY}
-                  readOnly
-                  className="w-full h-[52px] rounded-[14px] px-[16px] text-[15px] bg-[var(--gray-light)] border-[1.5px] border-transparent text-[var(--text-muted)] font-medium outline-none cursor-not-allowed"
-                />
+                <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Barangay</label>
+                <div className="bg-surface-container-high rounded-2xl p-4 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-outline" />
+                  <span className="text-sm text-on-surface-variant font-medium">{BARANGAY}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="fixed bottom-[64px] left-0 right-0 px-5 pb-3 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/95 to-transparent pt-4 z-30">
+              <div className="max-w-md mx-auto">
+                <button onClick={handleNext}
+                  className="w-full bg-tertiary text-white py-4 rounded-full font-bold text-base shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all">
+                  Susunod →
+                </button>
               </div>
             </div>
           </div>
         )}
 
         {step === 2 && (
-          <div className="flex flex-col gap-[16px]">
-            <div className="flex items-center gap-[12px] mb-[8px]">
-              <button 
-                onClick={() => setStep(1)}
-                className="text-[14px] font-bold text-[var(--text-muted)] border border-[#E8ECF7] py-[6px] px-[12px] rounded-[10px]"
-              >
-                ← Bumalik
-              </button>
+          <div className="flex flex-col items-center px-5 pt-4 gap-5">
+            <div className="w-full flex justify-start mb-2">
+               <button onClick={() => setStep(1)} className="text-sm font-bold text-outline hover:text-primary transition-colors">
+                  ← Bumalik
+               </button>
             </div>
 
-            <div style={{ padding: '20px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 20 }}>
-              {/* Instruction text */}
-              <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 18, fontWeight: 700, margin: '0 0 4px', color: '#1C1C1E' }}>
-                  Face Verification
-                </p>
-                <p style={{ fontSize: 13, color: '#8E8E93', margin: 0 }}>
-                  I-align ang mukha ng benepisyaryo sa loob ng frame
-                </p>
-              </div>
+            <div className="text-center">
+              <h3 className="text-xl font-extrabold text-primary tracking-tight">Face Verification</h3>
+              <p className="text-sm text-on-surface-variant mt-1">I-align ang mukha sa loob ng frame</p>
+            </div>
 
-              {/* Face scan viewport */}
-              <div style={{
-                width: 260, height: 260,
-                borderRadius: '50%',
-                overflow: 'hidden',
-                position: 'relative',
-                background: '#1C1C1E',
-                border: faceCaptured ? '4px solid #00C853' : '4px solid #FF0048',
-                transition: 'border-color 300ms',
-                flexShrink: 0,
-              }}>
-                {/* Show preview after capture, placeholder before */}
-                {faceCaptured ? (
-                  <div style={{
-                    width: '100%', height: '100%',
-                    background: 'linear-gradient(145deg, #1C3A2A, #0D2418)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexDirection: 'column', gap: 8,
-                  }}>
-                    <div style={{
-                      width: 80, height: 80, borderRadius: '50%',
-                      background: '#00C853',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <Check size={40} color="white" />
-                    </div>
-                  </div>
-                ) : (
-                  <>
-                    {/* Face silhouette guide */}
-                    <div style={{
-                      position: 'absolute', inset: 0,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                      <svg width="120" height="140" viewBox="0 0 120 140" fill="none">
-                        <ellipse cx="60" cy="55" rx="35" ry="42" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4 4"/>
-                        <path d="M20 120 Q60 90 100 120" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4 4" fill="none"/>
-                      </svg>
-                    </div>
-
-                    {/* Animated scan line */}
-                    {isCapturing && (
-                      <div style={{
-                        position: 'absolute', left: 0, right: 0, height: 3,
-                        background: 'linear-gradient(to right, transparent, #FF0048, transparent)',
-                        animation: 'faceScan 2s ease-in-out infinite',
-                      }} />
-                    )}
-                  </>
-                )}
-              </div>
-
-              {/* Three alignment dots below the circle */}
-              {!faceCaptured && (
-                <div style={{ display: 'flex', gap: 6 }}>
-                  {[0,1,2].map(i => (
-                    <div key={i} style={{
-                      width: 8, height: 8, borderRadius: '50%',
-                      background: i === 1 ? '#FF0048' : '#D1D1D6',
-                    }} />
-                  ))}
-                </div>
-              )}
-
-              {/* Status text */}
-              <p style={{ fontSize: 13, color: '#8E8E93', textAlign: 'center', margin: 0 }}>
-                {faceCaptured
-                  ? 'Na-capture na ang mukha!'
-                  : isCapturing
-                  ? 'Nakita ang mukha — huwag gumalaw...'
-                  : 'Pindutin ang button para simulan'
-                }
-              </p>
-
-              {/* Capture button — hidden file input trigger */}
-              <input
-                ref={faceScanRef}
-                type="file"
-                accept="image/*"
-                capture="user"
-                style={{ display: 'none' }}
-                onChange={handleFaceCapture}
-              />
-
-              {!faceCaptured ? (
-                <button
-                  onClick={() => faceScanRef.current?.click()}
-                  style={{
-                    width: 72, height: 72, borderRadius: '50%',
-                    background: '#FF0048', border: '4px solid rgba(255,0,72,0.3)',
-                    cursor: 'pointer', display: 'flex',
-                    alignItems: 'center', justifyContent: 'center',
-                  }}
-                >
-                  <Camera size={28} color="white" />
-                </button>
+            {/* Circle viewport */}
+            <div style={{
+              width: 240, height: 240, borderRadius: '50%',
+              border: faceCaptured ? '4px solid #1a56ad' : '4px solid #88000d',
+              background: '#1C1C1E', position: 'relative', overflow: 'hidden', transition: 'border-color 300ms',
+            }}>
+              {faceCaptured ? (
+                 <div className="w-full h-full flex items-center justify-center bg-primary-container">
+                    <Check className="w-16 h-16 text-white" />
+                 </div>
               ) : (
-                <button
-                  onClick={() => setFaceCaptured(false)}
-                  style={{
-                    padding: '10px 24px',
-                    background: 'none', border: '1.5px solid #D1D1D6',
-                    borderRadius: 12, fontSize: 13, color: '#8E8E93', cursor: 'pointer',
-                  }}
-                >
-                  Ulitin ang Face Scan
-                </button>
+                <>
+                  <div className="absolute inset-x-0 inset-y-0 flex items-center justify-center">
+                    <svg width="120" height="140" viewBox="0 0 120 140" fill="none">
+                      <ellipse cx="60" cy="55" rx="35" ry="42" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4 4"/>
+                      <path d="M20 120 Q60 90 100 120" stroke="rgba(255,255,255,0.2)" strokeWidth="2" strokeDasharray="4 4" fill="none"/>
+                    </svg>
+                  </div>
+                  {isCapturing && (
+                    <div style={{
+                      position: 'absolute', left: 0, right: 0, height: 3,
+                      background: 'linear-gradient(to right, transparent, #88000d, transparent)',
+                      animation: 'faceScan 2s ease-in-out infinite',
+                    }} />
+                  )}
+                </>
               )}
+            </div>
+
+            <input
+              ref={faceScanRef}
+              type="file"
+              accept="image/*"
+              capture="user"
+              style={{ display: 'none' }}
+              onChange={handleFaceCapture}
+            />
+
+            {!faceCaptured ? (
+              <button onClick={() => faceScanRef.current?.click()}
+                className="w-16 h-16 rounded-full bg-tertiary flex items-center justify-center shadow-lg shadow-tertiary/30 active:scale-90 transition-all">
+                <Camera className="w-8 h-8 text-white" />
+              </button>
+            ) : (
+              <button onClick={() => setFaceCaptured(false)}
+                className="px-5 py-2.5 rounded-xl border border-outline-variant text-sm text-on-surface-variant font-bold hover:bg-surface-container transition-all">
+                Ulitin ang Face Scan
+              </button>
+            )}
+
+            <div className="fixed bottom-[64px] left-0 right-0 px-5 pb-3 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/95 to-transparent pt-4 z-30">
+              <div className="max-w-md mx-auto">
+                <button onClick={handleRegister}
+                  className="w-full bg-tertiary text-white py-4 rounded-full font-bold text-base shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all">
+                  {faceCaptured ? 'I-Register ang Benepisyaryo →' : 'I-Register nang walang Face Scan →'}
+                </button>
+              </div>
             </div>
           </div>
         )}
       </div>
-
-      {/* Fixed Bottom Action */}
-      <div style={{
-        position: 'fixed', bottom: 64, left: 0, right: 0,
-        padding: '12px 16px',
-        paddingBottom: 'calc(12px + env(safe-area-inset-bottom))',
-        background: 'linear-gradient(to top, white 80%, transparent)',
-        display: 'flex', flexDirection: 'column', gap: 8,
-        pointerEvents: 'none', zIndex: 30, // Make sure it sits above the list but allows clicks inside
-      }}>
-        <div className="max-w-md mx-auto w-full pointer-events-auto" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {step === 1 ? (
-            <button 
-              onClick={handleNext}
-              className="w-full h-[52px] bg-[var(--red)] text-white font-bold rounded-[14px] text-[15px] transition-transform active:scale-[0.98] shadow-[var(--shadow-md)]"
-            >
-              Susunod →
-            </button>
-          ) : (
-            <>
-              {/* Primary register button — always shown, not gated on face scan */}
-              <button
-                onClick={handleRegister}
-                style={{
-                  width: '100%', height: 52,
-                  background: '#FF0048',
-                  opacity: 1, // always full opacity — face scan is optional for prototype
-                  color: 'white', border: 'none',
-                  borderRadius: 14, fontSize: 15, fontWeight: 700, cursor: 'pointer',
-                  boxShadow: 'var(--shadow-md)'
-                }}
-              >
-                {faceCaptured ? 'I-Register ang Benepisyaryo →' : 'I-Register nang walang Face Scan →'}
-              </button>
-
-              {/* Skip label — makes it clear this is optional */}
-              {!faceCaptured && (
-                <p style={{ textAlign: 'center', fontSize: 12, color: '#8E8E93', margin: 0 }}>
-                  Ang face scan ay optional para sa prototype
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
     </div>
   )
 }

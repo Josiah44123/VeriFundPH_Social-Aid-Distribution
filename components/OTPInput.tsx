@@ -72,10 +72,8 @@ export function OTPInput({ length = 6, onComplete, error }: OTPInputProps) {
             onChange={(e) => handleChange(e, index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
-              "w-[48px] h-[56px] text-center text-[22px] font-bold rounded-[12px] border-[2px] transition-all outline-none",
-              error ? "border-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]" 
-                : data ? "bg-white border-[var(--navy)] text-[var(--navy)] shadow-[0_2px_8px_rgba(24,38,155,0.15)]"
-                : "bg-[var(--surface-input)] border-transparent text-[var(--text-primary)] focus:border-[var(--navy)] focus:bg-white"
+              "w-[48px] h-[56px] text-center text-2xl font-extrabold rounded-xl border-0 outline-none transition-all bg-[var(--surface-container-high)] text-[var(--primary)] focus:ring-2 focus:ring-[var(--primary-container)]/40 focus:bg-white",
+              error && "ring-2 ring-[var(--danger)] bg-[var(--danger-light)] text-[var(--danger)]"
             )}
             maxLength={1}
           />

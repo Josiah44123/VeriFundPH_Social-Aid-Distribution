@@ -24,6 +24,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#18269B" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
       </head>
       <body className="antialiased font-sans flex flex-col min-h-screen">
         <VeriFundProvider>

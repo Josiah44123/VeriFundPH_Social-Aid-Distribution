@@ -39,54 +39,51 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
   const initials = (name: string) => name.split(" ").slice(0, 2).map(n => n[0]).join("").toUpperCase()
 
   return (
-    <div className="flex flex-col h-full pb-[100px] bg-[var(--surface-page)] min-h-full">
+    <div className="flex flex-col h-full bg-surface-container-low min-h-full pb-[100px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
       
       {/* Header */}
-      <div className="sticky top-0 bg-[var(--surface-page)] z-10 px-[16px] pt-[24px] pb-[16px]">
+      <div className="px-5 pt-5 pb-4 bg-surface-container-lowest border-b border-outline-variant/20 sticky top-0 z-10">
         <div className="flex justify-between items-center">
-          <h2 className="text-[18px] font-bold text-[var(--text-primary)] leading-tight tracking-[-0.3px]">Listahan Ngayon</h2>
-          <span className="bg-[var(--success-light)] text-[var(--success)] text-[12px] font-bold px-[12px] py-[6px] rounded-full flex items-center gap-[4px] shadow-sm">
-            <CheckCircle2 className="w-[14px] h-[14px]" />
-            {nakuhaCount} Nakuha
+          <h2 className="text-xl font-extrabold text-primary tracking-tight">Listahan Ngayon</h2>
+          <span className="bg-gradient-to-r from-primary to-primary-container text-white text-xs font-bold px-4 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+            <CheckCircle2 className="w-3.5 h-3.5" /> {nakuhaCount} Nakuha
           </span>
         </div>
       </div>
 
-      <div className="px-[16px]">
-        {/* Summary Stats */}
-        <div className="flex gap-[12px] mb-[28px]">
-          <div className="flex-1 bg-[var(--navy-light)] rounded-[14px] p-[12px] px-[16px] flex flex-col items-center justify-center shadow-[var(--shadow-sm)]">
-            <div className="text-[20px] font-extrabold text-[var(--navy)] leading-none">{totalScanned}</div>
-            <div className="text-[11px] text-[var(--navy)] font-bold uppercase mt-[4px] opacity-70">Scanned</div>
+      <div className="px-5 py-4 flex gap-3">
+        {[
+          { label: 'Scanned', value: totalScanned, gradient: 'from-primary to-primary-container', text: 'text-white' },
+          { label: 'Nakuha', value: nakuhaCount, gradient: 'from-secondary to-secondary-fixed-dim', text: 'text-[#271900]' },
+          { label: 'Tinanggihan', value: tinanggihanCount, gradient: 'from-tertiary to-tertiary-container', text: 'text-white' },
+        ].map(({ label, value, gradient, text }) => (
+          <div key={label} className={`flex-1 bg-gradient-to-br ${gradient} rounded-2xl p-3 text-center editorial-shadow relative overflow-hidden`}>
+            {/* Decorative blob */}
+            <div className="absolute -right-2 -bottom-2 w-10 h-10 bg-white/20 rounded-full blur-md pointer-events-none" />
+            
+            <div className={`relative z-10 text-2xl font-extrabold tracking-tight ${text}`}>{value}</div>
+            <div className={`relative z-10 text-[10px] font-bold uppercase tracking-widest ${text} opacity-90 mt-0.5`}>{label}</div>
           </div>
-          <div className="flex-1 bg-[var(--success-light)] rounded-[14px] p-[12px] px-[16px] flex flex-col items-center justify-center shadow-[var(--shadow-sm)]">
-            <div className="text-[20px] font-extrabold text-[var(--success)] leading-none">{nakuhaCount}</div>
-            <div className="text-[11px] text-[var(--success)] font-bold uppercase mt-[4px] opacity-70">Nakuha</div>
-          </div>
-          <div className="flex-1 bg-[var(--danger-light)] rounded-[14px] p-[12px] px-[16px] flex flex-col items-center justify-center shadow-[var(--shadow-sm)]">
-            <div className="text-[20px] font-extrabold text-[var(--red)] leading-none">{tinanggihanCount}</div>
-            <div className="text-[11px] text-[var(--red)] font-bold uppercase mt-[4px] opacity-70">Tinanggihan</div>
-          </div>
-        </div>
+        ))}
+      </div>
 
+      <div>
         {sortedClaims.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-[60px] text-center">
-            <div className="w-[64px] h-[64px] rounded-full bg-[#E8ECF7] flex items-center justify-center mb-[16px]">
-              <QrCode className="w-[32px] h-[32px] text-[var(--text-muted)]" />
+          <div className="flex flex-col items-center py-16 px-5 text-center">
+            <div className="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-4">
+              <QrCode className="w-8 h-8 text-on-surface-variant" />
             </div>
-            <p className="text-[16px] font-bold text-[var(--text-secondary)]">Wala pang na-verify ngayon.</p>
+            <p className="text-base font-bold text-on-surface-variant">Wala pang na-verify ngayon.</p>
             {onSwitchToVerify && (
-              <button 
-                onClick={onSwitchToVerify}
-                className="text-[14px] font-bold text-[var(--red)] mt-[8px] underline underline-offset-4"
-              >
+              <button onClick={onSwitchToVerify}
+                className="mt-3 text-sm font-bold text-tertiary underline underline-offset-4">
                 I-Verify ang una →
               </button>
             )}
           </div>
         )}
 
-        <div className="flex flex-col gap-[12px]">
+        <div className="flex flex-col">
           <AnimatePresence initial={false}>
             {sortedClaims.map((claim) => {
               const isNakuha = claim.status === "NAKUHA"
@@ -99,44 +96,45 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={cn(
-                    "rounded-[16px] p-[14px] px-[16px] shadow-[var(--shadow-sm)] cursor-pointer border-[1.5px] transition-colors",
-                    !isNakuha ? "bg-[#FFF5F7] border-[var(--red-light)]" : "bg-white border-transparent hover:border-[#E8ECF7]"
-                  )}
+                  className={`mx-5 mb-3 rounded-2xl p-4 cursor-pointer transition-all editorial-shadow border-l-4 ${
+                    isNakuha
+                      ? 'bg-surface-container-lowest border-l-primary-container'
+                      : 'bg-tertiary/5 border-l-tertiary'
+                  }`}
                   onClick={() => setExpandedId(isExpanded ? null : claim.id)}
                 >
-                  <div className="flex items-center gap-[12px]">
+                  <div className="flex items-center gap-3">
                     <div className={cn(
-                      "w-[44px] h-[44px] rounded-full flex items-center justify-center font-bold text-[16px] text-white shrink-0 shadow-sm",
-                      isNakuha ? "bg-[var(--navy)]" : "bg-[var(--red)]"
+                      "w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0",
+                      isNakuha ? "bg-gradient-to-br from-primary to-primary-container" : "bg-tertiary"
                     )}>
                       {initials(name)}
                     </div>
                     
                     <div className="flex-1 min-w-0 flex flex-col justify-center">
-                      <h4 className="text-[14px] font-bold text-[var(--text-primary)] truncate leading-tight">{name}</h4>
-                      <div className="text-[12px] text-[var(--text-muted)] mt-[2px] flex items-center gap-[6px]">
-                        <span>{formatTime(claim.verifiedAt)}</span>
+                      <h4 className="text-sm font-bold text-on-surface truncate leading-tight">{name}</h4>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-xs text-on-surface-variant">{formatTime(claim.verifiedAt)}</span>
                         {claim.method && (
                           <>
-                            <span className="w-[3px] h-[3px] rounded-full bg-gray-300" />
-                            <span className="font-semibold text-[var(--text-secondary)]">{claim.method}</span>
+                            <span className="w-1 h-1 rounded-full bg-outline-variant" />
+                            <span className="text-xs font-semibold text-on-surface-variant">{claim.method}</span>
                           </>
                         )}
                       </div>
                     </div>
 
-                    <div className="shrink-0 ml-[8px] flex items-center gap-1">
+                    <div className="shrink-0 ml-2 flex items-center gap-1">
                       <span className={cn(
-                        "inline-flex items-center px-[10px] py-[6px] rounded-[9999px] text-[11px] font-bold",
-                        isNakuha ? "bg-[var(--success-light)] text-[var(--success)]" : "bg-[var(--danger-light)] text-[var(--danger)]"
+                        "text-[10px] font-black px-3 py-1.5 rounded-full flex-shrink-0",
+                        isNakuha ? "bg-gradient-to-r from-primary to-primary-container text-white" : "bg-gradient-to-r from-tertiary-container to-tertiary text-white"
                       )}>
                         {claim.status}
                       </span>
                       {isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-[var(--text-muted)] opacity-50" />
+                        <ChevronDown className="w-4 h-4 text-on-surface-variant opacity-50" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-[var(--text-muted)] opacity-50" />
+                        <ChevronRight className="w-4 h-4 text-on-surface-variant opacity-50" />
                       )}
                     </div>
                   </div>
@@ -149,19 +147,19 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="mt-[16px] pt-[16px] border-t border-[#E8ECF7] flex flex-col gap-[8px]">
+                        <div className="mt-4 pt-4 border-t border-screen-variant/20 flex flex-col gap-2">
                           <div className="flex justify-between items-center">
-                            <span className="text-[13px] text-[var(--text-muted)] font-medium">VeriFund ID</span>
-                            <span className="font-mono text-[13px] font-bold text-[var(--red)] bg-[var(--red-light)] px-[8px] py-[2px] rounded-[6px]">{claim.beneficiaryId}</span>
+                            <span className="text-xs text-on-surface-variant font-medium">VeriFund ID</span>
+                            <span className="font-mono text-xs font-bold text-tertiary py-0.5 px-2 bg-tertiary/10 rounded-md">{claim.beneficiaryId}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-[13px] text-[var(--text-muted)] font-medium">Oras</span>
-                            <span className="text-[13px] font-bold text-[var(--text-secondary)]">{new Date(claim.verifiedAt).toLocaleString()}</span>
+                            <span className="text-xs text-on-surface-variant font-medium">Oras</span>
+                            <span className="text-xs font-bold text-on-surface-variant">{new Date(claim.verifiedAt).toLocaleString()}</span>
                           </div>
                           {!isNakuha && claim.reason && (
                             <div className="flex justify-between items-center mt-1">
-                              <span className="text-[13px] text-[var(--text-muted)] font-medium">Dahilan</span>
-                              <span className="text-[13px] font-bold text-[var(--danger)] max-w-[200px] text-right leading-tight">{claim.reason}</span>
+                              <span className="text-xs text-on-surface-variant font-medium">Dahilan</span>
+                              <span className="text-xs font-bold text-tertiary max-w-[200px] text-right leading-tight">{claim.reason}</span>
                             </div>
                           )}
                         </div>

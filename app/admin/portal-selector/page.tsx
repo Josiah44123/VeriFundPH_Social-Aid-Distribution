@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { QrCode, LayoutGrid, LogOut, Star } from "lucide-react"
+import { QrCode, LayoutGrid, LogOut } from "lucide-react"
 import { motion } from "framer-motion"
 
 interface UserSession {
@@ -10,28 +10,6 @@ interface UserSession {
   role: string
   barangay: string
   email: string
-}
-
-function Particles() {
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {Array.from({ length: 14 }).map((_, i) => (
-        <div
-          key={i}
-          className="absolute rounded-full bg-white"
-          style={{
-            width: `${3 + Math.random() * 4}px`,
-            height: `${3 + Math.random() * 4}px`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            opacity: 0.15 + Math.random() * 0.25,
-            animation: `float-particle ${8 + Math.random() * 12}s ease-in-out infinite`,
-            animationDelay: `${Math.random() * 8}s`,
-          }}
-        />
-      ))}
-    </div>
-  )
 }
 
 export default function PortalSelector() {
@@ -66,118 +44,86 @@ export default function PortalSelector() {
   if (!user) return null
 
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center px-[20px] py-[40px] relative overflow-hidden"
-      style={{ background: 'linear-gradient(145deg, #0D1966 0%, #18269B 50%, #1E33B8 100%)' }}
-    >
-      <Particles />
-
-      {/* Content */}
-      <div className="relative z-10 flex flex-col items-center w-full max-w-[720px]">
-        {/* Logo */}
-        <div className="flex items-center gap-[8px] mb-[8px]">
-          <Star className="w-[22px] h-[22px] text-[#FFB800] fill-[#FFB800]" />
-          <h1 className="text-[28px] font-extrabold text-white tracking-tight">VeriFund PH</h1>
+    <div className="min-h-screen bg-surface" style={{ fontFamily: 'Manrope, sans-serif' }}>
+      {/* Top App Bar */}
+      <header className="sticky top-0 z-20 bg-surface/90 backdrop-blur-xl px-5 py-3 flex justify-between items-center border-b border-outline-variant/20">
+        <div className="flex items-center gap-2.5">
+          <img src="/logo.png" alt="VeriFund" className="w-8 h-8 object-contain" />
+          <span className="text-xl font-extrabold text-primary tracking-tight">VeriFund PH</span>
         </div>
-        <p className="text-[14px] text-white/60 mb-[24px]">Piliin ang inyong portal</p>
-
-        {/* Officer Greeting */}
-        <p className="text-[18px] font-semibold text-white mb-[4px]">{greeting()}, {user.name}</p>
-        <p className="text-[13px] text-white/50 mb-[36px]">{user.barangay}</p>
-
-        {/* Portal Cards */}
-        <div className="flex flex-col md:flex-row gap-[16px] md:gap-[20px] w-full justify-center">
-          {/* Field Console Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.1 }}
-            whileHover={{ scale: 1.02, boxShadow: '0 24px 72px rgba(255,0,72,0.45)' }}
-            onClick={() => router.push("/admin/console")}
-            className="flex-1 max-w-[340px] rounded-[24px] p-[28px] cursor-pointer flex flex-col"
-            style={{
-              background: 'linear-gradient(135deg, #FF0048, #CC0039)',
-              boxShadow: '0 20px 60px rgba(255,0,72,0.35)',
-              transition: 'box-shadow 200ms ease, transform 200ms ease',
-            }}
-          >
-            {/* Icon */}
-            <div className="w-[80px] h-[80px] rounded-full flex items-center justify-center mb-[20px]"
-              style={{ background: 'rgba(255,255,255,0.2)' }}
-            >
-              <QrCode className="w-[48px] h-[48px] text-white" />
-            </div>
-
-            <h2 className="text-[20px] font-bold text-white mb-[4px]">Field Console</h2>
-            <p className="text-[13px] text-white/80 mb-[16px] leading-relaxed">
-              I-register at i-verify ang mga benepisyaryo
-            </p>
-
-            {/* Feature Pills */}
-            <div className="flex flex-wrap gap-[6px] mb-[20px]">
-              {["I-Register", "I-Verify", "Listahan"].map(f => (
-                <span key={f} className="px-[10px] py-[4px] rounded-full text-[11px] font-bold text-white" style={{ background: 'rgba(255,255,255,0.2)' }}>
-                  {f}
-                </span>
-              ))}
-            </div>
-
-            {/* Button */}
-            <button className="w-full h-[52px] bg-white text-[var(--red)] font-bold rounded-[14px] text-[15px] mt-auto transition-all hover:shadow-lg active:scale-[0.97]">
-              Pumunta sa Field Console →
-            </button>
-          </motion.div>
-
-          {/* Management System Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20, delay: 0.25 }}
-            whileHover={{ scale: 1.02, boxShadow: '0 24px 72px rgba(24,38,155,0.5)' }}
-            onClick={() => router.push("/management/dashboard")}
-            className="flex-1 max-w-[340px] rounded-[24px] p-[28px] cursor-pointer flex flex-col"
-            style={{
-              background: 'linear-gradient(135deg, #18269B, #0D1966)',
-              boxShadow: '0 20px 60px rgba(24,38,155,0.4)',
-              transition: 'box-shadow 200ms ease, transform 200ms ease',
-            }}
-          >
-            {/* Icon */}
-            <div className="w-[80px] h-[80px] rounded-full flex items-center justify-center mb-[20px]"
-              style={{ background: 'rgba(255,183,0,0.2)' }}
-            >
-              <LayoutGrid className="w-[48px] h-[48px] text-[#FFB800]" />
-            </div>
-
-            <h2 className="text-[20px] font-bold text-white mb-[4px]">Management System</h2>
-            <p className="text-[13px] text-white/80 mb-[16px] leading-relaxed">
-              Dashboard, benepisyaryo, distribusyon, audit log
-            </p>
-
-            {/* Feature Pills */}
-            <div className="flex flex-wrap gap-[6px] mb-[20px]">
-              {["Dashboard", "Benepisyaryo", "Audit Log"].map(f => (
-                <span key={f} className="px-[10px] py-[4px] rounded-full text-[11px] font-bold text-[#FFB800]" style={{ background: 'rgba(255,183,0,0.25)' }}>
-                  {f}
-                </span>
-              ))}
-            </div>
-
-            {/* Button */}
-            <button className="w-full h-[52px] bg-[#FFB800] text-[#0D1966] font-bold rounded-[14px] text-[15px] mt-auto transition-all hover:shadow-lg active:scale-[0.97]">
-              Pumunta sa Management →
-            </button>
-          </motion.div>
-        </div>
-
-        {/* Logout */}
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-[6px] text-[13px] text-white/50 hover:text-white/80 transition-colors mt-[32px]"
-        >
-          <LogOut className="w-[14px] h-[14px]" />
-          Mag-logout
+        <button onClick={handleLogout} className="flex items-center gap-1.5 text-sm font-bold text-on-surface-variant hover:text-tertiary transition-colors">
+          <LogOut className="w-4 h-4" /> Mag-logout
         </button>
+      </header>
+
+      {/* Hero Section */}
+      <div className="header-gradient-blue mx-5 mt-5 rounded-2xl p-7 text-white relative overflow-hidden editorial-shadow">
+        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-xl" />
+        <div className="relative z-10">
+          <p className="text-white/70 text-sm font-medium mb-1">{greeting()},</p>
+          <h1 className="text-2xl font-extrabold tracking-tight mb-1">{user?.name}</h1>
+          <p className="text-white/60 text-sm">{user?.barangay}</p>
+          <span className="inline-flex items-center gap-1.5 mt-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+            <span className="w-2 h-2 rounded-full bg-secondary-container" />
+            Piliin ang Portal
+          </span>
+        </div>
+      </div>
+
+      <div className="px-5 mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Field Console Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => router.push('/admin/console')}
+          className="cursor-pointer bg-gradient-to-br from-tertiary to-tertiary-container rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden editorial-shadow"
+        >
+          <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full" />
+          <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
+            <QrCode className="w-9 h-9 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1">Field Console</h2>
+            <p className="text-white/75 text-sm leading-relaxed">I-register at i-verify ang mga benepisyaryo</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {['I-Register', 'I-Verify', 'Listahan'].map(f => (
+              <span key={f} className="px-3 py-1 bg-white/20 text-white text-xs font-bold rounded-full">{f}</span>
+            ))}
+          </div>
+          <button className="w-full bg-white text-tertiary font-bold py-3 rounded-xl text-sm transition-all hover:shadow-md active:scale-[0.98]">
+            Pumunta sa Field Console →
+          </button>
+        </motion.div>
+
+        {/* Management Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          whileHover={{ scale: 1.02 }}
+          onClick={() => router.push('/management/dashboard')}
+          className="cursor-pointer bg-gradient-to-br from-primary to-primary-container rounded-2xl p-6 flex flex-col gap-4 relative overflow-hidden editorial-shadow"
+        >
+          <div className="absolute -right-8 -bottom-8 w-32 h-32 bg-white/10 rounded-full" />
+          <div className="w-16 h-16 rounded-full bg-secondary-container/30 flex items-center justify-center">
+            <LayoutGrid className="w-9 h-9 text-secondary-container" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white mb-1">Management System</h2>
+            <p className="text-white/75 text-sm leading-relaxed">Dashboard, benepisyaryo, distribusyon, audit log</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {['Dashboard', 'Benepisyaryo', 'Audit Log'].map(f => (
+              <span key={f} className="px-3 py-1 bg-secondary-container/25 text-secondary-container text-xs font-bold rounded-full">{f}</span>
+            ))}
+          </div>
+          <button className="w-full bg-secondary-container text-on-secondary-container font-bold py-3 rounded-xl text-sm transition-all hover:shadow-md active:scale-[0.98]">
+            Pumunta sa Management →
+          </button>
+        </motion.div>
       </div>
     </div>
   )

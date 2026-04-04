@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, User, CheckCircle2 } from "lucide-react"
+import { ArrowLeft, LockKeyhole, Shield, CheckCircle2 } from "lucide-react"
 import { OTPInput } from "@/components/OTPInput"
 import { VALID_OTP } from "@/lib/constants"
 import { cn } from "@/lib/utils"
@@ -59,7 +59,11 @@ export default function CitizenLogin() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-[var(--surface-page)] flex flex-col relative w-full overflow-hidden">
+    <div className="bg-surface min-h-screen flex flex-col font-editorial relative overflow-hidden z-0 w-full">
+      {/* Background Blobs */}
+      <div className="fixed top-1/4 -left-20 w-96 h-96 bg-primary-fixed opacity-10 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="fixed bottom-1/4 -right-20 w-96 h-96 bg-secondary-fixed opacity-10 rounded-full blur-3xl pointer-events-none -z-10" />
+
       {/* Loading Overlay */}
       <AnimatePresence>
         {loading && (
@@ -67,37 +71,32 @@ export default function CitizenLogin() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white/80 backdrop-blur-sm z-[100] flex items-center justify-center"
+            className="fixed inset-0 bg-surface/80 backdrop-blur-sm z-[100] flex items-center justify-center"
           >
-            <div className="w-[48px] h-[48px] border-[4px] border-[var(--navy)] border-t-transparent rounded-full animate-spin" />
+            <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </motion.div>
         )}
       </AnimatePresence>
       
-      {/* Header */}
-      <div 
-        className="h-[120px] flex items-start pt-[24px] px-[16px] shrink-0 relative z-0"
-        style={{ background: 'linear-gradient(160deg, #18269B, #0D1966)' }}
-      >
-        <button onClick={() => step === 2 ? setStep(1) : router.push("/")} className="p-2 -ml-2 text-white/80 hover:text-white transition-colors relative z-20">
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+      {/* Top Navigation Bar */}
+      <div className="bg-surface/80 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={() => step === 2 ? setStep(1) : router.push("/")} 
+            className="p-2 -ml-2 text-on-surface hover:text-primary transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <div className="flex items-center gap-2">
+            <img src="/logo.png" alt="VeriFund" className="h-8 w-8 object-contain" />
+            <span className="font-extrabold tracking-tight text-primary text-xl">VeriFund</span>
+          </div>
+        </div>
       </div>
 
-      {/* Content Area */}
-      <div className="flex-1 bg-white rounded-t-[24px] -mt-[24px] relative z-10 px-[20px] pb-[40px] flex flex-col items-center pt-[44px] shadow-[0_-8px_32px_rgba(0,0,0,0.08)]">
-        {/* Floating Avatar */}
-        <div className="absolute -top-[32px] w-[64px] h-[64px] rounded-full bg-[var(--navy)] border-[4px] border-white flex items-center justify-center shadow-[var(--shadow-md)]">
-          {otpSuccess ? (
-            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", bounce: 0.5 }}>
-              <CheckCircle2 className="w-[32px] h-[32px] text-[#FFB800]" />
-            </motion.div>
-          ) : (
-            <User className="w-[32px] h-[32px] text-white" />
-          )}
-        </div>
-
-        <div className="w-full max-w-md mt-[8px]">
+      {/* Form Container */}
+      <div className="flex-1 w-full max-w-md mx-auto px-6 mt-12 mb-12 flex flex-col">
+        <div className="w-full relative">
           <AnimatePresence mode="wait">
             {step === 1 ? (
               <motion.div 
@@ -106,79 +105,85 @@ export default function CitizenLogin() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.25 }}
-                className="flex flex-col w-full"
+                className="bg-surface-container-lowest rounded-2xl p-8 editorial-shadow flex flex-col gap-8"
               >
-                <h1 className="text-[20px] font-bold text-center mb-[4px] text-[var(--text-primary)]">
-                  Mag-login
-                </h1>
-                <p className="text-[13px] text-[var(--text-muted)] text-center mb-[32px]">
-                  Magpapadala kami ng verification code.
-                </p>
+                <div>
+                  <div className="rounded-2xl bg-primary-container/10 p-3 text-primary w-fit mb-4">
+                    <LockKeyhole className="w-6 h-6" />
+                  </div>
+                  <h1 className="text-4xl font-extrabold tracking-tighter text-on-surface mb-2">
+                    Mag-login
+                  </h1>
+                  <p className="text-on-surface-variant font-medium text-sm">
+                    Magpapadala kami ng verification code.
+                  </p>
+                </div>
 
-                {/* Segmented Control */}
-                <div className="bg-[var(--surface-input)] p-[4px] rounded-[14px] flex relative mb-[24px] h-[52px]">
+                {/* SMS/Email Toggle */}
+                <div className="flex p-1.5 bg-surface-container-high rounded-2xl w-fit gap-1 relative">
                   <button 
                     onClick={() => setMethod("sms")}
                     className={cn(
-                      "flex-1 rounded-[10px] text-[14px] font-medium z-10 transition-colors",
-                      method === "sms" ? "text-[var(--text-primary)] font-bold" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                      "relative z-10 transition-colors text-sm font-bold",
+                      method === "sms" ? "text-primary" : "text-on-surface-variant hover:text-on-surface"
                     )}
                   >
-                    SMS
+                    <div className={cn("px-8 py-2 rounded-xl", method === "sms" ? "bg-surface-container-lowest shadow-sm" : "")}>
+                      SMS
+                    </div>
                   </button>
                   <button 
                     onClick={() => setMethod("email")}
                     className={cn(
-                      "flex-1 rounded-[10px] text-[14px] font-medium z-10 transition-colors",
-                      method === "email" ? "text-[var(--text-primary)] font-bold" : "text-[var(--text-muted)] hover:text-[var(--text-primary)]"
+                      "relative z-10 transition-colors text-sm font-bold",
+                      method === "email" ? "text-primary" : "text-on-surface-variant hover:text-on-surface"
                     )}
                   >
-                    Email
+                    <div className={cn("px-8 py-2 rounded-xl", method === "email" ? "bg-surface-container-lowest shadow-sm" : "")}>
+                      Email
+                    </div>
                   </button>
-                  <motion.div 
-                    className="absolute top-[4px] bottom-[4px] bg-white rounded-[10px] shadow-[var(--shadow-sm)] z-0"
-                    initial={false}
-                    animate={{ 
-                      left: method === "sms" ? "4px" : "calc(50% + 2px)", 
-                      width: "calc(50% - 6px)" 
-                    }}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
                 </div>
 
-                <div className="relative mb-[8px]">
-                  {method === "sms" && (
-                    <div className="absolute left-[12px] top-1/2 -translate-y-1/2 font-bold text-[15px] text-[var(--text-primary)] z-10">
-                      +63
-                    </div>
-                  )}
-                  <input 
-                    value={contact}
-                    onChange={(e) => {
-                      setInputError("")
-                      if (method === "sms") {
-                        setContact(e.target.value.replace(/\D/g, ''))
-                      } else {
-                        setContact(e.target.value)
-                      }
-                    }}
-                    placeholder={method === "sms" ? "09XXXXXXXXX" : "juan@email.com"}
-                    style={inputError ? { borderColor: 'var(--danger)', backgroundColor: 'var(--danger-light)' } : undefined}
+                {/* Input Field */}
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-widest text-outline ml-1 mb-2">
+                    {method === "sms" ? "Numero ng Mobile" : "Email Address"}
+                  </div>
+                  <div 
                     className={cn(
-                      "w-full h-[52px] rounded-[14px] bg-[var(--surface-input)] text-[15px] text-[var(--text-primary)] border-[1.5px] border-transparent outline-none focus:bg-white focus:border-[var(--blue)]",
-                      method === "sms" ? "pl-[44px] pr-[16px] font-mono tracking-wide" : "px-[16px]"
+                      "flex items-center gap-3 p-4 rounded-xl transition-all border",
+                      inputError ? "bg-tertiary-container/10 border-tertiary/30" : "bg-surface-container-high border-transparent focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary/30"
                     )}
-                  />
+                  >
+                    {method === "sms" && (
+                      <div className="text-on-surface font-bold border-r border-outline-variant pr-3 shrink-0">
+                        +63
+                      </div>
+                    )}
+                    <input 
+                      value={contact}
+                      onChange={(e) => {
+                        setInputError("")
+                        if (method === "sms") {
+                          setContact(e.target.value.replace(/\D/g, ''))
+                        } else {
+                          setContact(e.target.value)
+                        }
+                      }}
+                      placeholder={method === "sms" ? "09XXXXXXXXX" : "juan@email.com"}
+                      className="bg-transparent border-none focus:ring-0 w-full font-semibold text-on-surface placeholder:text-outline/50 outline-none"
+                    />
+                  </div>
+                  {inputError && (
+                    <p className="text-xs text-tertiary font-bold ml-1 mt-2">{inputError}</p>
+                  )}
                 </div>
-                {inputError && (
-                  <p className="text-[12px] text-[var(--danger)] font-bold mb-[24px]">{inputError}</p>
-                )}
-                {!inputError && <div className="mb-[24px]" />}
 
                 <motion.button 
                   onClick={handleSendCode}
                   whileTap={{ scale: 0.97 }}
-                  className="w-full h-[52px] rounded-[14px] bg-[var(--navy)] text-white font-bold text-[15px] tracking-[-0.2px] shadow-[var(--shadow-sm)] mt-auto"
+                  className="w-full bg-primary-container hover:bg-primary text-white py-4 rounded-full font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/10 mt-2"
                 >
                   Mag-send ng Code
                 </motion.button>
@@ -190,39 +195,72 @@ export default function CitizenLogin() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.25 }}
-                className="flex flex-col w-full h-full"
+                className="flex flex-col w-full"
               >
-                <h1 className="text-[20px] font-bold text-center mb-[4px] text-[var(--text-primary)]">
-                  I-enter ang OTP
-                </h1>
-                <p className="text-[14px] text-[var(--text-muted)] text-center mb-[32px]">
-                  Napadala na sa {method === "sms" ? "+63" : ""}{contact}
-                </p>
+                <div className="bg-surface-container-lowest rounded-2xl p-8 editorial-shadow flex flex-col gap-6">
+                  <div>
+                    <div className="rounded-2xl bg-primary-container/10 p-3 text-primary w-fit mb-4">
+                      {otpSuccess ? <CheckCircle2 className="w-6 h-6 text-primary" /> : <Shield className="w-6 h-6" />}
+                    </div>
+                    <h1 className="text-4xl font-extrabold tracking-tighter text-on-surface mb-2">
+                      I-enter ang OTP
+                    </h1>
+                    <p className="text-on-surface-variant font-medium text-sm">
+                      Napadala na sa <span className="text-on-surface font-bold">{method === "sms" ? "+63" : ""}{contact}</span>
+                    </p>
+                  </div>
 
-                <OTPInput length={6} onComplete={handleOTPComplete} error={otpError} />
+                  <div className="py-2">
+                    <OTPInput length={6} onComplete={handleOTPComplete} error={otpError} />
+                    <div className="h-6 mt-2 flex justify-center items-center">
+                      {otpError && (
+                        <span className="text-xs font-bold text-tertiary" style={{ animation: 'shake 300ms ease-in-out' }}>
+                          Mali ang code. Subukan ulit.
+                        </span>
+                      )}
+                    </div>
+                  </div>
 
-                <div className="h-[24px] mt-[16px] mb-[16px] flex justify-center items-center">
-                  {otpError && (
-                    <span className="text-[13px] font-bold text-[var(--danger)]" style={{ animation: 'shake 300ms ease-in-out' }}>
-                      Mali ang code. Subukan ulit.
-                    </span>
-                  )}
+                  <div className="flex justify-center flex-col items-center gap-3">
+                    {countdown > 0 ? (
+                      <span className="text-on-surface-variant text-sm text-center">
+                        I-resend in <span className="text-primary font-bold">0:{countdown.toString().padStart(2, '0')}</span>
+                      </span>
+                    ) : (
+                      <button 
+                        onClick={() => startCountdown()}
+                        className="text-primary font-bold text-sm underline underline-offset-4 hover:text-primary-container transition-colors"
+                      >
+                        I-resend ang code
+                      </button>
+                    )}
+                  </div>
+                  
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    className="w-full bg-primary-container text-white font-bold py-5 rounded-full shadow-[0_10px_30px_rgba(26,86,173,0.2)] hover:scale-[1.02] active:scale-95 transition-all text-lg mt-2 flex justify-center items-center"
+                    onClick={() => {}}
+                  >
+                    I-verify
+                  </motion.button>
                 </div>
 
-                <div className="mt-auto flex justify-center pb-[24px]">
-                  {countdown > 0 ? (
-                    <span className="text-[13px] font-bold text-[var(--text-muted)]">
-                      I-resend in 0:{countdown.toString().padStart(2, '0')}
-                    </span>
-                  ) : (
-                    <button 
-                      onClick={() => startCountdown()}
-                      className="text-[13px] font-bold text-[var(--blue)] hover:text-[var(--text-primary)] transition-colors underline underline-offset-4"
-                    >
-                      I-resend ang code
-                    </button>
-                  )}
+                {/* Security Notice */}
+                <div className="w-full bg-surface-container-lowest p-5 rounded-2xl editorial-shadow relative overflow-hidden mt-4">
+                  <div className="absolute top-0 right-0 p-3 opacity-10 text-6xl">🔒</div>
+                  <div className="flex gap-3 relative z-10">
+                    <div className="shrink-0 w-8 h-8 rounded-full bg-secondary-container/30 flex items-center justify-center">
+                      <Shield className="w-4 h-4 text-secondary" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black tracking-widest text-secondary uppercase mb-1">Paalala ng Seguridad</p>
+                      <p className="text-xs leading-relaxed font-semibold text-on-surface-variant">
+                        Huwag kailanman ibigay ang iyong OTP sa kahit na sino.
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
               </motion.div>
             )}
           </AnimatePresence>

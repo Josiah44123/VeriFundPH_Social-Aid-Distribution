@@ -6,7 +6,6 @@ import { QRScanner } from "@/components/QRScanner"
 import { useVeriFundStore } from "@/lib/store"
 import type { Claim, AuditEntry } from "@/lib/store"
 import { motion, AnimatePresence } from "framer-motion"
-import { cn } from "@/lib/utils"
 
 import { DEFAULT_BARANGAY, OFFICER_CREDENTIALS } from "@/lib/constants"
 
@@ -24,10 +23,8 @@ export function VerifyTab() {
   
   const [scanResult, setScanResult] = useState<{
     type: 'VERIFIED' | 'REJECTED';
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     beneficiary?: any;
     reason?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     distribution?: any;
   } | null>(null);
 
@@ -35,7 +32,6 @@ export function VerifyTab() {
   const [manualCode, setManualCode] = useState("")
   const [showManualEntry, setShowManualEntry] = useState(false)
   
-  // Bug 2: QR Upload State
   const [isProcessing, setIsProcessing] = useState(false)
   const qrImageInputRef = useRef<HTMLInputElement>(null);
 
@@ -53,7 +49,6 @@ export function VerifyTab() {
       b => b.id === id || b.qrData === id
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const activeDistribution = store.distributions?.find((d: any) => d.status === 'ACTIVE') || ACTIVE_DISTRIBUTION;
 
     const alreadyClaimed = activeDistribution
@@ -83,23 +78,20 @@ export function VerifyTab() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsProcessing(true); // show loading state
+    setIsProcessing(true);
 
     try {
-      // Use html5-qrcode to decode from file
       const { Html5Qrcode } = await import('html5-qrcode');
       const html5QrCode = new Html5Qrcode('qr-reader-hidden');
       const result = await html5QrCode.scanFile(file, true);
       await html5QrCode.clear();
-      handleVerify(result); // same handler as camera scan
+      handleVerify(result);
     } catch (err) {
-      // If library fails, show manual entry as fallback
       setIsProcessing(false);
       setShowManualEntry(true);
       showToast('Hindi ma-read ang QR. I-type na lang ang VF ID.', 'warning');
     }
 
-    // Reset input so same file can be re-uploaded
     e.target.value = '';
   };
 
@@ -143,104 +135,56 @@ export function VerifyTab() {
     setShowManualEntry(false)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initials = (b: any) => `${b.firstName[0]}${b.lastName[0]}`
 
   return (
-    <div className="flex flex-col h-full animate-in fade-in pb-[100px] bg-[var(--surface-page)] min-h-full">
-      <div className="px-[16px] pt-[24px]">
-        {/* Distribution Info Card */}
-        <div className="bg-white rounded-[16px] p-[16px] mb-[32px] shadow-[var(--shadow-sm)] flex border-l-[3px] border-l-[var(--red)]">
-          <div className="flex-1">
-            <h3 className="font-bold text-[16px] text-[var(--text-primary)] leading-tight mb-[4px]">{ACTIVE_DISTRIBUTION.title}</h3>
-            <p className="text-[13px] text-[var(--text-muted)] font-medium">{ACTIVE_DISTRIBUTION.date} • ₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</p>
-          </div>
-          <div className="shrink-0 flex items-center">
-            <span className="bg-[var(--success)] text-white text-[11px] px-[12px] py-[4px] rounded-[9999px] font-bold">AKTIBO</span>
-          </div>
+    <div className="flex flex-col h-full bg-surface min-h-full pb-[100px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
+      
+      <div className="mx-4 mt-5 bg-gradient-to-r from-tertiary to-tertiary-container rounded-2xl p-4 flex items-center justify-between editorial-shadow">
+        <div>
+          <h3 className="font-bold text-white text-base leading-tight">{ACTIVE_DISTRIBUTION.title}</h3>
+          <p className="text-white/70 text-xs mt-1">{ACTIVE_DISTRIBUTION.date} · ₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</p>
         </div>
+        <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full font-bold">AKTIBO</span>
+      </div>
 
-        {/* Scanner */}
-        <QRScanner 
-          isScanning={!showResultSheet}
-          onScanSuccess={(code) => handleVerify(code)}
-        />
+      <div className="mx-4 mt-4">
+        <QRScanner isScanning={!showResultSheet && !showManualEntry} onScanSuccess={handleVerify} />
+      </div>
 
-        {/* Hidden div required by html5-qrcode for file scanning */}
-        <div id="qr-reader-hidden" style={{ display: 'none' }} />
+      <div id="qr-reader-hidden" style={{ display: 'none' }} />
+      <input
+        ref={qrImageInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={handleQRImageUpload}
+      />
 
-        {/* Hidden file input */}
-        <input
-          ref={qrImageInputRef}
-          type="file"
-          accept="image/*"
-          style={{ display: 'none' }}
-          onChange={handleQRImageUpload}
-        />
-
-        {/* Bug 2 Upload UI below scanner */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 8,
-          marginTop: 16,
-        }}>
-          {/* Primary upload option */}
-          <button
-            onClick={() => qrImageInputRef.current?.click()}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 8,
-              padding: '10px 20px',
-              background: 'rgba(255,255,255,0.1)',
-              border: '1.5px solid rgba(255,255,255,0.25)',
-              borderRadius: 12,
-              color: 'var(--text-primary)',
-              fontSize: 13,
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            <UploadIcon size={16} />
-            I-upload ang QR Code Image
-          </button>
-
-          {/* Manual text entry link */}
-          <button
-            onClick={() => setShowManualEntry(true)}
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-muted)',
-              fontSize: 12,
-              textDecoration: 'underline',
-              cursor: 'pointer',
-              padding: '4px 8px',
-            }}
-          >
-            I-type ang VeriFund ID nang mano-mano
-          </button>
-        </div>
+      <div className="mx-4 mt-4 flex flex-col gap-3">
+        <button onClick={() => qrImageInputRef.current?.click()}
+          className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-primary text-white font-bold text-sm shadow-md hover:bg-primary-container active:scale-[0.98] transition-all">
+          <UploadIcon className="w-5 h-5" />
+          I-upload ang QR Code Image
+        </button>
+        <button onClick={() => setShowManualEntry(true)}
+          className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-surface-container-lowest border border-outline-variant text-on-surface font-bold text-sm hover:bg-surface-container transition-all">
+          I-type ang VeriFund ID
+        </button>
       </div>
 
       {isProcessing && (
         <div style={{
-          position: 'absolute',
-          inset: 0,
+          position: 'absolute', inset: 0,
           background: 'rgba(0,0,0,0.6)',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 20,
-          zIndex: 10,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'center',
+          borderRadius: 20, zIndex: 10,
         }}>
           <div style={{
             width: 40, height: 40,
             border: '3px solid rgba(255,255,255,0.2)',
-            borderTop: '3px solid #FF0048',
+            borderTop: '3px solid #88000d',
             borderRadius: '50%',
             animation: 'spin 0.8s linear infinite',
           }} />
@@ -268,30 +212,23 @@ export function VerifyTab() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-white z-[60] rounded-t-[24px] shadow-[var(--shadow-lg)] px-[20px] pt-[16px] pb-[calc(24px+env(safe-area-inset-bottom)+80px)] md:pb-[calc(32px+env(safe-area-inset-bottom))]"
+              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest z-[60] rounded-t-[1.5rem] shadow-[0_-20px_60px_rgba(0,0,0,0.15)] px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom)+80px)]"
             >
-              {/* Drag handle */}
-              <div className="w-[32px] h-[4px] bg-[#E8ECF7] rounded-full mx-auto mb-[16px]" />
-
-              <p className="text-[16px] font-bold text-[var(--text-primary)] mb-[16px] text-center">
+              <div className="w-[32px] h-[4px] bg-surface-container-high rounded-full mx-auto mb-[16px]" />
+              <p className="text-base font-bold text-on-surface mb-4 text-center">
                 I-type ang VeriFund ID
               </p>
-
               <input
                 value={manualCode}
                 onChange={e => setManualCode(e.target.value)}
                 placeholder="VF-2025-0001-STC"
-                className="w-full h-[52px] bg-[var(--surface-input)] border-[1.5px] border-transparent rounded-[14px] px-[16px] text-[15px] font-mono mb-[12px] block outline-none focus:border-[var(--blue)] focus:bg-white transition-colors"
+                className="bg-surface-container-high rounded-2xl px-4 py-4 font-mono text-base outline-none focus:ring-2 focus:ring-tertiary/30 w-full block mb-3"
                 onKeyDown={e => e.key === 'Enter' && handleManualVerify()}
               />
-
               <button
                 onClick={handleManualVerify}
                 disabled={!manualCode.trim()}
-                className={cn(
-                  "w-full h-[52px] font-bold rounded-[14px] text-[15px] transition-all",
-                  !manualCode.trim() ? "bg-[#E8ECF7] text-[#A0ABC0] cursor-not-allowed" : "bg-[var(--red)] text-white shadow-[var(--shadow-sm)] active:scale-[0.98]"
-                )}
+                className="w-full py-4 rounded-full bg-tertiary text-white font-bold disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98] transition-all"
               >
                 I-Verify
               </button>
@@ -300,7 +237,7 @@ export function VerifyTab() {
         )}
       </AnimatePresence>
 
-      {/* VERIFIED Result Bottom Sheet */}
+      {/* VERIFIED Result Sheet */}
       <AnimatePresence>
         {showResultSheet && scanResult?.type === "VERIFIED" && scanResult.beneficiary && (
           <>
@@ -318,48 +255,46 @@ export function VerifyTab() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
+              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[1.5rem] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
             >
-              <div className="h-[4px] w-full bg-[var(--red)] absolute top-0 left-0" />
-              
-              <div className="pt-[16px] px-[24px] flex flex-col items-center relative">
-                <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full mb-[24px]" />
+              <div className="pt-4 px-6 flex flex-col items-center relative">
+                <div className="w-12 h-1 bg-surface-container-highest rounded-full mb-6" />
                 
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
-                  className="w-[72px] h-[72px] bg-[var(--success)] rounded-full flex items-center justify-center mb-[16px] shadow-[var(--shadow-sm)] text-white"
+                  className="w-20 h-20 bg-gradient-to-br from-primary to-primary-container rounded-full flex items-center justify-center mb-4 editorial-shadow"
                 >
-                  <CheckCircle2 className="w-[40px] h-[40px]" />
+                  <CheckCircle2 className="w-10 h-10 text-white" />
                 </motion.div>
 
-                <h2 className="text-[22px] font-bold text-[var(--text-primary)] text-center mb-[4px] leading-tight">Verified!</h2>
-                <p className="text-[14px] text-[var(--text-muted)] font-medium text-center mb-[24px]">Pwedeng kumuha ng ayuda</p>
+                <h2 className="text-2xl font-extrabold text-primary tracking-tight mb-1 text-center leading-tight">Verified!</h2>
+                <p className="text-sm text-on-surface-variant font-medium text-center mb-6">Pwedeng kumuha ng ayuda</p>
 
-                <div className="flex items-center gap-[16px] mb-[24px] w-full">
-                  <div className="w-[52px] h-[52px] bg-[var(--navy)] text-white font-bold text-[18px] rounded-full flex items-center justify-center shrink-0">
+                <div className="flex items-center gap-4 mb-6 w-full bg-surface-container-low p-4 rounded-2xl">
+                  <div className="w-12 h-12 bg-primary text-white font-bold text-lg rounded-full flex items-center justify-center shrink-0">
                     {initials(scanResult.beneficiary)}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-[16px] text-[var(--text-primary)] truncate leading-tight mb-[2px]">{scanResult.beneficiary.firstName} {scanResult.beneficiary.lastName}</p>
-                    <p className="text-[13px] text-[var(--text-muted)] truncate">{scanResult.beneficiary.barangay}</p>
+                    <p className="font-bold text-base text-on-surface truncate leading-tight mb-0.5">{scanResult.beneficiary.firstName} {scanResult.beneficiary.lastName}</p>
+                    <p className="text-sm text-on-surface-variant truncate">{scanResult.beneficiary.barangay}</p>
                   </div>
                 </div>
                 
-                <div className="text-center mb-[32px] w-full">
-                  <span className="text-[24px] font-extrabold text-[var(--red)] leading-none block tracking-tight">₱{(scanResult.distribution?.amount || ACTIVE_DISTRIBUTION.amount).toLocaleString()}</span>
+                <div className="text-center mb-6 w-full">
+                  <span className="text-3xl font-extrabold text-primary tracking-tight block">₱{(scanResult.distribution?.amount || ACTIVE_DISTRIBUTION.amount).toLocaleString()}</span>
                 </div>
 
                 <button
                   onClick={handleConfirm}
-                  className="w-full h-[52px] bg-[var(--success)] text-white font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98] shadow-[var(--shadow-sm)] mb-[16px]"
+                  className="w-full py-4 rounded-full bg-gradient-to-r from-primary to-primary-container text-white font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all mb-3"
                 >
                   KUMPIRMAHIN
                 </button>
                 <button 
                   onClick={() => setShowResultSheet(false)}
-                  className="text-[13px] font-bold text-[var(--text-muted)] hover:text-[var(--text-primary)] transition-colors"
+                  className="text-sm font-bold text-on-surface-variant hover:text-primary transition-colors"
                 >
                   I-cancel
                 </button>
@@ -369,7 +304,7 @@ export function VerifyTab() {
         )}
       </AnimatePresence>
 
-      {/* REJECTED Result Bottom Sheet */}
+      {/* REJECTED Result Sheet */}
       <AnimatePresence>
         {showResultSheet && scanResult?.type === "REJECTED" && (
           <>
@@ -387,30 +322,28 @@ export function VerifyTab() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-white shadow-[var(--shadow-lg)] rounded-t-[24px] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
+              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[1.5rem] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
             >
-              <div className="h-[4px] w-full bg-[var(--danger)] absolute top-0 left-0" />
-              
-              <div className="pt-[16px] px-[24px] flex flex-col items-center relative">
-                <div className="w-[48px] h-[5px] bg-[#E8ECF7] rounded-full mb-[24px]" />
+              <div className="pt-4 px-6 flex flex-col items-center relative">
+                <div className="w-12 h-1 bg-surface-container-highest rounded-full mb-6" />
                 
                 <motion.div 
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
-                  className="w-[72px] h-[72px] bg-[var(--danger)] rounded-full flex items-center justify-center mb-[16px] shadow-[var(--shadow-sm)] text-white"
+                  className="w-20 h-20 bg-gradient-to-br from-tertiary to-tertiary-container rounded-full flex items-center justify-center mb-4 editorial-shadow"
                 >
-                  <XCircle className="w-[40px] h-[40px]" />
+                  <XCircle className="w-10 h-10 text-white" />
                 </motion.div>
 
-                <h2 className="text-[22px] font-bold text-[var(--danger)] text-center mb-[8px] leading-tight">Hindi Puwede</h2>
-                <div className="w-full bg-[var(--danger-light)] p-[16px] rounded-[16px] mb-[32px]">
-                  <p className="text-[14px] text-[var(--danger)] text-center font-bold tracking-tight leading-[1.4]">{scanResult.reason}</p>
+                <h2 className="text-2xl font-extrabold text-tertiary tracking-tight mb-2 text-center leading-tight">Hindi Puwede</h2>
+                <div className="w-full bg-tertiary/10 p-4 rounded-2xl mb-6">
+                  <p className="text-sm text-tertiary text-center font-bold tracking-tight leading-[1.4]">{scanResult.reason}</p>
                 </div>
 
                 <button 
                   onClick={() => setShowResultSheet(false)}
-                  className="w-full h-[52px] bg-white border-[1.5px] border-[var(--red)] text-[var(--red)] font-bold rounded-[14px] text-[15px] tracking-[-0.2px] transition-transform active:scale-[0.98] shadow-[var(--shadow-sm)]"
+                  className="w-full py-4 rounded-full border-2 border-tertiary text-tertiary font-bold active:scale-[0.98] transition-all"
                 >
                   Scan Ulit
                 </button>
@@ -423,4 +356,3 @@ export function VerifyTab() {
     </div>
   )
 }
-
