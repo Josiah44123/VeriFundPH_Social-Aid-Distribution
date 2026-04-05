@@ -164,20 +164,20 @@ export default function AuditLogPage() {
                         {cfg.label}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-5 py-3 min-w-[150px]">
                       <p className="text-xs font-bold text-primary mb-1">{entry.actorName}</p>
                       <span className="px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest"
                         style={{ background: role.bg, color: role.text }}>
                         {entry.actorRole}
                       </span>
                     </td>
-                    <td className="px-5 py-3">
+                    <td className="px-5 py-3 min-w-[200px]">
                       <p className="text-xs font-bold text-primary">{entry.targetName}</p>
                       <p className="font-mono text-[10px] text-secondary font-bold">{entry.targetId}</p>
                     </td>
-                    <td className="px-5 py-3 text-xs text-on-surface-variant font-medium">{entry.barangay}</td>
-                    <td className="px-5 py-3 text-[11px] text-outline font-medium w-full max-w-[300px]">
-                      <span className="line-clamp-2">{entry.details}</span>
+                    <td className="px-5 py-3 text-xs text-on-surface-variant font-medium min-w-[150px]">{entry.barangay}</td>
+                    <td className="px-5 py-3 text-[11px] text-outline font-medium w-full">
+                      <span>{entry.details}</span>
                     </td>
                   </motion.tr>
                 )
