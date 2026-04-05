@@ -152,9 +152,22 @@
   }
 }
 
-.header-gradient-red { background: linear-gradient(135deg, #88000d 0%, #b0151b 100%); }
-.header-gradient-blue { background: linear-gradient(135deg, #003f89 0%, #1a56ad 100%); }
-.header-gradient-gold { background: linear-gradient(135deg, #7b5800 0%, #ffc245 100%); }
+.header-gradient-red { 
+  background-color: #88000d;
+  background: linear-gradient(135deg, #88000d 0%, #b0151b 100%); 
+}
+.header-gradient-blue { 
+  background-color: #003f89;
+  background: linear-gradient(135deg, #003f89 0%, #1a56ad 100%); 
+}
+.header-gradient-gold { 
+  background-color: #7b5800;
+  background: linear-gradient(135deg, #7b5800 0%, #ffc245 100%); 
+}
+
+.dark .header-gradient-red { background-color: #88000d; }
+.dark .header-gradient-blue { background-color: #003f89; }
+.dark .header-gradient-gold { background-color: #7b5800; }
 
 .font-editorial {
   font-family: 'Manrope', sans-serif;

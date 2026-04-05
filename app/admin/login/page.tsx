@@ -58,7 +58,7 @@ export default function AdminLogin() {
       </div>
 
       <div className="w-full max-w-[1100px] grid md:grid-cols-5 overflow-hidden rounded-2xl editorial-shadow border border-outline-variant/20">
-        <div className="header-gradient-red p-6 md:p-8 flex flex-col justify-between relative overflow-hidden text-white md:col-span-2 md:max-w-[280px]">
+        <div className="bg-[#88000d] dark:bg-[#88000d] header-gradient-red p-6 md:p-8 flex flex-col justify-between relative overflow-hidden text-white dark:text-white md:col-span-2 md:max-w-[280px]">
           {/* Top decorative circles */}
           <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16" />

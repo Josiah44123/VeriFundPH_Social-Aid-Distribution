@@ -34,7 +34,7 @@ export default function LandingPage() {
           <motion.div
             whileHover={{ y: -3 }}
             onClick={() => router.push('/citizen/login')}
-            className="cursor-pointer bg-gradient-to-br from-primary to-primary-container rounded-2xl p-6 flex flex-col gap-3 relative overflow-hidden editorial-shadow"
+            className="cursor-pointer bg-[#003f89] dark:bg-[#003f89] bg-gradient-to-br from-primary to-primary-container rounded-2xl p-6 flex flex-col gap-3 relative overflow-hidden editorial-shadow text-white dark:text-white"
           >
             {/* decorative blob */}
             <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full" />
@@ -42,7 +42,7 @@ export default function LandingPage() {
               <User className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white leading-tight">Para sa Benepisyaryo</h3>
+              <h3 className="text-base font-bold leading-tight">Para sa Benepisyaryo</h3>
               <p className="text-xs text-white/70 mt-1">I-check ang QR at kasaysayan ng ayuda</p>
             </div>
             <div className="flex items-center text-white/90 text-xs font-bold gap-1 mt-auto">
@@ -53,14 +53,14 @@ export default function LandingPage() {
           <motion.div
             whileHover={{ y: -3 }}
             onClick={() => router.push('/admin/login')}
-            className="cursor-pointer bg-gradient-to-br from-tertiary to-tertiary-container rounded-2xl p-6 flex flex-col gap-3 relative overflow-hidden editorial-shadow"
+            className="cursor-pointer bg-[#88000d] dark:bg-[#88000d] bg-gradient-to-br from-tertiary to-tertiary-container rounded-2xl p-6 flex flex-col gap-3 relative overflow-hidden editorial-shadow text-white dark:text-white"
           >
             <div className="absolute -right-6 -top-6 w-24 h-24 bg-white/10 rounded-full" />
             <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-white leading-tight">Para sa Barangay Officer</h3>
+              <h3 className="text-base font-bold leading-tight">Para sa Barangay Officer</h3>
               <p className="text-xs text-white/70 mt-1">I-register at i-verify ang mga benepisyaryo</p>
             </div>
             <div className="flex items-center text-white/90 text-xs font-bold gap-1 mt-auto">
