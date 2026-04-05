@@ -3,8 +3,7 @@
 import { useVeriFundStore } from "@/lib/store"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Users, CheckCircle2, Clock, AlertTriangle, Shield, PlusCircle, FileDown, AlertCircle } from "lucide-react"
-
+import { Users, CheckCircle2, Clock, AlertTriangle, Shield, PlusCircle, FileDown, AlertCircle, BarChart3 } from "lucide-react"
 
 
 const ACTION_COLORS: Record<string, { bg: string; text: string; label: string }> = {
@@ -53,7 +52,7 @@ export default function ManagementDashboard() {
       {/* Welcome header */}
       <div className="flex justify-between items-end flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-primary tracking-tight">{greeting()}, Admin 👋</h1>
+          <h1 className="text-3xl font-extrabold text-primary tracking-tight">{greeting()}, Admin</h1>
           <p className="text-sm text-outline font-medium mt-1">{today}</p>
         </div>
         <div className="flex gap-3">
@@ -68,34 +67,34 @@ export default function ManagementDashboard() {
         </div>
       </div>
 
-      {/* 4 Metric Cards */}
+      {/* 4 Metric Cards — premium styling */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Beneficiaries — navy blue */}
-        <div className="bg-gradient-to-br from-primary to-primary-container p-5 rounded-2xl text-white shadow-xl shadow-primary/15 flex flex-col justify-between min-h-[140px] relative overflow-hidden">
-          <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-lg" />
+        <div className="bg-gradient-to-br from-primary to-primary-container p-6 rounded-2xl text-white shadow-xl shadow-primary/20 flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+          <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-lg" />
           <div className="flex justify-between items-start relative z-10">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center">
               <Users className="w-5 h-5 text-white" />
             </div>
           </div>
           <div className="relative z-10">
-            <p className="text-sm text-white/80 font-medium">Kabuuang Benepisyaryo</p>
-            <h3 className="text-3xl font-black tracking-tight mt-1">{beneficiaries.length.toLocaleString()}</h3>
+            <p className="text-sm text-white/80 font-bold">Kabuuang Benepisyaryo</p>
+            <h3 className="text-4xl font-black tracking-tight mt-1">{beneficiaries.length.toLocaleString()}</h3>
           </div>
         </div>
 
         {/* Card 2: Nakuha Na — bright blue */}
-        <div className="bg-gradient-to-br from-[#1a56ad] to-[#2563eb] p-5 rounded-2xl text-white shadow-xl shadow-blue-600/15 flex flex-col justify-between min-h-[140px] relative overflow-hidden">
-          <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-lg" />
+        <div className="bg-gradient-to-br from-[#1a56ad] to-[#2563eb] p-6 rounded-2xl text-white shadow-xl shadow-blue-600/20 flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+          <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-lg" />
           <div className="flex justify-between items-start relative z-10">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5 text-white" />
             </div>
           </div>
           <div className="relative z-10">
-            <p className="text-sm text-white/80 font-medium">Nakuha Na</p>
-            <h3 className="text-3xl font-black tracking-tight mt-1">{nakuhaCount.toLocaleString()}</h3>
-            {/* keep the progress bar */}
+            <p className="text-sm text-white/80 font-bold">Nakuha Na</p>
+            <h3 className="text-4xl font-black tracking-tight mt-1">{nakuhaCount.toLocaleString()}</h3>
+            {/* Progress bar */}
             <div className="w-full bg-white/20 h-1.5 rounded-full mt-3 overflow-hidden">
               <div className="bg-white h-full rounded-full transition-all" 
                 style={{ width: `${activeCount > 0 ? Math.round((nakuhaCount / activeCount) * 100) : 0}%` }} />
@@ -104,24 +103,24 @@ export default function ManagementDashboard() {
         </div>
 
         {/* Card 3: Hindi pa Nakakuha — gold/amber */}
-        <div className="bg-gradient-to-br from-secondary to-[#b88000] p-5 rounded-2xl shadow-xl shadow-yellow-800/15 flex flex-col justify-between min-h-[140px] relative overflow-hidden">
-          <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-lg" />
+        <div className="bg-gradient-to-br from-secondary to-[#b88000] p-6 rounded-2xl text-white shadow-xl shadow-yellow-800/20 flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+          <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-lg" />
           <div className="flex justify-between items-start relative z-10">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center">
               <Clock className="w-5 h-5 text-white" />
             </div>
           </div>
           <div className="relative z-10">
-            <p className="text-sm text-white/80 font-medium">Hindi pa Nakakuha</p>
-            <h3 className="text-3xl font-black tracking-tight mt-1 text-white">{notClaimed.toLocaleString()}</h3>
+            <p className="text-sm text-white/80 font-bold">Hindi pa Nakakuha</p>
+            <h3 className="text-4xl font-black tracking-tight mt-1">{notClaimed.toLocaleString()}</h3>
           </div>
         </div>
 
         {/* Card 4: Fraud Flags — red */}
-        <div className="bg-gradient-to-br from-tertiary to-tertiary-container p-5 rounded-2xl text-white shadow-xl shadow-tertiary/15 flex flex-col justify-between min-h-[140px] relative overflow-hidden">
-          <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-lg" />
+        <div className="bg-gradient-to-br from-tertiary to-tertiary-container p-6 rounded-2xl text-white shadow-xl shadow-tertiary/20 flex flex-col justify-between min-h-[160px] relative overflow-hidden">
+          <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-lg" />
           <div className="flex justify-between items-start relative z-10">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-11 h-11 bg-white/20 rounded-xl flex items-center justify-center">
               <AlertTriangle className="w-5 h-5 text-white" />
             </div>
             {activeFraudCount > 0 && (
@@ -129,8 +128,35 @@ export default function ManagementDashboard() {
             )}
           </div>
           <div className="relative z-10">
-            <p className="text-sm text-white/80 font-medium">Fraud Flags</p>
-            <h3 className="text-3xl font-black tracking-tight mt-1">{activeFraudCount}</h3>
+            <p className="text-sm text-white/80 font-bold">Fraud Flags</p>
+            <h3 className="text-4xl font-black tracking-tight mt-1">{activeFraudCount}</h3>
+          </div>
+        </div>
+      </div>
+
+      {/* Horizontal Progress Bar replacing the huge chart */}
+      <div className="bg-surface-container-lowest rounded-2xl editorial-shadow p-5 flex flex-col gap-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-primary" />
+            <h3 className="text-sm font-extrabold text-primary uppercase tracking-tight">OVERALL CLAIM PROGRESS</h3>
+          </div>
+          <p className="text-xs font-bold text-outline">
+            {nakuhaCount} / {activeCount} Claimed
+          </p>
+        </div>
+        
+        <div className="w-full h-3 rounded-full flex overflow-hidden bg-secondary shadow-inner">
+          <div className="bg-[#1a56ad] h-full transition-all duration-500" 
+            style={{ width: `${activeCount > 0 ? (nakuhaCount / activeCount) * 100 : 0}%` }} />
+        </div>
+        
+        <div className="flex gap-4 text-[11px] font-bold">
+          <div className="flex items-center gap-1.5 text-[#1a56ad]">
+            <div className="w-2 h-2 rounded-full bg-[#1a56ad]" /> Nakuha Na ({activeCount > 0 ? Math.round((nakuhaCount/activeCount)*100) : 0}%)
+          </div>
+          <div className="flex items-center gap-1.5 text-secondary">
+            <div className="w-2 h-2 rounded-full bg-secondary" /> Hindi pa ({activeCount > 0 ? Math.round((notClaimed/activeCount)*100) : 0}%)
           </div>
         </div>
       </div>
@@ -155,10 +181,10 @@ export default function ManagementDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-surface-container-low">
-                {recentAudit.map(entry => {
+                {recentAudit.map((entry, idx) => {
                   const cfg = ACTION_COLORS[entry.action] ?? ACTION_COLORS.LOGIN;
                   return (
-                    <tr key={entry.id} className="hover:bg-surface-container-low/50 transition-colors">
+                    <tr key={entry.id} className={`hover:bg-surface-container-low/50 transition-colors ${idx % 2 === 1 ? 'bg-surface-container-low/30' : ''}`}>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-bold text-xs flex items-center justify-center">

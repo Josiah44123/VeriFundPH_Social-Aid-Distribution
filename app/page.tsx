@@ -14,28 +14,23 @@ export default function LandingPage() {
           <img src="/logo.png" alt="VeriFund" className="w-8 h-8 object-contain" />
           <span className="text-xl font-extrabold text-primary tracking-tight" style={{ fontFamily: 'Manrope, sans-serif' }}>VeriFund</span>
         </div>
-        <button onClick={() => router.push('/admin/login')}
-          className="px-5 py-2 rounded-full bg-primary text-white font-bold text-sm hover:opacity-90 transition-all shadow-sm"
-          style={{ fontFamily: 'Manrope, sans-serif' }}>
-          Mag-login
-        </button>
       </header>
 
-      <main className="flex flex-col items-center justify-center min-h-[calc(100vh-56px)] px-5 py-6 bg-surface">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-xs font-bold tracking-widest uppercase mb-5">
+      <main className="flex flex-col items-start justify-center min-h-[calc(100vh-56px)] px-5 py-6 bg-surface max-w-sm mx-auto">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-secondary-container/60 text-on-secondary-container rounded-full text-[10px] font-semibold tracking-widest uppercase mb-5">
           ✓ Opisyal na Platform
         </div>
         
-        <h1 className="text-4xl font-extrabold text-primary tracking-tighter leading-[1.15] text-center mb-3 max-w-xs mx-auto" style={{ fontFamily: 'Manrope, sans-serif' }}>
+        <h1 className="text-4xl font-extrabold text-primary tracking-tighter leading-[1.15] text-left mb-3 max-w-sm" style={{ fontFamily: 'Manrope, sans-serif' }}>
           Siguruhing makakarating ang tulong sa{' '}
           <span className="text-secondary-fixed-dim">tamang tao.</span>
         </h1>
         
-        <p className="text-sm text-on-surface-variant text-center mb-7 max-w-xs mx-auto font-medium">
+        <p className="text-sm text-on-surface-variant text-left mb-7 max-w-xs font-medium">
           I-access ang impormasyon o pamahalaan ang distribusyon ng ayuda.
         </p>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-sm mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-sm">
           <motion.div
             whileHover={{ y: -3 }}
             onClick={() => router.push('/citizen/login')}
@@ -74,7 +69,7 @@ export default function LandingPage() {
           </motion.div>
         </div>
         
-        <p className="text-center text-xs text-on-surface-variant mt-6 font-medium">
+        <p className="text-left text-xs text-on-surface-variant mt-6 font-medium">
           VeriFund PH · Official Platform
         </p>
       </main>

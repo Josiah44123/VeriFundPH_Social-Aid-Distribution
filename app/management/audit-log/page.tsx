@@ -154,7 +154,7 @@ export default function AuditLogPage() {
                     initial={isNew ? { backgroundColor: "rgba(252,209,22,0.15)" } : undefined}
                     animate={{ backgroundColor: "rgba(252,209,22,0)" }}
                     transition={{ duration: 2 }}
-                    className="hover:bg-surface-container-low/50 transition-colors">
+                    className={`hover:bg-surface-container-low/50 transition-colors ${idx % 2 === 1 ? 'bg-surface-container-low/30' : ''}`}>
                     <td className="px-5 py-3 font-mono text-[11px] text-outline font-medium whitespace-nowrap">
                       {formatDateTime(entry.timestamp)}
                     </td>

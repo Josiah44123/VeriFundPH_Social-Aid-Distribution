@@ -203,7 +203,7 @@ export default function BeneficiariesPage() {
                 return (
                   <tr key={b.id} onClick={() => setSelectedId(b.id === selectedId ? null : b.id)}
                     className={cn('cursor-pointer transition-all hover:bg-surface-container-low/50 group',
-                      b.id === selectedId ? 'bg-primary/5' : '')}>
+                      b.id === selectedId ? 'bg-primary/5' : paginated.indexOf(b) % 2 === 1 ? 'bg-surface-container-low/30' : '')}>
                     <td className="px-5 py-4 font-mono text-sm font-bold text-secondary">{b.id}</td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">

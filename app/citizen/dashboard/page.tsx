@@ -41,7 +41,7 @@ export default function CitizenDashboard() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col pb-[calc(100px+env(safe-area-inset-bottom))] bg-surface font-editorial">
+    <div className="min-h-screen flex flex-col pb-24 bg-surface font-editorial">
       {/* Header */}
       <div className="sticky top-0 z-20 bg-surface/90 backdrop-blur-xl px-5 py-4 flex justify-between items-center editorial-shadow">
         <div className="flex items-center gap-2">
@@ -155,9 +155,9 @@ export default function CitizenDashboard() {
                                  : dist.status === "DARATING" ? "bg-gradient-to-br from-secondary to-[#b88000]"
                                  : "bg-gradient-to-br from-tertiary to-tertiary-container";
               
-              const textColor = dist.status === "DARATING" ? "text-[#271900]" : "text-white";
-              const secondaryTextColor = dist.status === "DARATING" ? "text-[#271900]/80" : "text-white/80";
-              const pillBg = dist.status === "DARATING" ? "bg-white/30" : "bg-white/20";
+              const textColor = "text-white";
+              const secondaryTextColor = "text-white/80";
+              const pillBg = "bg-white/20";
               const Icon = dist.status === "NAKUHA" ? Check : dist.status === "DARATING" ? Clock : X;
 
               return (
@@ -202,26 +202,24 @@ export default function CitizenDashboard() {
       </motion.div>
 
       {/* Floating Bottom Nav */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 flex justify-around items-center px-4 pb-[env(safe-area-inset-bottom)] pt-4 bg-surface-container-lowest/80 backdrop-blur-xl shadow-[0_-10px_40px_rgba(25,27,33,0.06)] rounded-t-[2rem]">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-3 py-2 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_8px_32px_rgba(25,27,33,0.12)] rounded-full border border-outline-variant/20" style={{ minWidth: '200px' }}>
         <button 
           className={cn(
-            "flex flex-col items-center px-5 py-2.5 transition-all", 
-            activeTab === "home" ? "bg-primary text-white rounded-[1.25rem]" : "text-on-surface opacity-50 hover:opacity-100"
+            "flex items-center gap-2 px-6 py-3 transition-all rounded-full font-semibold text-sm", 
+            activeTab === "home" ? "bg-primary text-white shadow-md shadow-primary/20" : "text-on-surface-variant hover:text-primary"
           )}
           onClick={() => setActiveTab("home")}
         >
-          <Home className="w-6 h-6" />
-          <span className="text-[11px] font-semibold uppercase tracking-widest mt-1">Home</span>
+          <Home className="w-5 h-5" />
+          <span className="text-[11px] font-bold uppercase tracking-widest">Home</span>
         </button>
         
         <button 
-          className={cn(
-            "flex flex-col items-center px-5 py-2.5 transition-all text-on-surface opacity-50 hover:opacity-100 hover:text-tertiary"
-          )}
+          className="flex items-center gap-2 px-6 py-3 transition-all rounded-full text-on-surface-variant hover:text-tertiary font-semibold text-sm"
           onClick={handleLogout}
         >
-          <LogOut className="w-6 h-6" />
-          <span className="text-[11px] font-semibold uppercase tracking-widest mt-1">Logout</span>
+          <LogOut className="w-5 h-5" />
+          <span className="text-[11px] font-bold uppercase tracking-widest">Logout</span>
         </button>
       </div>
     </div>

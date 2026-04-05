@@ -1,7 +1,6 @@
 "use client"
 
 import { CheckCircle2, ChevronDown, ChevronRight, QrCode } from "lucide-react"
-import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { useVeriFundStore } from "@/lib/store"
 import { useState } from "react"
@@ -51,18 +50,19 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
         </div>
       </div>
 
+      {/* Stats Row — pill-shaped gradient badges */}
       <div className="px-5 py-4 flex gap-3">
         {[
-          { label: 'Scanned', value: totalScanned, gradient: 'from-primary to-primary-container', text: 'text-white' },
-          { label: 'Nakuha', value: nakuhaCount, gradient: 'from-[#1a56ad] to-[#2563eb]', text: 'text-white' },
-          { label: 'Tinanggihan', value: tinanggihanCount, gradient: 'from-[#CE1126] to-[#A30D1E]', text: 'text-white' },
-        ].map(({ label, value, gradient, text }) => (
-          <div key={label} className={`flex-1 bg-gradient-to-br ${gradient} rounded-2xl p-3 text-center editorial-shadow relative overflow-hidden`}>
-            {/* Decorative blob */}
-            <div className="absolute -right-2 -bottom-2 w-10 h-10 bg-white/20 rounded-full blur-md pointer-events-none" />
+          { label: 'Scanned', value: totalScanned, gradient: 'from-primary to-primary-container' },
+          { label: 'Nakuha', value: nakuhaCount, gradient: 'from-[#1a56ad] to-[#2563eb]' },
+          { label: 'Tinanggihan', value: tinanggihanCount, gradient: 'from-[#CE1126] to-[#A30D1E]' },
+        ].map(({ label, value, gradient }) => (
+          <div key={label} className={`flex-1 bg-gradient-to-br ${gradient} rounded-full py-3 px-4 text-center shadow-lg relative overflow-hidden`}>
+            {/* Decorative shimmer */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent pointer-events-none" />
             
-            <div className={`relative z-10 text-2xl font-extrabold tracking-tight ${text}`}>{value}</div>
-            <div className={`relative z-10 text-[10px] font-bold uppercase tracking-widest ${text} opacity-90 mt-0.5`}>{label}</div>
+            <div className="relative z-10 text-2xl font-extrabold tracking-tight text-white">{value}</div>
+            <div className="relative z-10 text-[9px] font-bold uppercase tracking-[0.15em] text-white/90 mt-0.5">{label}</div>
           </div>
         ))}
       </div>
@@ -85,56 +85,54 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
 
         <div className="flex flex-col">
           <AnimatePresence initial={false}>
-            {sortedClaims.map((claim) => {
+            {sortedClaims.map((claim, index) => {
               const isNakuha = claim.status === "NAKUHA"
               const isExpanded = expandedId === claim.id
               const name = claim.beneficiaryName
 
+              // Full-color card backgrounds based on status
+              const cardBg = isNakuha
+                ? 'bg-gradient-to-br from-primary to-primary-container'
+                : 'bg-gradient-to-br from-tertiary to-tertiary-container'
+
               return (
                   <motion.div 
                     key={claim.id}
-                    initial={{ opacity: 0, y: -20 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`mx-5 mb-3 rounded-2xl p-4 cursor-pointer transition-all editorial-shadow border-l-4 ${
-                      isNakuha
-                        ? 'bg-surface-container-lowest border-l-[#1a56ad]'
-                        : 'bg-[#FDE8EB] border-l-[#CE1126]'
-                    }`}
+                    transition={{ duration: 0.3, delay: index * 0.06 }}
+                    className={`mx-5 mb-3 rounded-2xl p-4 cursor-pointer transition-all shadow-lg relative overflow-hidden ${cardBg}`}
                     onClick={() => setExpandedId(isExpanded ? null : claim.id)}
                   >
-                    <div className="flex items-center gap-3">
-                      <div className={cn(
-                        "w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm text-white flex-shrink-0",
-                        isNakuha ? "bg-gradient-to-br from-[#1a56ad] to-[#2563eb]" : "bg-[#CE1126]"
-                      )}>
+                    {/* Decorative blob */}
+                    <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white/10 rounded-full blur-lg pointer-events-none" />
+
+                    <div className="flex items-center gap-3 relative z-10">
+                      <div className="w-11 h-11 rounded-full flex items-center justify-center font-bold text-sm bg-white/20 text-white flex-shrink-0">
                       {initials(name)}
                     </div>
                     
                     <div className="flex-1 min-w-0 flex flex-col justify-center">
-                      <h4 className="text-sm font-bold text-on-surface truncate leading-tight">{name}</h4>
+                      <h4 className="text-base font-extrabold text-white truncate leading-tight">{name}</h4>
                       <div className="flex items-center gap-2 mt-0.5">
-                        <span className="text-xs text-on-surface-variant">{formatTime(claim.verifiedAt)}</span>
+                        <span className="text-xs text-white/60">{formatTime(claim.verifiedAt)}</span>
                         {claim.method && (
                           <>
-                            <span className="w-1 h-1 rounded-full bg-outline-variant" />
-                            <span className="text-xs font-semibold text-on-surface-variant">{claim.method}</span>
+                            <span className="w-1 h-1 rounded-full bg-white/40" />
+                            <span className="text-xs text-white/60">{claim.method}</span>
                           </>
                         )}
                       </div>
                     </div>
 
                     <div className="shrink-0 ml-2 flex items-center gap-1">
-                      <span className={cn(
-                        "text-[10px] font-black px-3 py-1.5 rounded-full flex-shrink-0",
-                        isNakuha ? "bg-[#E8F5EE] text-[#1A8C4E]" : "bg-[#CE1126] text-white"
-                      )}>
+                      <span className="text-[10px] font-black px-3 py-1.5 rounded-full flex-shrink-0 bg-white/20 text-white">
                         {claim.status}
                       </span>
                       {isExpanded ? (
-                        <ChevronDown className="w-4 h-4 text-on-surface-variant opacity-50" />
+                        <ChevronDown className="w-4 h-4 text-white/50" />
                       ) : (
-                        <ChevronRight className="w-4 h-4 text-on-surface-variant opacity-50" />
+                        <ChevronRight className="w-4 h-4 text-white/50" />
                       )}
                     </div>
                   </div>
@@ -147,19 +145,19 @@ export function ListahanTab({ onSwitchToVerify }: ListahanTabProps) {
                         exit={{ height: 0, opacity: 0 }}
                         className="overflow-hidden"
                       >
-                        <div className="mt-4 pt-4 border-t border-screen-variant/20 flex flex-col gap-2">
+                        <div className="mt-4 pt-4 border-t border-white/20 flex flex-col gap-2 relative z-10">
                           <div className="flex justify-between items-center">
-                            <span className="text-xs text-on-surface-variant font-medium">VeriFund ID</span>
-                            <span className="font-mono text-xs font-bold text-[#1a56ad] py-0.5 px-2 bg-[#EBF5FF] rounded-md">{claim.beneficiaryId}</span>
+                            <span className="text-xs text-white/70 font-medium">VeriFund ID</span>
+                            <span className="font-mono text-xs font-bold text-white py-0.5 px-2 bg-white/15 rounded-md">{claim.beneficiaryId}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-xs text-on-surface-variant font-medium">Oras</span>
-                            <span className="text-xs font-bold text-on-surface-variant">{new Date(claim.verifiedAt).toLocaleString()}</span>
+                            <span className="text-xs text-white/70 font-medium">Oras</span>
+                            <span className="text-xs font-bold text-white/90">{new Date(claim.verifiedAt).toLocaleString()}</span>
                           </div>
                           {!isNakuha && claim.reason && (
                             <div className="flex justify-between items-center mt-1">
-                              <span className="text-xs text-on-surface-variant font-medium">Dahilan</span>
-                              <span className="text-xs font-bold text-[#CE1126] max-w-[200px] text-right leading-tight">{claim.reason}</span>
+                              <span className="text-xs text-white/70 font-medium">Dahilan</span>
+                              <span className="text-xs font-bold text-white max-w-[200px] text-right leading-tight">{claim.reason}</span>
                             </div>
                           )}
                         </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useCallback } from "react"
-import { CheckCircle2, XCircle, Upload as UploadIcon } from "lucide-react"
+import { CheckCircle2, XCircle, Upload as UploadIcon, Keyboard } from "lucide-react"
 import { QRScanner } from "@/components/QRScanner"
 import { useVeriFundStore } from "@/lib/store"
 import type { Claim, AuditEntry } from "@/lib/store"
@@ -65,7 +65,6 @@ export function VerifyTab() {
       setScanResult({ type: 'VERIFIED', beneficiary, distribution: activeDistribution });
     }
 
-    setShowManualEntry(false);
     setShowResultSheet(true);
   }, [store]);
 
@@ -88,7 +87,6 @@ export function VerifyTab() {
       handleVerify(result);
     } catch (err) {
       setIsProcessing(false);
-      setShowManualEntry(true);
       showToast('Hindi ma-read ang QR. I-type na lang ang VF ID.', 'warning');
     }
 
@@ -132,24 +130,26 @@ export function VerifyTab() {
     setShowResultSheet(false)
     setScanResult(null)
     setManualCode("")
-    setShowManualEntry(false)
   }
 
   const initials = (b: any) => `${b.firstName[0]}${b.lastName[0]}`
 
   return (
-    <div className="flex flex-col h-full bg-surface min-h-full pb-[100px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="flex flex-col bg-surface min-h-screen pb-[120px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
       
-      <div className="mx-4 mt-5 bg-gradient-to-r from-tertiary to-tertiary-container rounded-2xl p-4 flex items-center justify-between editorial-shadow">
-        <div>
-          <h3 className="font-bold text-white text-base leading-tight">{ACTIVE_DISTRIBUTION.title}</h3>
-          <p className="text-white/70 text-xs mt-1">{ACTIVE_DISTRIBUTION.date} · ₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</p>
+      <div className="mx-4 mt-4 bg-gradient-to-r from-tertiary to-tertiary-container rounded-[2rem] p-6 flex items-center justify-between editorial-shadow relative overflow-hidden">
+        {/* Decorative circle for card texture */}
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="relative z-10">
+          <h3 className="font-extrabold text-white text-lg tracking-tight leading-tight">{ACTIVE_DISTRIBUTION.title}</h3>
+          <p className="text-white/80 text-xs font-semibold mt-1.5 uppercase tracking-wider">{ACTIVE_DISTRIBUTION.date} · ₱{ACTIVE_DISTRIBUTION.amount.toLocaleString()}</p>
         </div>
-        <span className="bg-white/20 backdrop-blur-sm text-white text-xs px-3 py-1.5 rounded-full font-bold">AKTIBO</span>
+        <span className="relative z-10 bg-white/20 backdrop-blur-md text-white text-[10px] px-4 py-2 rounded-full font-black tracking-widest shadow-sm border border-white/20">AKTIBO</span>
       </div>
 
-      <div className="mx-4 mt-4">
-        <QRScanner isScanning={!showResultSheet && !showManualEntry} onScanSuccess={handleVerify} />
+      <div className="mx-4 mt-4 mb-2">
+        <QRScanner isScanning={!showResultSheet} onScanSuccess={handleVerify} />
       </div>
 
       <div id="qr-reader-hidden" style={{ display: 'none' }} />
@@ -161,17 +161,60 @@ export function VerifyTab() {
         onChange={handleQRImageUpload}
       />
 
+      {/* Action Section: MATCHING THE 3RD IMAGE (Upload then Manual) */}
       <div className="mx-4 mt-4 flex flex-col gap-3">
         <button onClick={() => qrImageInputRef.current?.click()}
-          className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-primary text-white font-bold text-sm shadow-md hover:bg-primary-container active:scale-[0.98] transition-all">
+          className="flex items-center justify-center gap-3 py-4 rounded-full bg-[#003B8F] text-white font-bold text-sm shadow-md hover:shadow-lg active:scale-[0.98] transition-all">
           <UploadIcon className="w-5 h-5" />
           I-upload ang QR Code Image
         </button>
-        <button onClick={() => setShowManualEntry(true)}
-          className="flex items-center justify-center gap-2 py-4 rounded-2xl bg-surface-container-lowest border border-outline-variant text-on-surface font-bold text-sm hover:bg-surface-container transition-all">
-          I-type ang VeriFund ID
+
+        <button 
+          onClick={() => setShowManualEntry(!showManualEntry)}
+          className={`flex items-center justify-center gap-3 py-4 rounded-full border border-outline-variant transition-all active:scale-[0.98] shadow-sm ${
+            showManualEntry 
+              ? 'bg-tertiary/10 border-tertiary text-tertiary' 
+              : 'bg-white text-on-surface'
+          }`}
+        >
+          {!showManualEntry && <Keyboard className="w-5 h-5 text-on-surface-variant opacity-70" />}
+          <span className="font-bold text-sm">I-type ang VeriFund ID</span>
         </button>
+
+        {/* Manual Entry Section - Toggleable Inline */}
+        <AnimatePresence>
+          {showManualEntry && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="bg-surface-container-low border border-outline-variant rounded-2xl p-4 flex flex-col gap-3 mt-1">
+                <div className="flex gap-2">
+                  <input
+                    value={manualCode}
+                    onChange={e => setManualCode(e.target.value)}
+                    placeholder="I-type ang VF ID"
+                    className="flex-1 bg-white rounded-xl px-4 py-3 font-mono text-sm outline-none border border-outline-variant focus:border-tertiary"
+                    onKeyDown={e => e.key === 'Enter' && handleManualVerify()}
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleManualVerify}
+                    disabled={!manualCode.trim()}
+                    className="px-4 py-3 rounded-xl bg-tertiary text-white font-bold text-xs"
+                  >
+                    Verify
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      <div className="h-10 w-full shrink-0" />
 
       {isProcessing && (
         <div style={{
@@ -194,48 +237,7 @@ export function VerifyTab() {
         </div>
       )}
 
-      {/* Manual Entry Bottom Sheet */}
-      <AnimatePresence>
-        {showManualEntry && !showResultSheet && (
-          <>
-            <motion.div 
-              key="manual-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setShowManualEntry(false)}
-              className="fixed inset-0 bg-black/40 z-[55]"
-            />
-            <motion.div 
-              key="manual-sheet"
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest z-[60] rounded-t-[1.5rem] shadow-[0_-20px_60px_rgba(0,0,0,0.15)] px-5 pt-4 pb-[calc(24px+env(safe-area-inset-bottom)+80px)]"
-            >
-              <div className="w-[32px] h-[4px] bg-surface-container-high rounded-full mx-auto mb-[16px]" />
-              <p className="text-base font-bold text-on-surface mb-4 text-center">
-                I-type ang VeriFund ID
-              </p>
-              <input
-                value={manualCode}
-                onChange={e => setManualCode(e.target.value)}
-                placeholder="VF-2025-0001-STC"
-                className="bg-surface-container-high rounded-2xl px-4 py-4 font-mono text-base outline-none focus:ring-2 focus:ring-tertiary/30 w-full block mb-3"
-                onKeyDown={e => e.key === 'Enter' && handleManualVerify()}
-              />
-              <button
-                onClick={handleManualVerify}
-                disabled={!manualCode.trim()}
-                className="w-full py-4 rounded-full bg-tertiary text-white font-bold disabled:opacity-40 disabled:pointer-events-none active:scale-[0.98] transition-all"
-              >
-                I-Verify
-              </button>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* Manual Entry Bottom Sheet removed because it is now inline */}
 
       {/* VERIFIED Result Sheet */}
       <AnimatePresence>

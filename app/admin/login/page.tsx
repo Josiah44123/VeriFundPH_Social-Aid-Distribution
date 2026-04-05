@@ -58,37 +58,40 @@ export default function AdminLogin() {
       </div>
 
       <div className="w-full max-w-[1100px] grid md:grid-cols-5 overflow-hidden rounded-2xl editorial-shadow border border-outline-variant/20">
-        <div className="header-gradient-red p-8 md:p-12 flex flex-col justify-between relative overflow-hidden text-white md:col-span-2">
+        <div className="header-gradient-red p-6 md:p-8 flex flex-col justify-between relative overflow-hidden text-white md:col-span-2 md:max-w-[280px]">
           {/* Top decorative circles */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full -ml-24 -mb-24" />
+          <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -mr-24 -mt-24" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full -ml-16 -mb-16" />
 
-          {/* Logo in white box */}
-          <div className="relative z-10">
-            <div className="bg-white/95 p-3 rounded-xl shadow-lg inline-block mb-8 cursor-pointer" onClick={() => router.push('/')}>
-              <img src="/logo.png" alt="VeriFund" className="h-12 w-auto" />
+          {/* Logo and Badge — Flex Container */}
+          <div className="relative z-10 flex items-center gap-3 mb-6">
+            <div className="bg-white rounded-2xl inline-flex items-center justify-center p-2.5 shadow-md drop-shadow-sm cursor-pointer hover:bg-white/95 transition-colors" onClick={() => router.push('/')}>
+              <img src="/logo.png" alt="VeriFund" className="h-10 w-auto" />
             </div>
-            <span className="inline-block bg-white/20 backdrop-blur-md px-4 py-1 rounded-full text-xs font-bold uppercase tracking-[0.2em] mb-4">
+            <span className="inline-block bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">
               Officer Portal
             </span>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tighter leading-tight mb-4">
+          </div>
+          
+          <div className="relative z-10">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tighter leading-tight mb-3">
               Secured Authority Interface
             </h1>
-            <p className="text-white/80 text-base leading-relaxed">
+            <p className="text-white/80 text-sm leading-relaxed">
               Authorized access for VeriFund verification officers.
             </p>
           </div>
 
-          <div className="relative z-10 flex items-center gap-2 text-white/70 mt-8 md:mt-0">
-            <ShieldCheck className="w-5 h-5" />
-            <span className="text-sm font-medium">Compliance-Grade Access</span>
+          <div className="relative z-10 flex items-center gap-2 text-white/70 mt-6 md:mt-0">
+            <ShieldCheck className="w-4 h-4" />
+            <span className="text-xs font-medium">Compliance-Grade Access</span>
           </div>
         </div>
 
-        <div className="bg-surface-container-lowest p-8 md:p-12 flex flex-col justify-center md:col-span-3">
+        <div className="bg-surface-container-lowest p-8 md:p-10 flex flex-col justify-center md:col-span-3">
           <div className="max-w-md mx-auto w-full">
             <h2 className="text-2xl font-bold text-on-surface tracking-tight mb-1">Welcome, Officer</h2>
-            <p className="text-on-surface-variant font-medium mb-8">I-authenticate ang iyong session para magpatuloy.</p>
+            <p className="text-on-surface-variant font-medium text-sm mb-7">I-authenticate ang iyong session para magpatuloy.</p>
 
             <div style={shaking ? { animation: 'shake 300ms ease-in-out' } : undefined}>
               {/* Error state */}
@@ -97,22 +100,22 @@ export default function AdminLogin() {
               </div>}
 
               {/* Email field */}
-              <div className="mb-5">
+              <div className="mb-4">
                 <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-2">Email Address</label>
                 <input type="email" value={email} onChange={e => setEmail(e.target.value)}
                   placeholder="officer@stacruz.gov.ph"
-                  className="w-full px-5 py-4 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-tertiary/20 focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline outline-none"
+                  className="w-full px-5 py-3.5 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-tertiary/20 focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline outline-none text-sm"
                   style={{ border: '2px solid transparent', ...(error ? { borderColor: 'var(--tertiary)' } : {}) }}
                 />
               </div>
 
               {/* Password field */}
-              <div className="mb-7 relative">
+              <div className="mb-6 relative">
                 <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest block mb-2">Password</label>
                 <input type={showPassword ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   onKeyDown={e => e.key === 'Enter' && handleLogin()}
-                  className="w-full px-5 py-4 pr-12 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-tertiary/20 focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline outline-none"
+                  className="w-full px-5 py-3.5 pr-12 bg-surface-container-low rounded-xl focus:ring-2 focus:ring-tertiary/20 focus:bg-surface-container-lowest transition-all text-on-surface font-medium placeholder:text-outline outline-none text-sm"
                   style={{ border: '2px solid transparent', ...(error ? { borderColor: 'var(--tertiary)' } : {}) }}
                 />
                 <button type="button" onClick={() => setShowPassword(!showPassword)}

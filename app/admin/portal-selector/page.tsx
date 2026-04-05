@@ -44,7 +44,7 @@ export default function PortalSelector() {
   if (!user) return null
 
   return (
-    <div className="min-h-screen bg-surface" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="min-h-screen bg-surface flex flex-col" style={{ fontFamily: 'Manrope, sans-serif' }}>
       {/* Top App Bar */}
       <header className="sticky top-0 z-20 bg-surface/90 backdrop-blur-xl px-5 py-3 flex justify-between items-center border-b border-outline-variant/20">
         <div className="flex items-center gap-2.5">
@@ -56,21 +56,23 @@ export default function PortalSelector() {
         </button>
       </header>
 
-      {/* Hero Section */}
-      <div className="header-gradient-blue mx-5 mt-5 rounded-2xl p-7 text-white relative overflow-hidden editorial-shadow">
-        <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-xl" />
-        <div className="relative z-10">
-          <p className="text-white/70 text-sm font-medium mb-1">{greeting()},</p>
-          <h1 className="text-2xl font-extrabold tracking-tight mb-1">{user?.name}</h1>
-          <p className="text-white/60 text-sm">{user?.barangay}</p>
-          <span className="inline-flex items-center gap-1.5 mt-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
-            <span className="w-2 h-2 rounded-full bg-secondary-container" />
-            Piliin ang Portal
-          </span>
+      {/* Content — vertically centered */}
+      <div className="flex-1 flex flex-col justify-center px-5 py-6 max-w-2xl mx-auto w-full">
+        {/* Hero Section */}
+        <div className="header-gradient-blue rounded-2xl p-7 text-white relative overflow-hidden editorial-shadow">
+          <div className="absolute -right-10 -bottom-10 w-48 h-48 bg-white/10 rounded-full blur-xl" />
+          <div className="relative z-10">
+            <p className="text-white/70 text-sm font-medium mb-1">{greeting()},</p>
+            <h1 className="text-2xl font-extrabold tracking-tight mb-1">{user?.name}</h1>
+            <p className="text-white/60 text-sm">{user?.barangay}</p>
+            <span className="inline-flex items-center gap-1.5 mt-3 bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-secondary-container" />
+              Piliin ang Portal
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="px-5 mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Field Console Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -124,6 +126,7 @@ export default function PortalSelector() {
             Pumunta sa Management →
           </button>
         </motion.div>
+        </div>
       </div>
     </div>
   )

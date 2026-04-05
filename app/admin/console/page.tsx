@@ -83,7 +83,7 @@ export default function FieldConsole() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.2 }}
-              className="h-full"
+              className="min-h-full"
             >
               {activeTab === "register" && <RegisterTab />}
               {activeTab === "verify" && <VerifyTab />}
