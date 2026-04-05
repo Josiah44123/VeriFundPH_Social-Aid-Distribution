@@ -257,7 +257,7 @@ export function VerifyTab() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[1.5rem] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
+              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[1.5rem] pb-[calc(100px+env(safe-area-inset-bottom))] z-[60] overflow-hidden"
             >
               <div className="pt-4 px-6 flex flex-col items-center relative">
                 <div className="w-12 h-1 bg-surface-container-highest rounded-full mb-6" />
@@ -324,7 +324,7 @@ export function VerifyTab() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 22, stiffness: 200 }}
-              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[1.5rem] pb-[calc(24px+env(safe-area-inset-bottom)+64px)] z-[60] overflow-hidden"
+              className="fixed inset-x-0 bottom-0 bg-surface-container-lowest shadow-[0_-20px_60px_rgba(0,0,0,0.15)] rounded-t-[1.5rem] pb-[calc(100px+env(safe-area-inset-bottom))] z-[60] overflow-hidden"
             >
               <div className="pt-4 px-6 flex flex-col items-center relative">
                 <div className="w-12 h-1 bg-surface-container-highest rounded-full mb-6" />

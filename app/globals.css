@@ -142,6 +142,16 @@
   box-shadow: 0 20px 40px rgba(25, 27, 33, 0.06);
 }
 
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
 .header-gradient-red { background: linear-gradient(135deg, #88000d 0%, #b0151b 100%); }
 .header-gradient-blue { background: linear-gradient(135deg, #003f89 0%, #1a56ad 100%); }
 .header-gradient-gold { background: linear-gradient(135deg, #7b5800 0%, #ffc245 100%); }

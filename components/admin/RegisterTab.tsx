@@ -433,10 +433,10 @@ export function RegisterTab() {
               </div>
             </div>
 
-            <div className="fixed bottom-[64px] left-0 right-0 px-5 pb-3 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/95 to-transparent pt-4 z-30">
-              <div className="max-w-md mx-auto">
+            <div className="fixed bottom-[88px] left-0 right-0 px-5 pb-4 bg-gradient-to-t from-surface-container-low/40 via-surface-container-low/10 to-transparent pt-8 z-30 pointer-events-none transition-all duration-300">
+              <div className="max-w-[240px] mx-auto pointer-events-auto">
                 <button onClick={handleNext}
-                  className="w-full bg-tertiary text-white py-4 rounded-full font-bold text-base shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all">
+                  className="w-full bg-tertiary text-white py-3.5 rounded-full font-bold text-xs shadow-[0_12px_24px_-6px_rgba(136,0,13,0.3)] hover:shadow-[0_16px_32px_-8px_rgba(136,0,13,0.4)] hover:bg-tertiary/95 active:scale-[0.98] transition-all tracking-widest uppercase">
                   Susunod →
                 </button>
               </div>
@@ -507,11 +507,11 @@ export function RegisterTab() {
               </button>
             )}
 
-            <div className="fixed bottom-[64px] left-0 right-0 px-5 pb-3 bg-gradient-to-t from-surface-container-lowest via-surface-container-lowest/95 to-transparent pt-4 z-30">
-              <div className="max-w-md mx-auto">
+            <div className="fixed bottom-[88px] left-0 right-0 px-5 pb-4 bg-gradient-to-t from-surface-container-low/40 via-surface-container-low/10 to-transparent pt-8 z-30 pointer-events-none transition-all duration-300">
+              <div className="max-w-[280px] mx-auto pointer-events-auto">
                 <button onClick={handleRegister}
-                  className="w-full bg-tertiary text-white py-4 rounded-full font-bold text-base shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all">
-                  {faceCaptured ? 'I-Register ang Benepisyaryo →' : 'I-Register nang walang Face Scan →'}
+                  className="w-full bg-tertiary text-white py-3.5 rounded-full font-bold text-xs shadow-[0_12px_24px_-6px_rgba(136,0,13,0.3)] hover:shadow-[0_16px_32px_-8px_rgba(136,0,13,0.4)] hover:bg-tertiary/95 active:scale-[0.98] transition-all tracking-widest uppercase">
+                  {faceCaptured ? 'Kumpirmahin ang Registration' : 'Mag-register nang walang Face Scan'}
                 </button>
               </div>
             </div>

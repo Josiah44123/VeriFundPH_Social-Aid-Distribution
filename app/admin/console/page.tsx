@@ -93,26 +93,23 @@ export default function FieldConsole() {
         </div>
       </div>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl border-t border-outline-variant/20 rounded-t-[1.5rem] shadow-[0_-8px_30px_rgba(0,63,137,0.06)]"
-        style={{ fontFamily: 'Manrope, sans-serif' }}>
-        <div className="flex justify-around items-center h-16 px-4 max-w-lg mx-auto">
-          {[
-            { id: 'register', label: 'I-Register', icon: UserPlus },
-            { id: 'verify', label: 'I-Verify', icon: QrCode },
-            { id: 'listahan', label: 'Listahan', icon: List },
-          ].map(({ id, label, icon: Icon }) => (
-            <button key={id} onClick={() => setActiveTab(id)}
-              className={`flex flex-col items-center gap-1 px-5 py-2 rounded-2xl transition-all ${
-                activeTab === id
-                  ? 'bg-tertiary text-white shadow-lg shadow-tertiary/20'
-                  : 'text-on-surface-variant opacity-60'
-              }`}>
-              <Icon className="w-5 h-5" />
-              <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
-            </button>
-          ))}
-        </div>
-      </nav>
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-0.5 px-1.5 py-1.5 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_8px_32px_rgba(25,27,33,0.12)] rounded-full border border-outline-variant/20 w-[max-content] max-w-[94vw] overflow-x-auto no-scrollbar" style={{ fontFamily: 'Manrope, sans-serif' }}>
+        {[
+          { id: 'register', label: 'I-Register', icon: UserPlus },
+          { id: 'verify', label: 'I-Verify', icon: QrCode },
+          { id: 'listahan', label: 'Listahan', icon: List },
+        ].map(({ id, label, icon: Icon }) => (
+          <button key={id} onClick={() => setActiveTab(id)}
+            className={`flex items-center gap-1.5 px-3.5 py-2 transition-all rounded-full font-semibold text-sm shrink-0 whitespace-nowrap ${
+              activeTab === id
+                ? 'bg-tertiary text-white shadow-md shadow-tertiary/20'
+                : 'text-on-surface-variant hover:text-tertiary opacity-70'
+            }`}>
+            <Icon className="w-4 h-4" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
+          </button>
+        ))}
+      </div>
     </div>
   )
 }
