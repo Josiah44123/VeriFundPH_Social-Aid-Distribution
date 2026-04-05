@@ -12,6 +12,7 @@ const ACTION_COLORS: Record<string, { bg: string; text: string; label: string }>
   REJECTED: { bg: "#FDE8EB", text: "#CE1126", label: "Rejected" },
   FLAGGED: { bg: "#FEF3C7", text: "#B45309", label: "Flagged" },
   DISTRIBUTION_CREATED: { bg: "#E0E8FF", text: "#001A5E", label: "Distribution" },
+  DISTRIBUTION_COMPLETED: { bg: "#E8F5EE", text: "#1A8C4E", label: "Completed" },
   LOGIN: { bg: "#F3F4F6", text: "#4A5568", label: "Login" },
 }
 
@@ -27,11 +28,15 @@ function formatTime(iso: string) {
 
 export default function ManagementDashboard() {
   const router = useRouter()
-  const { beneficiaries, claims, fraudFlags, auditLog, resolveFraudFlag } = useVeriFundStore()
+  const { beneficiaries, claims, distributions, fraudFlags, auditLog, resolveFraudFlag } = useVeriFundStore()
 
+  const activeDist = distributions.find(d => d.status === "ACTIVE")
   const nakuhaCount = claims.filter(c => c.status === "NAKUHA").length
   const activeCount = beneficiaries.filter(b => b.status === "ACTIVE").length
-  const notClaimed = Math.max(0, activeCount - nakuhaCount)
+  // "Hindi pa Nakakuha": ACTIVE beneficiaries with NO NAKUHA claim in the active distribution
+  const notClaimed = activeDist
+    ? beneficiaries.filter(b => b.status === "ACTIVE" && !claims.some(c => c.beneficiaryId === b.id && c.distributionId === activeDist.id && c.status === "NAKUHA")).length
+    : Math.max(0, activeCount - nakuhaCount)
   const activeFraudCount = fraudFlags.filter(f => !f.resolved).length
   const recentAudit = auditLog.slice(0, 10)
   const activeFlags = fraudFlags.filter(f => !f.resolved)
@@ -199,7 +204,7 @@ export default function ManagementDashboard() {
                       </td>
                       <td className="px-6 py-4">
                         <p className="text-sm font-bold text-on-surface">{entry.targetName}</p>
-                        <p className="font-mono text-xs text-secondary font-bold">{entry.targetId}</p>
+                        <p className="font-mono text-xs text-secondary">{entry.targetId}</p>
                       </td>
                       <td className="px-6 py-4 text-sm text-on-surface-variant">{entry.barangay}</td>
                       <td className="px-6 py-4 text-xs text-outline font-medium">{formatTime(entry.timestamp)}</td>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useVeriFundStore } from "@/lib/store"
 import { Search, X, CheckCircle2, AlertTriangle, Clock, Ban, ChevronUp, ChevronDown, Download, Users } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -26,6 +26,7 @@ function formatDate(iso: string) {
 export default function BeneficiariesPage() {
   const { beneficiaries, claims } = useVeriFundStore()
   const [search, setSearch] = useState("")
+  const [debouncedSearch, setDebouncedSearch] = useState("")
   const [filter, setFilter] = useState<StatusFilter>("ALL")
   const [sortKey, setSortKey] = useState<SortKey>("enrolledAt")
   const [sortAsc, setSortAsc] = useState(false)
@@ -34,9 +35,24 @@ export default function BeneficiariesPage() {
   const [drawerTab, setDrawerTab] = useState<"info" | "claims">("info")
   const PAGE_SIZE = 20
 
+  // Debounced search (300ms)
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(search), 300)
+    return () => clearTimeout(timer)
+  }, [search])
+
+  // Escape key closes drawer
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && selectedId) setSelectedId(null)
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [selectedId])
+
   const filtered = beneficiaries
     .filter(b => {
-      const q = search.toLowerCase()
+      const q = debouncedSearch.toLowerCase()
       const matchSearch = !q ||
         b.firstName.toLowerCase().includes(q) ||
         b.lastName.toLowerCase().includes(q) ||
@@ -64,7 +80,7 @@ export default function BeneficiariesPage() {
   }
 
   const SortIcon = ({ k }: { k: SortKey }) =>
-    sortKey === k ? (sortAsc ? <ChevronUp className="w-[12px] h-[12px]" /> : <ChevronDown className="w-[12px] h-[12px]" />) : null
+    sortKey === k ? (sortAsc ? <ChevronUp className="w-[12px] h-[12px] text-primary" /> : <ChevronDown className="w-[12px] h-[12px] text-primary" />) : <ChevronDown className="w-[12px] h-[12px] text-outline/30" />
 
   const handleExportCSV = () => {
     const headers = ["VeriFund ID", "Pangalan", "Telepono", "Kasarian", "Barangay", "Uri ng ID", "Status", "Enrolled"]
@@ -92,7 +108,6 @@ export default function BeneficiariesPage() {
     { label: "VeriFund ID", key: "id" },
     { label: "Pangalan", key: "lastName" },
     { label: "Telepono", key: null },
-    { label: "Kasarian", key: null },
     { label: "Barangay", key: null },
     { label: "Uri ng ID", key: null },
     { label: "Status", key: "status" },
@@ -160,10 +175,10 @@ export default function BeneficiariesPage() {
       <div className="flex items-center gap-3 flex-wrap">
         {/* Search */}
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="w-4 h-4 text-outline absolute left-4 top-1/2 -translate-y-1/2" />
+          <Search className="w-5 h-5 text-outline absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input type="text" placeholder="Hanapin by pangalan, ID, telepono..." value={search}
             onChange={e => { setSearch(e.target.value); setPage(1); }}
-            className="w-full h-11 pl-10 pr-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all" />
+            className="w-full h-12 pl-14 pr-4 bg-surface-container-lowest rounded-2xl border border-outline-variant/20 text-sm outline-none focus:ring-2 focus:ring-primary/30 focus:bg-white transition-all shadow-sm" />
         </div>
         {/* Filter chips */}
         {FILTERS.map(f => (
@@ -204,7 +219,7 @@ export default function BeneficiariesPage() {
                   <tr key={b.id} onClick={() => setSelectedId(b.id === selectedId ? null : b.id)}
                     className={cn('cursor-pointer transition-all hover:bg-surface-container-low/50 group',
                       b.id === selectedId ? 'bg-primary/5' : paginated.indexOf(b) % 2 === 1 ? 'bg-surface-container-low/30' : '')}>
-                    <td className="px-5 py-4 font-mono text-sm font-bold text-secondary">{b.id}</td>
+                    <td className="px-5 py-4 font-mono text-sm text-on-surface-variant">{b.id}</td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary to-primary-container text-white font-bold text-xs flex items-center justify-center flex-shrink-0">
@@ -212,12 +227,10 @@ export default function BeneficiariesPage() {
                         </div>
                         <div>
                           <p className="text-sm font-bold text-primary leading-none">{b.firstName} {b.lastName}</p>
-                          {b.middleName && <p className="text-xs text-outline">{b.middleName}</p>}
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-4 text-sm text-on-surface-variant font-mono">{b.phone}</td>
-                    <td className="px-5 py-4 text-sm text-on-surface-variant">{b.gender || '—'}</td>
                     <td className="px-5 py-4 text-sm text-on-surface-variant">{b.barangay}</td>
                     <td className="px-5 py-4 text-sm text-on-surface-variant">{b.idType}</td>
                     <td className="px-5 py-4">
@@ -254,7 +267,7 @@ export default function BeneficiariesPage() {
       <AnimatePresence>
         {selected && (
           <motion.div initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: 40, opacity: 0 }}
-            className="w-[360px] shrink-0 bg-surface-container-lowest rounded-2xl editorial-shadow flex flex-col overflow-hidden fixed right-8 top-28 bottom-8 z-50">
+            className="w-[380px] shrink-0 bg-surface-container-lowest rounded-2xl shadow-[0_30px_90px_-15px_rgba(0,0,0,0.4)] flex flex-col overflow-hidden fixed right-8 top-28 bottom-8 z-50 border border-outline-variant/30">
             
             {/* Colored header */}
             <div className="bg-gradient-to-br from-primary to-primary-container px-5 py-5 flex items-start justify-between">

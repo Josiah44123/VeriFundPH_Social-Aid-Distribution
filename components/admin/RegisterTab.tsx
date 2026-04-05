@@ -5,21 +5,41 @@ import { Camera, CheckCircle2, ChevronDown, CheckCircle, ScanLine, Check, MapPin
 import { QRCode } from "@/components/QRCode"
 import { cn } from "@/lib/utils"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
-import { useVeriFundStore } from "@/lib/store"
+import { useVeriFundStore, normalizePhone } from "@/lib/store"
 import type { Beneficiary, AuditEntry } from "@/lib/store"
+import { validatePhone } from "@/lib/validation"
 import { motion, AnimatePresence } from "framer-motion"
 
-const OFFICER_NAME = "Josefa Reyes"
 import { DEFAULT_BARANGAY } from "@/lib/constants"
 
+const OFFICER_NAME = "Josefa Reyes"
 const BARANGAY = DEFAULT_BARANGAY
 const ID_TYPES = ["PhilSys", "Driver's License", "Voter's ID", "Postal ID", "SSS ID", "GSIS ID", "Passport"]
+
+// 10 seed names/IDs for random scan results
+const SCAN_SEEDS = [
+  { lastName: "Dela Cruz", firstName: "Maria", gender: "Babae" as const, idType: "PhilSys", idNumber: "1234-5678-9012-3456", phone: "9171234568" },
+  { lastName: "Reyes", firstName: "Jose", gender: "Lalaki" as const, idType: "Voter's ID", idNumber: "QC-2023-00789", phone: "9281234569" },
+  { lastName: "Santos", firstName: "Angela", gender: "Babae" as const, idType: "PhilSys", idNumber: "2345-6789-0123-4567", phone: "9391234570" },
+  { lastName: "Garcia", firstName: "Roberto", gender: "Lalaki" as const, idType: "Driver's License", idNumber: "N02-23-456789", phone: "9451234571" },
+  { lastName: "Mendoza", firstName: "Carmen", gender: "Babae" as const, idType: "SSS ID", idNumber: "34-5678901-2", phone: "9561234572" },
+  { lastName: "Torres", firstName: "Antonio", gender: "Lalaki" as const, idType: "PhilSys", idNumber: "3456-7890-1234-5678", phone: "9171234573" },
+  { lastName: "Villanueva", firstName: "Lucia", gender: "Babae" as const, idType: "Passport", idNumber: "P1234567A", phone: "9281234574" },
+  { lastName: "Ramos", firstName: "Francisco", gender: "Lalaki" as const, idType: "GSIS ID", idNumber: "GSIS-2023-00456", phone: "9391234575" },
+  { lastName: "Aquino", firstName: "Rosalinda", gender: "Babae" as const, idType: "Postal ID", idNumber: "POST-2023-78901", phone: "9451234576" },
+  { lastName: "Bautista", firstName: "Miguel", gender: "Lalaki" as const, idType: "PhilSys", idNumber: "4567-8901-2345-6789", phone: "9561234577" },
+]
+
+function deriveBarangayCode(name: string): string {
+  const consonants = name.replace(/[^bcdfghjklmnpqrstvwxyz]/gi, "").toUpperCase()
+  return consonants.slice(0, 3) || "BRG"
+}
 
 export function RegisterTab() {
   const { beneficiaries, addBeneficiary, addAuditEntry } = useVeriFundStore()
   const [step, setStep] = useState<1 | 2 | 3>(1)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<{field?: string, message: string} | null>(null)
+  const [errors, setErrors] = useState<Record<string, string>>({})
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error'} | null>(null)
   const [generatedId, setGeneratedId] = useState("")
   
@@ -60,14 +80,17 @@ export function RegisterTab() {
     setIsScanning(true)
     await new Promise(resolve => setTimeout(resolve, 2000))
 
+    // Pick a random seed
+    const seed = SCAN_SEEDS[Math.floor(Math.random() * SCAN_SEEDS.length)]
+
     setFormData(f => ({
       ...f,
-      lastName: 'Dela Cruz',
-      firstName: 'Maria',
-      phone: '9171234568',
-      idType: 'PhilSys',
-      idNumber: '1234-5678-9012-3456',
-      gender: 'Babae',
+      lastName: seed.lastName,
+      firstName: seed.firstName,
+      phone: seed.phone,
+      idType: seed.idType,
+      idNumber: seed.idNumber,
+      gender: seed.gender,
     }))
 
     setIsScanning(false)
@@ -81,39 +104,41 @@ export function RegisterTab() {
     if (!file) return
 
     setIsCapturing(true)
-    await new Promise(resolve => setTimeout(resolve, 2500))
+    await new Promise(resolve => setTimeout(resolve, 1500))
 
     setIsCapturing(false)
     setFaceCaptured(true)
-    showToastMsg('Face verified! Walang duplicate na nahanap.', 'success')
+    showToastMsg('Walang duplicate na nahanap.', 'success')
     e.target.value = ''
   }
 
   const handleNext = () => {
-    setError(null)
+    const newErrors: Record<string, string> = {}
 
-    if (!scanDone && (!formData.lastName || !formData.firstName || !formData.phone || !formData.gender || !formData.idType || !formData.idNumber)) {
-      return setError({ message: "I-scan muna ang ID o punan ang mga fields." })
+    if (!formData.lastName) newErrors.lastName = "Kailangan itong punan."
+    if (!formData.firstName) newErrors.firstName = "Kailangan itong punan."
+    if (!formData.phone) {
+      newErrors.phone = "Kailangan itong punan."
+    } else {
+      const fullPhone = formData.phone.startsWith("0") ? formData.phone : "0" + formData.phone
+      const phoneResult = validatePhone(fullPhone)
+      if (!phoneResult.valid) newErrors.phone = phoneResult.error || ""
     }
+    if (!formData.gender) newErrors.gender = "Kailangan pumili ng kasarian."
+    if (!formData.idType) newErrors.idType = "Kailangan itong punan."
+    if (!formData.idNumber) newErrors.idNumber = "Kailangan itong punan."
 
-    if (!formData.lastName) return setError({ field: "lastName", message: "Kailangan itong punan." })
-    if (!formData.firstName) return setError({ field: "firstName", message: "Kailangan itong punan." })
-    if (!formData.phone) return setError({ field: "phone", message: "Kailangan itong punan." })
-    if (!formData.gender) return setError({ field: "gender", message: "Kailangan pumili ng kasarian." })
-    if (!formData.idType) return setError({ field: "idType", message: "Kailangan itong punan." })
-    if (!formData.idNumber) return setError({ field: "idNumber", message: "Kailangan itong punan." })
-
-    const phoneRegex = /^9\d{9}$/
-    if (!phoneRegex.test(formData.phone)) {
-      return setError({ field: "phone", message: "Dapat magsimula sa 9 at 10 digits ang numero." })
-    }
+    setErrors(newErrors)
+    if (Object.keys(newErrors).length > 0) return
 
     setStep(2)
   }
 
   const handleRegister = async () => {
-    const fullPhone = '0' + formData.phone
-    const exists = beneficiaries.some(b => b.phone === fullPhone || b.phone === formData.phone)
+    const fullPhone = normalizePhone(formData.phone.startsWith("0") ? formData.phone : "0" + formData.phone)
+    
+    // Duplicate phone check
+    const exists = beneficiaries.some(b => normalizePhone(b.phone) === fullPhone)
     if (exists) {
       showToastMsg('May existing na account ang numerong ito.', 'error')
       return
@@ -125,7 +150,7 @@ export function RegisterTab() {
 
     const year = new Date().getFullYear()
     const idx = String(beneficiaries.length + 1).padStart(4, "0")
-    const barangayCode = "STC"
+    const barangayCode = deriveBarangayCode(BARANGAY)
     const vfId = `VF-${year}-${idx}-${barangayCode}`
     setGeneratedId(vfId)
 
@@ -134,7 +159,7 @@ export function RegisterTab() {
       lastName: formData.lastName,
       firstName: formData.firstName,
       phone: fullPhone,
-      gender: formData.gender as any,
+      gender: formData.gender as "Lalaki" | "Babae" | "Iba pa",
       idType: formData.idType,
       idNumber: formData.idNumber,
       barangay: BARANGAY,
@@ -166,6 +191,7 @@ export function RegisterTab() {
     setScanDone(false)
     setFaceCaptured(false)
     setGeneratedId("")
+    setErrors({})
     setStep(1)
   }
 
@@ -185,17 +211,19 @@ export function RegisterTab() {
           {generatedId}
         </div>
 
-        <div className="bg-surface-container-lowest p-5 rounded-2xl editorial-shadow mb-6 print-qr-container">
-          <QRCode value={generatedId} id="qr-code" size={160} />
+        <div className="bg-surface-container-lowest p-5 rounded-2xl editorial-shadow mb-6 print-qr-container flex flex-col items-center">
+          <QRCode value={generatedId} id="qr-code" size={200} />
+          <p className="text-sm font-bold text-on-surface mt-3">{formData.firstName} {formData.lastName}</p>
+          <p className="font-mono text-xs text-outline">{generatedId}</p>
         </div>
 
         <div className="w-full max-w-sm flex flex-col gap-3">
           <button onClick={() => window.print()}
-            className="w-full py-3.5 rounded-full border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-all">
+            className="w-full py-3.5 rounded-full border-2 border-primary text-primary font-bold hover:bg-primary/5 transition-all min-h-[48px]">
             I-print ang Card
           </button>
           <button onClick={resetForm}
-            className="w-full py-3.5 rounded-full bg-tertiary text-white font-bold shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all">
+            className="w-full py-3.5 rounded-full bg-tertiary text-white font-bold shadow-lg shadow-tertiary/20 hover:bg-tertiary/90 active:scale-[0.98] transition-all min-h-[48px]">
             Mag-register ng Bago
           </button>
         </div>
@@ -204,7 +232,7 @@ export function RegisterTab() {
           @media print {
             body * { visibility: hidden; }
             .print-qr-container, .print-qr-container * { visibility: visible; }
-            .print-qr-container { position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; box-shadow: none; border: none; }
+            .print-qr-container { position: absolute; left: 0; top: 0; width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: none; border: none; }
           }
         `}} />
       </div>
@@ -212,7 +240,7 @@ export function RegisterTab() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-surface-container-low min-h-full pb-[100px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
+    <div className="flex flex-col h-full bg-surface-container-low min-h-full pb-[120px]" style={{ fontFamily: 'Manrope, sans-serif' }}>
       <LoadingOverlay isVisible={loading} />
       
       {/* Toast Notification */}
@@ -246,12 +274,6 @@ export function RegisterTab() {
       </div>
 
       <div>
-        {error && !error.field && (
-          <div className="mx-5 mt-4 bg-[var(--danger)] text-white text-[13px] font-bold p-[16px] rounded-[16px] mb-[16px] text-center shadow-[var(--shadow-sm)] animate-in slide-in-from-top-2">
-            {error.message}
-          </div>
-        )}
-
         {step === 1 && (
           <div className="flex flex-col">
             <div onClick={handleIDScan} className={`mx-5 mt-5 rounded-2xl p-5 flex items-center gap-4 cursor-pointer transition-all ${
@@ -259,7 +281,7 @@ export function RegisterTab() {
                 ? 'bg-gradient-to-r from-primary/10 to-primary-container/10 border-2 border-primary-container/30'
                 : 'bg-gradient-to-r from-primary/5 to-transparent border-2 border-dashed border-primary/20'
             }`}>
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 ${
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 min-w-[44px] min-h-[44px] ${
                 scanDone ? 'bg-primary-container text-white' : 'bg-primary/10 text-primary'
               }`}>
                 {scanDone ? <CheckCircle className="w-7 h-7" /> : <ScanLine className="w-7 h-7" />}
@@ -304,40 +326,43 @@ export function RegisterTab() {
                 <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Apelyido</label>
                 <input 
                   value={formData.lastName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, lastName: e.target.value})}
-                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-medium", error?.field === "lastName" && "ring-2 ring-tertiary")}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFormData({...formData, lastName: e.target.value}); setErrors(prev => { const n = {...prev}; delete n.lastName; return n }) }}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-medium", errors.lastName && "ring-2 ring-tertiary")}
                 />
-                {error?.field === "lastName" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
+                {errors.lastName && <p className="text-[11px] text-tertiary mt-1 font-bold">{errors.lastName}</p>}
               </div>
 
               <div>
                 <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Pangalan</label>
                 <input 
                   value={formData.firstName}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, firstName: e.target.value})}
-                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-medium", error?.field === "firstName" && "ring-2 ring-tertiary")}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFormData({...formData, firstName: e.target.value}); setErrors(prev => { const n = {...prev}; delete n.firstName; return n }) }}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-medium", errors.firstName && "ring-2 ring-tertiary")}
                 />
-                {error?.field === "firstName" && <p className="text-[11px] text-[var(--danger)] mt-[4px]">{error.message}</p>}
+                {errors.firstName && <p className="text-[11px] text-tertiary mt-1 font-bold">{errors.firstName}</p>}
               </div>
 
               <div>
                 <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Numero ng Telepono</label>
-                <div className={cn("flex items-center h-[56px] bg-surface-container-low rounded-2xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 transition-all", error?.field === "phone" && "ring-2 ring-tertiary")}>
+                <div className={cn("flex items-center h-[56px] bg-surface-container-low rounded-2xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/20 transition-all", errors.phone && "ring-2 ring-tertiary")}>
                   <div className="px-4 h-full flex items-center bg-surface-container border-r border-outline-variant/30 text-on-surface font-bold text-sm">
                     +63
                   </div>
                   <input
                     type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={formData.phone}
                     onChange={e => {
                       const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
                       setFormData(f => ({ ...f, phone: digits }));
+                      setErrors(prev => { const n = {...prev}; delete n.phone; return n })
                     }}
                     placeholder="9XXXXXXXXX"
                     className="flex-1 h-full bg-transparent border-none outline-none px-4 text-on-surface font-medium placeholder-outline"
                   />
                 </div>
-                {error?.field === "phone" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
+                {errors.phone && <p className="text-xs text-tertiary mt-1 font-bold">{errors.phone}</p>}
               </div>
 
               <div>
@@ -346,8 +371,8 @@ export function RegisterTab() {
                   {(["Lalaki", "Babae", "Iba pa"] as const).map(option => (
                     <button
                       key={option}
-                      onClick={() => setFormData({...formData, gender: option})}
-                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all ${
+                      onClick={() => { setFormData({...formData, gender: option}); setErrors(prev => { const n = {...prev}; delete n.gender; return n }) }}
+                      className={`flex-1 py-3 rounded-xl text-sm font-bold transition-all min-h-[44px] ${
                         formData.gender === option
                           ? 'bg-primary text-white shadow-sm'
                           : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
@@ -357,21 +382,21 @@ export function RegisterTab() {
                     </button>
                   ))}
                 </div>
-                {error?.field === "gender" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
+                {errors.gender && <p className="text-xs text-tertiary mt-1 font-bold">{errors.gender}</p>}
               </div>
 
               <div className="relative">
                 <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Uri ng ID</label>
                 <div 
                   onClick={() => setShowIdPicker(true)}
-                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between cursor-pointer", error?.field === "idType" && "ring-2 ring-tertiary")}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 flex items-center justify-between cursor-pointer min-h-[44px]", errors.idType && "ring-2 ring-tertiary")}
                 >
                   <span className={formData.idType ? "text-on-surface font-medium" : "text-outline font-medium"}>
                     {formData.idType || "Pumili ng ID"}
                   </span>
                   <ChevronDown className="w-5 h-5 text-on-surface-variant" />
                 </div>
-                {error?.field === "idType" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
+                {errors.idType && <p className="text-xs text-tertiary mt-1 font-bold">{errors.idType}</p>}
 
                 <AnimatePresence>
                   {showIdPicker && (
@@ -400,8 +425,8 @@ export function RegisterTab() {
                           {ID_TYPES.map(type => (
                             <button
                               key={type}
-                              onClick={() => { setFormData({...formData, idType: type}); setShowIdPicker(false) }}
-                              className="w-full flex items-center justify-between py-4 border-b border-outline-variant/20 last:border-0"
+                              onClick={() => { setFormData({...formData, idType: type}); setShowIdPicker(false); setErrors(prev => { const n = {...prev}; delete n.idType; return n }) }}
+                              className="w-full flex items-center justify-between py-4 border-b border-outline-variant/20 last:border-0 min-h-[48px]"
                             >
                               <span className="text-sm font-bold text-on-surface">{type}</span>
                               {formData.idType === type && <CheckCircle2 className="w-5 h-5 text-primary" />}
@@ -418,10 +443,10 @@ export function RegisterTab() {
                 <label className="text-xs font-bold text-primary/70 uppercase tracking-widest block mb-1.5">Numero ng ID</label>
                 <input 
                   value={formData.idNumber}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({...formData, idNumber: e.target.value})}
-                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-mono tracking-wide font-bold", error?.field === "idNumber" && "ring-2 ring-tertiary")}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setFormData({...formData, idNumber: e.target.value}); setErrors(prev => { const n = {...prev}; delete n.idNumber; return n }) }}
+                  className={cn("w-full bg-surface-container-low rounded-2xl p-4 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all text-on-surface border-none outline-none font-mono tracking-wide font-bold", errors.idNumber && "ring-2 ring-tertiary")}
                 />
-                {error?.field === "idNumber" && <p className="text-xs text-tertiary mt-1 font-medium">{error.message}</p>}
+                {errors.idNumber && <p className="text-xs text-tertiary mt-1 font-bold">{errors.idNumber}</p>}
               </div>
 
               <div>
@@ -436,7 +461,7 @@ export function RegisterTab() {
             <div className="fixed bottom-[88px] left-0 right-0 px-5 pb-4 bg-gradient-to-t from-surface-container-low/40 via-surface-container-low/10 to-transparent pt-8 z-30 pointer-events-none transition-all duration-300">
               <div className="max-w-[240px] mx-auto pointer-events-auto">
                 <button onClick={handleNext}
-                  className="w-full bg-tertiary text-white py-3.5 rounded-full font-bold text-xs shadow-[0_12px_24px_-6px_rgba(136,0,13,0.3)] hover:shadow-[0_16px_32px_-8px_rgba(136,0,13,0.4)] hover:bg-tertiary/95 active:scale-[0.98] transition-all tracking-widest uppercase">
+                  className="w-full bg-tertiary text-white py-3.5 rounded-full font-bold text-xs shadow-[0_12px_24px_-6px_rgba(136,0,13,0.3)] hover:shadow-[0_16px_32px_-8px_rgba(136,0,13,0.4)] hover:bg-tertiary/95 active:scale-[0.98] transition-all tracking-widest uppercase min-h-[48px]">
                   Susunod →
                 </button>
               </div>
@@ -447,8 +472,8 @@ export function RegisterTab() {
         {step === 2 && (
           <div className="flex flex-col items-center px-5 pt-4 gap-5">
             <div className="w-full flex justify-start mb-2">
-               <button onClick={() => setStep(1)} className="text-sm font-bold text-outline hover:text-primary transition-colors">
-                  ← Bumalik
+               <button onClick={() => setStep(1)} className="text-sm font-bold text-outline hover:text-primary transition-colors min-h-[44px]">
+                 ← Bumalik
                </button>
             </div>
 
@@ -497,12 +522,12 @@ export function RegisterTab() {
 
             {!faceCaptured ? (
               <button onClick={() => faceScanRef.current?.click()}
-                className="w-16 h-16 rounded-full bg-tertiary flex items-center justify-center shadow-lg shadow-tertiary/30 active:scale-90 transition-all">
+                className="w-16 h-16 rounded-full bg-tertiary flex items-center justify-center shadow-lg shadow-tertiary/30 active:scale-90 transition-all min-w-[48px] min-h-[48px]">
                 <Camera className="w-8 h-8 text-white" />
               </button>
             ) : (
               <button onClick={() => setFaceCaptured(false)}
-                className="px-5 py-2.5 rounded-xl border border-outline-variant text-sm text-on-surface-variant font-bold hover:bg-surface-container transition-all">
+                className="px-5 py-2.5 rounded-xl border border-outline-variant text-sm text-on-surface-variant font-bold hover:bg-surface-container transition-all min-h-[44px]">
                 Ulitin ang Face Scan
               </button>
             )}
@@ -510,7 +535,7 @@ export function RegisterTab() {
             <div className="fixed bottom-[88px] left-0 right-0 px-5 pb-4 bg-gradient-to-t from-surface-container-low/40 via-surface-container-low/10 to-transparent pt-8 z-30 pointer-events-none transition-all duration-300">
               <div className="max-w-[280px] mx-auto pointer-events-auto">
                 <button onClick={handleRegister}
-                  className="w-full bg-tertiary text-white py-3.5 rounded-full font-bold text-xs shadow-[0_12px_24px_-6px_rgba(136,0,13,0.3)] hover:shadow-[0_16px_32px_-8px_rgba(136,0,13,0.4)] hover:bg-tertiary/95 active:scale-[0.98] transition-all tracking-widest uppercase">
+                  className="w-full bg-tertiary text-white py-3.5 rounded-full font-bold text-xs shadow-[0_12px_24px_-6px_rgba(136,0,13,0.3)] hover:shadow-[0_16px_32px_-8px_rgba(136,0,13,0.4)] hover:bg-tertiary/95 active:scale-[0.98] transition-all tracking-widest uppercase min-h-[48px]">
                   {faceCaptured ? 'Kumpirmahin ang Registration' : 'Mag-register nang walang Face Scan'}
                 </button>
               </div>

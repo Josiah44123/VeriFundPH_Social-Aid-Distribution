@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
 import { LoadingOverlay } from "@/components/LoadingOverlay"
 
-const CREDENTIALS = { email: "admin@lgu-qc.gov.ph", password: "admin2025" }
+import { OFFICER_CREDENTIALS } from "@/lib/constants"
+
+const ADMIN_CRED = OFFICER_CREDENTIALS.find(c => c.role === "ADMIN")!
 
 export default function ManagementLogin() {
   const router = useRouter()
@@ -20,8 +22,15 @@ export default function ManagementLogin() {
     setLoading(true)
     setTimeout(() => {
       setLoading(false)
-      if (email === CREDENTIALS.email && password === CREDENTIALS.password) {
-        if (typeof window !== "undefined") sessionStorage.setItem("mgmt_auth", "1")
+      if (email === ADMIN_CRED.email && password === ADMIN_CRED.password) {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("verifund_user", JSON.stringify({
+            name: ADMIN_CRED.name,
+            role: ADMIN_CRED.role,
+            barangay: ADMIN_CRED.barangay,
+            email: ADMIN_CRED.email,
+          }))
+        }
         router.push("/management/dashboard")
       } else {
         setError(true)

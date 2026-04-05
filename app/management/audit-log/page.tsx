@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useVeriFundStore } from "@/lib/store"
-import { Lock, Download } from "lucide-react"
+import { Lock, Download, Copy } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion } from "framer-motion"
 
@@ -12,6 +12,7 @@ const ACTION_CONFIG: Record<string, { bg: string; text: string; label: string }>
   REJECTED: { bg: "#FDE8EB", text: "#CE1126", label: "REJECTED" },
   FLAGGED: { bg: "#FEF3C7", text: "#B45309", label: "FLAGGED" },
   DISTRIBUTION_CREATED: { bg: "#E0E8FF", text: "#001A5E", label: "DISTRIBUTION" },
+  DISTRIBUTION_COMPLETED: { bg: "#E8F5EE", text: "#1A8C4E", label: "COMPLETED" },
   LOGIN: { bg: "#F3F4F6", text: "#4A5568", label: "LOGIN" },
 }
 
@@ -77,10 +78,23 @@ export default function AuditLogPage() {
             <Lock className="w-3 h-3" /> Immutable — Hindi mabubura ang mga entry na ito.
           </p>
         </div>
-        <button onClick={handleExportCSV}
-          className="h-11 px-5 rounded-full bg-gradient-to-r from-primary to-primary-container text-white font-bold text-sm flex items-center gap-2 shadow-md hover:opacity-90 transition-all">
-          <Download className="w-4 h-4" /> I-export as CSV
-        </button>
+        <div className="flex gap-2">
+          <button onClick={() => {
+            const headers = ["Timestamp", "Action", "Actor", "Role", "Target ID", "Target Name", "Barangay", "Details"]
+            const rows = filtered.map(e => [
+              e.timestamp, e.action, e.actorName, e.actorRole, e.targetId, e.targetName, e.barangay, e.details
+            ])
+            const text = [headers.join("\t"), ...rows.map(r => r.join("\t"))].join("\n")
+            navigator.clipboard.writeText(text)
+          }}
+            className="h-11 px-5 rounded-full bg-surface-container-low border border-outline-variant/30 text-on-surface font-bold text-sm flex items-center gap-2 hover:bg-white transition-all">
+            <Copy className="w-4 h-4" /> I-copy
+          </button>
+          <button onClick={handleExportCSV}
+            className="h-11 px-5 rounded-full bg-gradient-to-r from-primary to-primary-container text-white font-bold text-sm flex items-center gap-2 shadow-md hover:opacity-90 transition-all">
+            <Download className="w-4 h-4" /> I-export as CSV
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
@@ -173,7 +187,7 @@ export default function AuditLogPage() {
                     </td>
                     <td className="px-5 py-3 min-w-[200px]">
                       <p className="text-xs font-bold text-primary">{entry.targetName}</p>
-                      <p className="font-mono text-[10px] text-secondary font-bold">{entry.targetId}</p>
+                      <p className="font-mono text-[10px] text-secondary">{entry.targetId}</p>
                     </td>
                     <td className="px-5 py-3 text-xs text-on-surface-variant font-medium min-w-[150px]">{entry.barangay}</td>
                     <td className="px-5 py-3 text-[11px] text-outline font-medium w-full">

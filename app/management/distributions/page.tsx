@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useVeriFundStore } from "@/lib/store"
 import type { Distribution, AuditEntry } from "@/lib/store"
 import { Plus, Gift, ChevronDown, ChevronUp, CheckCircle2, X } from "lucide-react"
@@ -13,19 +13,28 @@ function formatDate(iso: string) {
 }
 
 const STATUS_CONFIG = {
-  ACTIVE: { bg: "#E8F5EE", text: "#1A8C4E", label: "AKTIBO", border: "#00C853" },
-  SCHEDULED: { bg: "#FEF3C7", text: "#B45309", label: "NAKATAKDA", border: "#FFB800" },
-  COMPLETED: { bg: "#F3F4F6", text: "#4A5568", label: "TAPOS NA", border: "#4A5568" },
+  ACTIVE: { bg: "#E8F5EE", text: "#1A8C4E", label: "AKTIBO", border: "#10B981" },
+  SCHEDULED: { bg: "#FEF3C7", text: "#B45309", label: "NAKATAKDA", border: "#F59E0B" },
+  COMPLETED: { bg: "#EBF5FF", text: "#1E40AF", label: "TAPOS NA", border: "#1A56AD" }, // Vibrant Blue
 }
 
 export default function DistributionsPage() {
-  const { distributions, claims, addDistribution, addAuditEntry, updateDistribution } = useVeriFundStore()
+  const { distributions, claims, beneficiaries, addDistribution, addAuditEntry, updateDistribution } = useVeriFundStore()
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [form, setForm] = useState({
     title: "", barangay: "", scheduledDate: "", amount: "", disbursementMethod: "Mixed" as Distribution["disbursementMethod"]
   })
   const [formError, setFormError] = useState("")
+
+  // Escape key closes modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && showModal) setShowModal(false)
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [showModal])
 
   const active = distributions.filter(d => d.status !== "COMPLETED")
   const completed = distributions.filter(d => d.status === "COMPLETED")
@@ -42,7 +51,7 @@ export default function DistributionsPage() {
       scheduledDate: form.scheduledDate,
       amount: Number(form.amount),
       status: "SCHEDULED",
-      totalBeneficiaries: 0,
+      totalBeneficiaries: beneficiaries.filter(b => b.status === "ACTIVE" && b.barangay.toLowerCase().includes(form.barangay.toLowerCase())).length,
       totalClaimed: 0,
       disbursementMethod: form.disbursementMethod,
       createdBy: "LGU Admin",
@@ -73,7 +82,7 @@ export default function DistributionsPage() {
     addAuditEntry({
       id: `AUD-${Date.now()}`,
       timestamp: new Date().toISOString(),
-      action: "DISTRIBUTION_CREATED",
+      action: "DISTRIBUTION_COMPLETED",
       actorName: "LGU Admin",
       actorRole: "ADMIN",
       targetId: d.id,
@@ -90,34 +99,35 @@ export default function DistributionsPage() {
     const distClaims = claims.filter(c => c.distributionId === d.id)
 
     return (
-      <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-2xl overflow-hidden relative editorial-shadow transition-shadow hover:shadow-lg">
-        <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: cfg.border }} />
-
+      <div 
+        className="rounded-2xl overflow-hidden relative editorial-shadow transition-shadow hover:shadow-lg mt-1"
+        style={{ backgroundColor: cfg.border, color: '#ffffff' }}
+      >
         <div className="p-5 pl-6 cursor-pointer" onClick={() => setExpandedId(isExpanded ? null : d.id)}>
           <div className="flex items-start justify-between mb-3">
             <div>
-              <h3 className="text-base font-extrabold text-primary">{d.title}</h3>
-              <p className="text-xs text-outline font-medium mt-1">{d.barangay} · {formatDate(d.scheduledDate)}</p>
+              <h3 className="text-base font-extrabold text-white leading-tight">{d.title}</h3>
+              <p className="text-xs text-white/80 font-medium mt-1">{d.barangay} · {formatDate(d.scheduledDate)}</p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="px-3 py-1 rounded-full text-[10px] font-black tracking-wider" style={{ background: cfg.bg, color: cfg.text }}>{cfg.label}</span>
-              {isExpanded ? <ChevronUp className="w-4 h-4 text-outline" /> : <ChevronDown className="w-4 h-4 text-outline" />}
+              <span className="px-3 py-1 rounded-full text-[10px] font-black tracking-wider bg-white/20 text-white shadow-sm">{cfg.label}</span>
+              {isExpanded ? <ChevronUp className="w-4 h-4 text-white/80" /> : <ChevronDown className="w-4 h-4 text-white/80" />}
             </div>
           </div>
 
           {/* Progress bar */}
           <div className="mb-1">
-            <div className="flex justify-between text-[11px] font-black uppercase tracking-wider mb-2">
-              <span className="text-outline">{d.totalClaimed} / {d.totalBeneficiaries} na-claim</span>
-              <span className="text-secondary font-bold">₱{(d.totalClaimed * d.amount).toLocaleString()} disbursed</span>
+            <div className="flex justify-between text-[11px] font-black uppercase tracking-wider mb-2 text-white/95">
+              <span>{d.totalClaimed} / {d.totalBeneficiaries} NA-CLAIM</span>
+              <span className="drop-shadow-sm font-extrabold text-white">₱{(d.totalClaimed * d.amount).toLocaleString()} DISBURSED</span>
             </div>
-            <div className="h-2 bg-surface-container-low rounded-full overflow-hidden">
+            <div className="h-2 bg-black/20 rounded-full overflow-hidden shadow-inner">
               <div
-                className="h-full bg-secondary rounded-full transition-all duration-500"
+                className="h-full bg-white rounded-full transition-all duration-500 shadow-sm"
                 style={{ width: `${pct}%` }}
               />
             </div>
-            <div className="text-[10px] text-outline font-bold mt-1.5">{pct}% complete · {d.disbursementMethod}</div>
+            <div className="text-[10px] text-white/80 font-bold mt-2">{pct}% complete · {d.disbursementMethod}</div>
           </div>
         </div>
 
@@ -125,29 +135,29 @@ export default function DistributionsPage() {
         <AnimatePresence>
           {isExpanded && (
             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-              <div className="border-t border-outline-variant/20 px-6 py-4 bg-surface-container-lowest/50">
-                <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-[10px] font-black text-outline uppercase tracking-widest">
-                    Claims ({distClaims.length})
+              <div className="border-t border-white/20 px-6 py-4 bg-black/10">
+                <div className="flex items-center justify-between mb-3 text-white/90">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest">
+                    CLAIMS ({distClaims.length})
                   </h4>
                   {d.status !== "COMPLETED" && (
                     <button onClick={(e) => { e.stopPropagation(); handleMarkComplete(d) }}
-                      className="flex items-center gap-1.5 text-[11px] font-bold text-secondary hover:text-secondary-fixed transition-colors">
+                      className="flex items-center gap-1.5 text-[11px] font-bold text-white hover:text-white/80 transition-colors bg-white/10 px-3 py-1.5 rounded-full hover:bg-white/20">
                       <CheckCircle2 className="w-3.5 h-3.5" /> I-mark bilang Tapos
                     </button>
                   )}
                 </div>
                 {distClaims.length === 0 ? (
-                  <p className="text-xs text-outline font-medium">Wala pang claims.</p>
+                  <p className="text-xs text-white/70 font-medium">Wala pang claims.</p>
                 ) : (
                   <div className="flex flex-col gap-2 max-h-[200px] overflow-y-auto">
                     {distClaims.map(c => (
-                      <div key={c.id} className="flex items-center justify-between text-xs py-2 border-b border-surface-container-low last:border-0">
-                        <span className="font-bold text-on-surface">{c.beneficiaryName}</span>
+                      <div key={c.id} className="flex items-center justify-between text-xs py-2 border-b border-white/10 last:border-0 text-white">
+                        <span className="font-bold tracking-tight">{c.beneficiaryName}</span>
                         <div className="flex items-center gap-2">
-                          <span className="text-secondary font-black">₱{c.amount.toLocaleString()}</span>
-                          <span className="text-outline text-[10px]">{c.method ?? "N/A"}</span>
-                          <span className={cn("px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase", c.status === "NAKUHA" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-700")}>
+                          <span className="font-black drop-shadow-sm">₱{c.amount.toLocaleString()}</span>
+                          <span className="text-[10px] text-white/70">{c.method ?? "N/A"}</span>
+                          <span className={cn("px-2 py-0.5 rounded-full text-[9px] font-black tracking-wider uppercase", c.status === "NAKUHA" ? "bg-white text-emerald-800" : "bg-white/20 text-white")}>
                             {c.status}
                           </span>
                         </div>

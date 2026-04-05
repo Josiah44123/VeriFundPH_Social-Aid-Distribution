@@ -54,7 +54,7 @@ export interface Distribution {
 export interface AuditEntry {
   id: string
   timestamp: string
-  action: "ENROLLED" | "CLAIMED" | "REJECTED" | "FLAGGED" | "DISTRIBUTION_CREATED" | "LOGIN"
+  action: "ENROLLED" | "CLAIMED" | "REJECTED" | "FLAGGED" | "DISTRIBUTION_CREATED" | "DISTRIBUTION_COMPLETED" | "LOGIN"
   actorName: string
   actorRole: "OFFICER" | "ADMIN" | "SYSTEM"
   targetId: string
@@ -72,9 +72,18 @@ export interface FraudFlag {
   resolved: boolean
 }
 
+// ─── Phone Normalization ──────────────────────────────────────────────────────
+
+export function normalizePhone(raw: string): string {
+  const digits = raw.replace(/\D/g, "")
+  if (digits.startsWith("63")) return "0" + digits.slice(2)
+  if (digits.startsWith("9") && digits.length === 10) return "0" + digits
+  return digits
+}
+
 interface VeriFundStore {
   beneficiaries: Beneficiary[]
-  addBeneficiary: (b: Beneficiary) => void
+  addBeneficiary: (b: Beneficiary) => boolean
   claims: Claim[]
   addClaim: (c: Claim) => void
   distributions: Distribution[]
@@ -245,11 +254,20 @@ export function VeriFundProvider({ children }: { children: React.ReactNode }) {
     saveToStorage({ beneficiaries, claims, distributions, auditLog, fraudFlags })
   }, [beneficiaries, claims, distributions, auditLog, fraudFlags, isHydrated])
 
-  const addBeneficiary = (b: Beneficiary) => {
-    setBeneficiaries(prev => [b, ...prev])
+  const addBeneficiary = (b: Beneficiary): boolean => {
+    const normalized = normalizePhone(b.phone)
+    const duplicate = beneficiaries.some(existing => normalizePhone(existing.phone) === normalized)
+    if (duplicate) return false
+    setBeneficiaries(prev => [{ ...b, phone: normalized }, ...prev])
+    return true
   }
 
   const addClaim = (c: Claim) => {
+    // Duplicate claim guard
+    const exists = claims.some(
+      existing => existing.beneficiaryId === c.beneficiaryId && existing.distributionId === c.distributionId
+    )
+    if (exists) return
     setClaims(prev => [c, ...prev])
     // Update distribution totalClaimed
     setDistributions(prev => prev.map(d =>
@@ -294,7 +312,14 @@ export function VeriFundProvider({ children }: { children: React.ReactNode }) {
       fraudFlags, addFraudFlag, resolveFraudFlag,
       isHydrated,
     }}>
-      {children}
+      {isHydrated ? children : (
+        <div className="fixed inset-0 bg-white z-[9999] flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 border-4 border-[#1a56ad] border-t-transparent rounded-full animate-spin" />
+            <p className="text-sm font-bold text-[#1a56ad]">Loading VeriFund...</p>
+          </div>
+        </div>
+      )}
     </VeriFundContext.Provider>
   )
 }

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
+import Link from "next/link"
 import { LayoutDashboard, Users, Gift, ClipboardList, LogOut, ArrowLeft, Menu } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
@@ -18,9 +19,38 @@ export default function ManagementLayout({ children }: { children: React.ReactNo
   const router = useRouter()
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isAuthed, setIsAuthed] = useState(false)
+
+  // Auth guard
+  useEffect(() => {
+    if (pathname === "/management/login") {
+      setIsAuthed(true)
+      return
+    }
+    if (typeof window === "undefined") return
+    const raw = sessionStorage.getItem("verifund_user")
+    if (!raw) {
+      router.push("/management/login")
+      return
+    }
+    try {
+      // Allow access if any verifund_user exists in session for the prototype
+      setIsAuthed(true)
+    } catch {
+      router.push("/management/login")
+    }
+  }, [pathname, router])
 
   if (pathname === "/management/login") {
     return <>{children}</>
+  }
+
+  if (!isAuthed) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-surface">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
   }
 
   const currentPage = navItems.find(n => n.href === pathname)?.name ?? "Management System"
@@ -69,23 +99,25 @@ export default function ManagementLayout({ children }: { children: React.ReactNo
             const isActive = pathname === item.href
             const Icon = item.icon
             return isActive ? (
-              <button
+              <Link
                 key={item.name}
-                onClick={() => { router.push(item.href); setIsSidebarOpen(false) }}
+                href={item.href}
+                onClick={() => setIsSidebarOpen(false)}
                 className="w-full flex items-center gap-3 px-4 py-3 bg-[#001A5E] rounded-xl text-white font-bold text-[14px] text-left shadow-md shadow-[#001A5E]/20"
               >
                 <Icon className="w-5 h-5 text-white" />
                 {item.name}
-              </button>
+              </Link>
             ) : (
-              <button
+              <Link
                 key={item.name}
-                onClick={() => { router.push(item.href); setIsSidebarOpen(false) }}
+                href={item.href}
+                onClick={() => setIsSidebarOpen(false)}
                 className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[#001A5E]/70 font-semibold text-[14px] text-left hover:bg-[#001A5E]/10 hover:text-[#001A5E] transition-all"
               >
                 <Icon className="w-5 h-5" />
                 {item.name}
-              </button>
+              </Link>
             )
           })}
         </nav>
