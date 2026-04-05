@@ -94,11 +94,6 @@ export default function ManagementDashboard() {
           <div className="relative z-10">
             <p className="text-sm text-white/80 font-bold">Nakuha Na</p>
             <h3 className="text-4xl font-black tracking-tight mt-1">{nakuhaCount.toLocaleString()}</h3>
-            {/* Progress bar */}
-            <div className="w-full bg-white/20 h-1.5 rounded-full mt-3 overflow-hidden">
-              <div className="bg-white h-full rounded-full transition-all" 
-                style={{ width: `${activeCount > 0 ? Math.round((nakuhaCount / activeCount) * 100) : 0}%` }} />
-            </div>
           </div>
         </div>
 
